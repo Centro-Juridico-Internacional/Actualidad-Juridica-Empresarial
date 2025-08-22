@@ -1,6 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --breakpoint-xs: 480px;
-  --font-primary-font: Noto Sans JP Variable, sans-serif;
+	--breakpoint-xs: 480px;
+	--font-primary-font: Noto Sans JP Variable, sans-serif;
+}
+
+.slick-arrow .slick-next {
+	color: blue;
 }
