@@ -44,7 +44,8 @@ const { title, booleanLayout } = Astro.props;
 		<meta name="robots" content="index, follow" />
 
 		<!-- SEO -->
-		<title>{title} | Actualidad Jurídica</title>
+		<title>{title.charAt(0).toUpperCase() + title.slice(1)} | Actualidad Jurídica</title>
+
 		<meta
 			name="description"
 			content="Abogados expertos en derecho laboral, comercial y recaudo de cartera. Proteja su empresa legalmente con el respaldo del Centro Jurídico Internacional. Asesoría gratuita inicial."
