@@ -1,41 +1,28 @@
 ---
 import NewsComponent from '@/components/home/NewsComponent';
+import { getNews } from '@/lib/get-news';
 
-import DATA from '@/data/dataTest.json';
+const { products } = await getNews({ categoryId: '' });
 ---
 
 <section id="InformationOfInterestSection" class="mt-8">
 	<h1 class="mb-4 text-3xl font-semibold">Información de interés</h1>
 	<div class="inline-flex h-40 w-full bg-gray-500 shadow-2xl">
-		<div class="flex h-full w-1/2 items-center">
+		<div class="flex h-full w-full items-center">
 			<NewsComponent
-				bgColor={false}
-				name="MainNews"
-				category={DATA[0].category}
-				title={DATA[0].title}
-				imgPerson={DATA[0].imgPerson}
-				namePerson={DATA[0].namePerson}
-				date={DATA[0].date}
-				textStyle={false}
+				product={products[0]}
+				bgOverlay={true}
+				showContent={false}
+				className="h-full w-full"
 			/>
-			<div class="w-2/3">
-				<img src={DATA[0].bgImg} alt="" class="h-1/2 w-full object-cover pr-8" />
-			</div>
 		</div>
-		<div class="flex h-full w-1/2 items-center">
+		<div class="flex h-full w-full items-center">
 			<NewsComponent
-				bgColor={false}
-				name="MainNews"
-				category={DATA[1].category}
-				title={DATA[1].title}
-				imgPerson={DATA[1].imgPerson}
-				namePerson={DATA[1].namePerson}
-				date={DATA[1].date}
-				textStyle={false}
+				product={products[1]}
+				bgOverlay={true}
+				showContent={false}
+				className="h-full w-full"
 			/>
-			<div class="w-2/3">
-				<img src={DATA[1].bgImg} alt="" class="h-1/2 w-full object-cover pr-8" />
-			</div>
 		</div>
 	</div>
 </section>
