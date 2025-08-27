@@ -1,12 +1,16 @@
 ---
+// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\index.astro
 import Layout from '@/layouts/Layout.astro';
 import ContainerInterviewMagazine from '@/sections/Home/ContainerInterview-Magazine.astro';
 import InformationOfInterest from '@/sections/Home/InformationOfInterest.astro';
 import News from '@/sections/Home/News.astro';
+import LoaderWrapper from '@/components/home/global/LoaderWrapper';
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
-	<News />
-	<InformationOfInterest />
-	<ContainerInterviewMagazine />
+	<LoaderWrapper client:load>
+		<News />
+		<InformationOfInterest />
+		<ContainerInterviewMagazine />
+	</LoaderWrapper>
 </Layout>
