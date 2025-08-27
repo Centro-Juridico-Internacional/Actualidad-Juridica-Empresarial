@@ -1,8 +1,9 @@
 ---
-import CarrouselNews from '@/components/home/CarouselNews';
+import CarouselNews from '@/components/home/CarouselNews.jsx';
 import NewsComponent from '@/components/home/NewsComponent';
+import { getNews } from '@/lib/get-news';
 
-import DATA from '@/data/dataTest.json';
+const { products } = await getNews({ categoryId: '' });
 ---
 
 <section
@@ -12,40 +13,25 @@ import DATA from '@/data/dataTest.json';
 	<div
 		id="mainNews"
 		class="h-[18rem] w-[95%] bg-cover bg-center bg-no-repeat md:h-[26rem] md:w-[60%]"
-		style={`background-image: url(${DATA[0].bgImg})`}
 	>
-		<CarrouselNews client:load />
+		<CarouselNews products={products} client:load />
 	</div>
 	<div id="secondaryNews" class="flex h-[26rem] w-[95%] flex-col gap-y-3 md:w-[40%]">
-		<div
-			class="bg-end flex h-1/2 w-full items-end bg-cover bg-no-repeat"
-			style={`background-image: url(${DATA[1].bgImg})`}
-		>
-			<NewsComponent
-				bgColor={true}
-				name="SecondaryNewsOne"
-				category={DATA[1].category}
-				title={DATA[1].title}
-				imgPerson={DATA[1].imgPerson}
-				namePerson={DATA[1].namePerson}
-				date={DATA[1].date}
-				textStyle={true}
-			/>
-		</div>
-		<div
-			class="bg-end flex h-1/2 w-full items-end bg-cover bg-no-repeat"
-			style={`background-image: url(${DATA[2].bgImg})`}
-		>
-			<NewsComponent
-				bgColor={true}
-				name="SecondaryNewsTwo"
-				category={DATA[2].category}
-				title={DATA[2].title}
-				imgPerson={DATA[2].imgPerson}
-				namePerson={DATA[2].namePerson}
-				date={DATA[2].date}
-				textStyle={true}
-			/>
-		</div>
+		{
+			products.slice(1, 3).map((item: any) => (
+				<div
+					class="bg-end flex h-1/2 w-full items-end bg-cover bg-no-repeat"
+					style={`background-image: linear-gradient(180deg,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.7) 100%), url(${item.image})`}
+				>
+					<NewsComponent
+						product={item}
+						truncateWords={30}
+						bgOverlay={true}
+						className="h-full"
+						showContent={false}
+					/>
+				</div>
+			))
+		}
 	</div>
 </section>

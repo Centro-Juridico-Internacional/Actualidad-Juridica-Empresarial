@@ -3,47 +3,12 @@ import YouTubeLite from '@/components/home/global/YouTubeLite';
 import Layout from '@/layouts/Layout.astro';
 import { getNews } from '@/lib/get-news';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+import { truncateBlocks } from '@/utils/truncateBlocks';
 
 const { categoryId } = Astro.params;
 if (!categoryId) throw Astro.redirect('/404');
 
 const { products } = await getNews({ categoryId });
-
-// Función para truncar el contenido a 100 palabras (texto plano)
-function truncateBlocks(blocks: any[], maxWords: number) {
-	let wordCount = 0;
-	let truncatedBlocks = [];
-	let truncated = false;
-
-	for (const block of blocks) {
-		if (block.type === 'paragraph' && block.children && Array.isArray(block.children)) {
-			let newChildren = [];
-			for (const child of block.children) {
-				const words = (child.text || '').split(/\s+/);
-				if (wordCount + words.length <= maxWords) {
-					newChildren.push(child);
-					wordCount += words.length;
-				} else {
-					const remaining = maxWords - wordCount;
-					if (remaining > 0) {
-						const truncatedText = words.slice(0, remaining).join(' ');
-						newChildren.push({ ...child, text: truncatedText });
-						wordCount += remaining;
-					}
-					truncated = true;
-					break;
-				}
-			}
-			if (newChildren.length > 0) {
-				truncatedBlocks.push({ ...block, children: newChildren });
-			}
-			if (truncated) break;
-		} else {
-			truncatedBlocks.push(block);
-		}
-	}
-	return { blocks: truncatedBlocks, truncated };
-}
 ---
 
 <Layout title={categoryId} booleanLayout={true}>
@@ -79,7 +44,7 @@ function truncateBlocks(blocks: any[], maxWords: number) {
 									<span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-center text-xs font-semibold text-blue-800">
 										{product.dia} &bull; {product.hora}
 									</span>
-									{product.categorias.map((item: string) => (
+									{product.categorias.map((item: any) => (
 										<a
 											href={item}
 											class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-center text-xs font-medium text-green-700 transition hover:bg-green-200"
@@ -103,5 +68,5 @@ function truncateBlocks(blocks: any[], maxWords: number) {
 				})
 			}
 		</div>
-	</section></Layout
->
+	</section>
+</Layout>
