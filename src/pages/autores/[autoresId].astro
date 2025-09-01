@@ -1,0 +1,29 @@
+---
+// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\autores\[autoresId].astro
+import Layout from '@/layouts/Layout.astro';
+import { getNews } from '@/lib/get-news';
+import NewsCard from '@/components/home/NewsCard.astro';
+
+const { autoresId } = Astro.params;
+if (!autoresId) throw Astro.redirect('/404');
+
+const { products } = await getNews({ categoryId: '' });
+
+const authorNews = products.filter((item: any) => {
+	const slug = item.autorName.toLowerCase().replace(/\s+/g, '_');
+	return slug === autoresId;
+});
+
+if (authorNews.length === 0) throw Astro.redirect('/404');
+---
+
+<Layout title={`Noticias de ${autoresId.replace(/_/g, ' ')}`} booleanLayout={true}>
+	<section class="mx-auto max-w-6xl px-4 py-8">
+		<h2 class="mb-8 text-center text-4xl font-extrabold tracking-tight text-gray-800 capitalize">
+			Noticias de {autoresId.replace(/_/g, ' ')}
+		</h2>
+		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+			{authorNews.map((product: any) => <NewsCard product={product} truncateWords={30} />)}
+		</div>
+	</section>
+</Layout>
