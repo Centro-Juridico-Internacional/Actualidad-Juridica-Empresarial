@@ -1,4 +1,5 @@
 ---
+// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\categorias\[categoryId].astro
 import YouTubeLite from '@/components/home/global/YouTubeLite';
 import Layout from '@/layouts/Layout.astro';
 import { getNews } from '@/lib/get-news';
@@ -20,6 +21,10 @@ const { products } = await getNews({ categoryId });
 			{
 				products.map((product: any) => {
 					const { blocks, truncated } = truncateBlocks(product.contenido, 30);
+					const autorSlug = product.autorName
+						? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
+						: '#';
+
 					return (
 						<article class="flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl">
 							<img
@@ -46,7 +51,7 @@ const { products } = await getNews({ categoryId });
 									</span>
 									{product.categorias.map((item: any) => (
 										<a
-											href={item}
+											href={`/categorias/${item}`}
 											class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-center text-xs font-medium text-green-700 transition hover:bg-green-200"
 										>
 											{item}
@@ -59,8 +64,15 @@ const { products } = await getNews({ categoryId });
 									</div>
 								)}
 								<div class="mt-auto flex items-center border-t border-gray-100 pt-4">
-									<img src={product.autorAvatar} alt="Autor" class="mr-3 h-8 w-8 rounded-full" />
-									<span class="text-sm text-gray-600">{product.autorName}</span>
+									<a href={autorSlug} title={product.autorName}>
+										<img src={product.autorAvatar} alt="Autor" class="mr-3 h-8 w-8 rounded-full" />
+									</a>
+									<a
+										href={autorSlug}
+										class="text-sm text-gray-600 hover:text-green-600 hover:underline"
+									>
+										{product.autorName}
+									</a>
 								</div>
 							</div>
 						</article>
