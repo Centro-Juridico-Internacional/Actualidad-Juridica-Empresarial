@@ -7,10 +7,10 @@ const { products } = await getNews({ categoryId: '' });
 
 <section id="InformationOfInterestSection" class="mt-8">
 	<h1 class="mb-4 text-3xl font-semibold">Información de interés</h1>
-	<div class="inline-flex h-40 w-full bg-gray-500 shadow-2xl">
+	<div class="inline-flex h-80 w-full gap-2 bg-gray-500 shadow-2xl">
 		<div class="flex h-full w-full items-center">
 			<NewsComponent
-				product={products[0]}
+				product={products[5]}
 				bgOverlay={true}
 				showContent={false}
 				className="h-full w-full"
@@ -18,7 +18,7 @@ const { products } = await getNews({ categoryId: '' });
 		</div>
 		<div class="flex h-full w-full items-center">
 			<NewsComponent
-				product={products[1]}
+				product={products[6]}
 				bgOverlay={true}
 				showContent={false}
 				className="h-full w-full"

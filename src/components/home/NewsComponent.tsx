@@ -36,20 +36,22 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 						<a
 							key={cat + idx}
 							href={`/categorias/${cat.toLowerCase().replace(/\s+/g, '_')}`}
-							className="!inline-block !rounded-full !border !border-blue-400 !bg-blue-700 !px-3 !py-1 !font-mono !text-xs !font-semibold !tracking-wide !text-white !uppercase !shadow !transition hover:!bg-blue-800"
+							className="!inline-block !rounded-full !border !border-green-400 !bg-green-700 !px-3 !py-1 !font-mono !text-xs !font-semibold !tracking-wide !text-white !uppercase !shadow !transition hover:!bg-green-800"
 						>
 							{cat}
 						</a>
 					))}
 			</div>
 			{/* Título */}
-			<h2 className="mb-2 text-2xl font-bold !text-white drop-shadow-lg">{product.titulo}</h2>
+			<a href={`/noticia/${product.slug}`} className="!text-green-600 hover:!underline">
+				<h2 className="mb-2 text-2xl font-bold !text-white drop-shadow-lg">{product.titulo}</h2>
+			</a>
 			{/* Descripción */}
 			{showContent && product.contenido && (
 				<div className="mb-3 rounded bg-black/30 p-2 text-sm !text-gray-100">
 					<BlocksRenderer content={blocks} />
 					{truncated && (
-						<a href={`/noticia/${product.slug}`} className="ml-2 !text-blue-300 hover:!underline">
+						<a href={`/noticia/${product.slug}`} className="ml-2 !text-green-300 hover:!underline">
 							...click para leer más
 						</a>
 					)}
@@ -68,7 +70,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 				)}
 				<a
 					href={autorSlug}
-					className="!text-xs !font-medium !text-white transition hover:!text-blue-400 hover:!underline"
+					className="!text-xs !font-medium !text-white transition hover:!text-green-400 hover:!underline"
 				>
 					{product.autorName}
 				</a>

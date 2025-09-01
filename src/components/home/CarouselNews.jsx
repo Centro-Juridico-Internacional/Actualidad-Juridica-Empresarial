@@ -18,7 +18,7 @@ const CarouselNews = ({ products }) => {
 			dots={true}
 			className="rounded-3xl shadow-2xl"
 		>
-			{products.map((item) => (
+			{products.slice(0, 3).map((item) => (
 				<div
 					key={item.slug}
 					className="relative h-[18rem] transition-all duration-300 md:h-[26rem]"
