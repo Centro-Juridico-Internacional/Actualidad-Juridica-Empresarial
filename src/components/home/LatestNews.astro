@@ -1,0 +1,35 @@
+---
+// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\components\home\LatestNews.astro
+import { getNews } from '@/lib/get-news';
+
+const { products } = await getNews({ categoryId: '' });
+const { currentSlug = null, layout = 'vertical' } = Astro.props; // Recibe el slug actual como prop
+
+// Filtra las noticias para excluir la noticia actual
+const latestNews = products.filter((news: any) => news.slug !== currentSlug).slice(0, 3); // Últimas 3 noticias
+---
+
+<div class={`grid gap-4 ${layout === 'vertical' ? 'grid-cols-1' : 'grid-cols-3'}`}>
+	{
+		latestNews.map((news: any) => (
+			<div class="flex items-center gap-4 border-b border-gray-200 pb-4">
+				<img
+					src={news.image}
+					alt={news.titulo}
+					class="h-16 w-16 rounded-lg object-cover shadow-md"
+				/>
+				<div>
+					<h3 class="text-sm font-semibold text-gray-800 hover:text-green-600">
+						<a href={`/noticia/${news.slug}`}>{news.titulo}</a>
+					</h3>
+					<a
+						href={`/categorias/${news.categorias[0]}`}
+						class="text-xs text-green-700 hover:underline"
+					>
+						{news.categorias[0]}
+					</a>
+				</div>
+			</div>
+		))
+	}
+</div>
