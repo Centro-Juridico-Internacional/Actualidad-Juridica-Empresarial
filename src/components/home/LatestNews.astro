@@ -12,13 +12,13 @@ const latestNews = products.filter((news: any) => news.slug !== currentSlug).sli
 <div class={`grid gap-4 ${layout === 'vertical' ? 'grid-cols-1' : 'grid-cols-3'}`}>
 	{
 		latestNews.map((news: any) => (
-			<div class="flex items-center gap-4 border-b border-gray-200 pb-4">
+			<div class="flex w-full items-center gap-4 border-b border-gray-200 pb-4">
 				<img
 					src={news.image}
 					alt={news.titulo}
 					class="h-16 w-16 rounded-lg object-cover shadow-md"
 				/>
-				<div>
+				<div class="flex-1">
 					<h3 class="text-sm font-semibold text-gray-800 hover:text-green-600">
 						<a href={`/noticia/${news.slug}`}>{news.titulo}</a>
 					</h3>

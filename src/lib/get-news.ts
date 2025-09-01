@@ -4,7 +4,7 @@ const { STRAPI_HOST } = process.env;
 
 export function getNews({ categoryId }: { categoryId: string }) {
 	return query(
-		`news?filters[categorias][slug][$contains]=${categoryId}&populate[imagenes][fields][0]=url&populate[autor][populate][avatar][fields][0]=url&populate[autor][fields][1]=name&populate[categorias][fields][2]=name&sort=createdAt:desc`
+		`news?filters[categorias][slug][$contains]=${categoryId}&populate[imagenes][fields][0]=url&populate[autor][populate][avatar][fields][0]=url&populate[autor][fields][1]=name&populate[categorias][fields][2]=name&sort=updatedAt:desc`
 	).then((res) => {
 		const { data, meta } = res;
 		const products = data.map((i: any) => {
