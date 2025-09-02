@@ -23,11 +23,11 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 			>
 				{DATA.map((item) => {
 					return (
-						<div id={item.id} className="overflow-hidden rounded-xl border-4 border-green-950">
+						<div id={item.title} className="overflow-hidden rounded-xl border-4 border-green-950">
 							<img
-								src={item.srcImg}
-								alt={item.altImg}
-								className={`${item.classNameProp} flex h-full w-full items-center justify-center bg-green-600 object-cover`}
+								src={item.image}
+								alt={`${item.title} imagen`}
+								className={`flex h-full w-full items-center justify-center bg-green-600 object-cover`}
 							/>
 						</div>
 					);

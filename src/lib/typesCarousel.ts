@@ -1,8 +1,7 @@
 export type CarouselImage = {
 	id: string;
-	altImg: string;
-	classNameProp: string;
-	srcImg: string;
+	title: string;
+	image: string;
 };
 
 export interface CarouselProps {
