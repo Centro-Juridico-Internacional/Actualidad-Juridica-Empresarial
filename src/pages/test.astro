@@ -39,6 +39,9 @@ const interviews = await getInterviewsUrl();
 							rel="noopener noreferrer"
 						>
 							{interview.url}
+							{interview.title && (
+								<span class="ml-2 text-sm text-gray-500">({interview.title})</span>
+							)}
 						</a>
 					</div>
 				))
