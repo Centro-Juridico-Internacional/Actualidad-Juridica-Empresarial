@@ -1,12 +1,22 @@
 ---
-import Interview from '@/sections/Home/containerInterview-Magazine/Interview.astro';
-import Magazine from '@/sections/Home/containerInterview-Magazine/Magazine.astro';
+import CarouselInterview from '@/components/home/CarouselInterview';
+import Carousel from '@/components/home/Carousel';
+
+import carouselCongreso2025 from '@/data/carouselCongreso2025.json';
 ---
 
 <section
 	id="ContainerInterview-Magazine"
 	class="mt-8 flex h-96 w-full flex-col items-center justify-center bg-white px-4 md:flex-row"
 >
-	<Interview />
-	<Magazine />
+	<div class="h-[24rem] w-1/2 bg-green-600 py-6"><CarouselInterview client:load /></div>
+	<div class="flex h-[24rem] w-1/2 items-center justify-center bg-green-600 px-4">
+		<Carousel
+			width="w-[90%] ml-[5%]"
+			autoplaySpeed={5000}
+			dotDuration={true}
+			data={carouselCongreso2025}
+			client:load
+		/>
+	</div>
 </section>
