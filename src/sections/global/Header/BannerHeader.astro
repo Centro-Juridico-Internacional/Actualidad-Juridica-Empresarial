@@ -4,6 +4,14 @@ interface Props {
 }
 
 const { booleanBanner } = Astro.props;
+
+import { getBanner } from '@/lib/get-banner';
+
+const banner = await getBanner();
 ---
 
-<img src="/header/banner.jpg" alt="" class:list={['max-w-fit', { hidden: booleanBanner }]} />
+<img
+	src={banner.banner}
+	alt={banner.nombre}
+	class:list={['w-full md:max-w-[1260px]', { hidden: booleanBanner }]}
+/>
