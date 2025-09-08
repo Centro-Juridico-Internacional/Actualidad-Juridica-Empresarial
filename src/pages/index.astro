@@ -5,12 +5,14 @@ import ContainerInterviewMagazine from '@/sections/Home/ContainerInterview-Magaz
 import InformationOfInterest from '@/sections/Home/InformationOfInterest.astro';
 import News from '@/sections/Home/News.astro';
 import LoaderWrapper from '@/components/home/global/LoaderWrapper';
+import Podcast from '@/sections/Home/Podcast.astro';
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
-	<LoaderWrapper client:load>
-		<News />
-		<InformationOfInterest />
-		<ContainerInterviewMagazine />
-	</LoaderWrapper>
+	<!-- <LoaderWrapper client:load> -->
+	<News />
+	<InformationOfInterest />
+	<ContainerInterviewMagazine />
+	<Podcast />
+	<!-- </LoaderWrapper> -->
 </Layout>
