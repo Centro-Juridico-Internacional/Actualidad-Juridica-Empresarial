@@ -1,17 +1,28 @@
-import dotenv from 'dotenv';
-dotenv.config();
+const STRAPI_HOST = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
+const STRAPI_TOKEN = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
 
-const { STRAPI_HOST, STRAPI_TOKEN } = process.env;
+function isAbsoluteUrl(u?: string | null) {
+	return !!u && /^https?:\/\//i.test(u);
+}
 
-export function query(url: string) {
-	return fetch(`${STRAPI_HOST}/api/${url}`, {
+function withHost(u?: string | null) {
+	if (!u) return null;
+	return isAbsoluteUrl(u) ? u : `${STRAPI_HOST}${u}`;
+}
+
+export async function query(path: string) {
+	const res = await fetch(`${STRAPI_HOST}/api/${path}`, {
 		headers: {
 			Authorization: `Bearer ${STRAPI_TOKEN}`
-		}
-	}).then((res) => {
-		if (!res.ok) {
-			throw new Error('Network response was not ok');
-		}
-		return res.json();
+		},
+		// @vercel/edge compatible
+		cache: 'no-store'
 	});
+
+	if (!res.ok) {
+		throw new Error('Network response was not ok');
+	}
+	return res.json();
 }
+
+export { withHost };

@@ -1,11 +1,17 @@
-import { query } from './strapi';
+import { query, withHost } from './strapi';
 
-const { STRAPI_HOST } = process.env;
+export async function getBanner() {
+	const res = await query('banner?populate[imagen][fields][0]=url');
 
-export function getBanner() {
-	return query('banner?populate=imagen').then((res) => {
-		const { nombre, slug, imagen } = res.data;
-		const banner = `${STRAPI_HOST}${imagen.url}`;
-		return { nombre, slug, banner };
-	});
+	// Strapi single type: res.data.attributes contiene los campos
+	const a = res.data?.attributes ?? res.data ?? {};
+	const nombre = a?.nombre ?? '';
+	const slug = a?.slug ?? '';
+	const imgRel = a?.imagen?.data?.attributes?.url ?? a?.imagen?.url ?? null;
+
+	return {
+		nombre,
+		slug,
+		banner: withHost(imgRel)
+	};
 }

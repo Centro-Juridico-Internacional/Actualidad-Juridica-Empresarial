@@ -1,44 +1,45 @@
-import { query } from './strapi';
+import { query, withHost } from './strapi';
 
-const { STRAPI_HOST } = process.env;
+export async function getNews({ categoryId }: { categoryId: string }) {
+	const qs =
+		`news?` +
+		`filters[categorias][slug][$contains]=${encodeURIComponent(categoryId ?? '')}` +
+		`&populate[imagenes][fields][0]=url` +
+		`&populate[autor][populate][avatar][fields][0]=url` +
+		`&populate[autor][fields][0]=name` +
+		`&populate[categorias][fields][0]=name` +
+		`&sort=updatedAt:desc`;
 
-export function getNews({ categoryId }: { categoryId: string }) {
-	return query(
-		`news?filters[categorias][slug][$contains]=${categoryId}&populate[imagenes][fields][0]=url&populate[autor][populate][avatar][fields][0]=url&populate[autor][fields][1]=name&populate[categorias][fields][2]=name&sort=updatedAt:desc`
-	).then((res) => {
-		const { data, meta } = res;
-		const products = data.map((i: any) => {
-			const {
-				titulo,
-				contenido,
-				slug,
-				imagenes,
-				publishedAt,
-				UrlYoutube,
-				autor: dataAutor,
-				categorias: dataCategorias
-			} = i;
-			const image = `${STRAPI_HOST}${imagenes?.url}`;
-			const autorName = dataAutor?.name;
-			const autorAvatar = `${STRAPI_HOST}${dataAutor?.avatar?.url}`;
-			const dia = new Date(publishedAt).toLocaleDateString();
-			const hora = new Date(publishedAt).toLocaleTimeString();
-			const categorias = dataCategorias?.map((i: any) => i.name) || [];
+	const res = await query(qs);
 
-			return {
-				titulo,
-				contenido,
-				slug,
-				image,
-				dia,
-				hora,
-				UrlYoutube,
-				autorName,
-				autorAvatar,
-				categorias
-			};
-		});
+	const products = res.data.map((item: any) => {
+		const a = item.attributes ?? item;
 
-		return { products, pagination: meta.pagination };
+		const imgRel = a?.imagenes?.data?.attributes?.url ?? a?.imagenes?.url ?? null;
+
+		const autor = a?.autor?.data?.attributes ?? a?.autor ?? {};
+		const autorAvatarRel = autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
+
+		const categorias = (a?.categorias?.data ?? a?.categorias ?? [])
+			.map((c: any) => c.attributes?.name ?? c?.name)
+			.filter(Boolean);
+
+		const published = a?.publishedAt ?? a?.updatedAt ?? a?.createdAt;
+		const d = published ? new Date(published) : new Date();
+
+		return {
+			titulo: a?.titulo,
+			contenido: a?.contenido,
+			slug: a?.slug,
+			image: withHost(imgRel),
+			dia: d.toLocaleDateString(),
+			hora: d.toLocaleTimeString(),
+			UrlYoutube: a?.UrlYoutube ?? null,
+			autorName: autor?.name ?? null,
+			autorAvatar: withHost(autorAvatarRel),
+			categorias
+		};
 	});
+
+	return { products, pagination: res?.meta?.pagination };
 }

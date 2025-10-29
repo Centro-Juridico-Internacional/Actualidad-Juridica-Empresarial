@@ -1,20 +1,23 @@
-import { query } from './strapi';
+import { query, withHost } from './strapi';
 
-const { STRAPI_HOST } = process.env;
-
-export function getCategories() {
-	return query(
+export async function getCategories() {
+	const res = await query(
 		'categories?fields[0]=name&fields[1]=slug&fields[2]=description&populate[imagen][fields][0]=url'
-	).then((res) => {
-		return res.data.map((category: any) => {
-			const { name, slug, description, imagen: rawImage } = category;
-			const image = `${STRAPI_HOST}${rawImage.url}`;
-			return {
-				name,
-				slug,
-				description,
-				image
-			};
-		});
+	);
+
+	return res.data.map((item: any) => {
+		const a = item.attributes ?? item;
+		const name = a?.name ?? '';
+		const slug = a?.slug ?? '';
+		const description = a?.description ?? '';
+
+		const imgRel = a?.imagen?.data?.attributes?.url ?? a?.imagen?.url ?? null;
+
+		return {
+			name,
+			slug,
+			description,
+			image: withHost(imgRel)
+		};
 	});
 }
