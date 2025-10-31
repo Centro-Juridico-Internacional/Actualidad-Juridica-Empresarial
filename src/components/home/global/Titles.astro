@@ -6,6 +6,50 @@ interface Props {
 const { text } = Astro.props;
 ---
 
-<h1 class="mt-12 mb-6 text-center text-4xl font-bold text-green-600">
-	{text}
-</h1>
+<div class="relative my-12 text-center">
+	<h1 class="animate-title inline-block text-4xl font-bold tracking-tight text-gray-900">
+		{text}
+		<span
+			class="absolute bottom-[-8px] left-0 h-1 w-full transform bg-green-600 transition-all duration-300"
+			style="transform-origin: center;"></span>
+	</h1>
+</div>
+
+<style>
+	@keyframes titleAppear {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-title {
+		animation: titleAppear 0.6s ease-out forwards;
+	}
+
+	h1 {
+		position: relative;
+		display: inline-flex;
+		flex-direction: column;
+	}
+
+	h1::after {
+		content: '';
+		position: absolute;
+		bottom: -8px;
+		left: 50%;
+		height: 4px;
+		width: 0;
+		background-color: rgb(22 163 74);
+		transition: all 0.5s;
+		transform: translateX(-50%);
+	}
+
+	h1:hover::after {
+		width: 100%;
+	}
+</style>
