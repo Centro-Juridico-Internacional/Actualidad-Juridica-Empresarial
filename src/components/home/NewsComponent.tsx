@@ -55,7 +55,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		<div
 			ref={ref}
 			className={`group flex h-full w-full flex-col justify-between ${
-				isCompact ? 'p-3 sm:p-4' : 'p-5 md:p-6'
+				isCompact ? 'p-4 sm:p-5' : 'p-6 md:p-10'
 			} ${className}`}
 		>
 			{/* Categorías */}
@@ -83,7 +83,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					<h2
 						className={`leading-snug font-bold tracking-tight ${
 							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
-						} ${isCompact ? 'text-base sm:text-lg' : 'text-xl md:text-2xl'}`}
+						} ${isCompact ? 'text-base sm:text-lg' : 'text-xl md:text-3xl'}`}
 					>
 						{product.titulo}
 					</h2>
@@ -92,7 +92,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 				{showContent && product.contenido && (
 					<div className={`${bgOverlay ? 'opacity-90' : ''}`}>
 						<div
-							className={`prose max-w-none text-gray-700 ${
+							className={`prose max-w-none text-gray-50 ${
 								isCompact ? 'prose-sm line-clamp-2' : 'prose-base md:line-clamp-3'
 							}`}
 						>

@@ -5,24 +5,43 @@ import { getNews } from '@/lib/get-news';
 const { products } = await getNews({ categoryId: '' });
 ---
 
-<section id="InformationOfInterestSection" class="mt-8">
-	<h1 class="mb-4 text-3xl font-semibold">Información de interés</h1>
-	<div class="inline-flex h-80 w-full gap-2 bg-gray-500 shadow-2xl">
-		<div class="flex h-full w-full items-center">
+<section id="InformationOfInterestSection" class="container-main py-16">
+	<h1 class="mb-8 text-center text-4xl font-bold tracking-tight text-gray-900">
+		<span class="relative">
+			Información de interés
+			<span
+				class="absolute bottom-[-8px] left-0 h-1 w-full scale-x-0 transform bg-green-600 transition-transform duration-300 group-hover:scale-x-100"
+				style="transform-origin: center;"></span>
+		</span>
+	</h1>
+	<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+		<div
+			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"
+		>
 			<NewsComponent
 				product={products[5]}
 				bgOverlay={true}
 				showContent={false}
-				className="h-full w-full"
+				className="h-full w-full transform transition-transform duration-500"
 			/>
+			<div
+				class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+			>
+			</div>
 		</div>
-		<div class="flex h-full w-full items-center">
+		<div
+			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"
+		>
 			<NewsComponent
 				product={products[6]}
 				bgOverlay={true}
 				showContent={false}
-				className="h-full w-full"
+				className="h-full w-full transform transition-transform duration-500"
 			/>
+			<div
+				class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+			>
+			</div>
 		</div>
 	</div>
 </section>

@@ -7,36 +7,66 @@ const { products } = await getNews({ categoryId: '' });
 ---
 
 <section id="newsSectionContainer" class="container-main mt-8">
-	<div class="grid gap-4 md:grid-cols-5 md:gap-6">
-		<!-- Noticias Principales -->
-		<div class="group relative col-span-3 overflow-hidden rounded-2xl">
-			<CarouselNews products={products} client:visible />
+	<!-- 👇 Grid padre: 5 columnas desde md y filas automáticas de ~240px -->
+	<!-- Ajusta 220/240/260 según el alto que quieras -->
+	<div class="grid gap-6 md:auto-rows-[240px] md:grid-cols-5">
+		<!-- 🟢 Carrusel principal: 3 columnas y 2 filas del grid padre -->
+		<div
+			class="group relative col-span-5 h-full overflow-hidden rounded-2xl md:col-span-3 md:row-span-2"
+		>
+			<div id="mainCarouselDynamic" class="relative h-full w-full">
+				<CarouselNews products={products} client:visible />
+			</div>
 		</div>
 
-		<!-- Noticias Secundarias -->
-		<div class="col-span-2 grid gap-4">
-			{
-				products.slice(3, 5).map((item: any) => (
-					<div class="group relative h-[260px] overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1">
-						<img
-							src={item.image}
-							alt={item.titulo}
-							class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-							loading="lazy"
-							decoding="async"
-						/>
-						<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
-						<NewsComponent
-							product={item}
-							truncateWords={30}
-							bgOverlay={true}
-							className="relative h-full"
-							showContent={false}
-							variant="compact"
-						/>
-					</div>
-				))
-			}
+		<!-- 🟢 Card 1 (MISMA GRID, NO anidado) -->
+		<div class="col-span-5 h-full rounded-2xl md:col-span-2">
+			<div
+				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
+			>
+				<img
+					src={products[3].image}
+					alt={products[3].titulo}
+					class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+					loading="lazy"
+					decoding="async"
+				/>
+				<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
+				</div>
+				<NewsComponent
+					product={products[3]}
+					truncateWords={30}
+					bgOverlay={true}
+					className="relative h-full"
+					showContent={false}
+					variant="compact"
+				/>
+			</div>
+		</div>
+
+		<!-- 🟢 Card 2 (MISMA GRID, NO anidado) -->
+		<div class="col-span-5 h-full rounded-2xl md:col-span-2">
+			<div
+				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
+			>
+				<img
+					src={products[4].image}
+					alt={products[4].titulo}
+					class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+					loading="lazy"
+					decoding="async"
+				/>
+				<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
+				</div>
+				<NewsComponent
+					product={products[4]}
+					truncateWords={30}
+					bgOverlay={true}
+					className="relative h-full"
+					showContent={false}
+					variant="compact"
+				/>
+			</div>
 		</div>
 	</div>
 </section>
@@ -50,14 +80,12 @@ const { products } = await getNews({ categoryId: '' });
 		padding-left: 1rem;
 		padding-right: 1rem;
 	}
-
 	@media (min-width: 640px) {
 		.container-main {
 			padding-left: 1.5rem;
 			padding-right: 1.5rem;
 		}
 	}
-
 	@media (min-width: 1024px) {
 		.container-main {
 			padding-left: 2rem;

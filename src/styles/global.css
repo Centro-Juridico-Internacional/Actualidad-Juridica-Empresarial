@@ -1,17 +1,65 @@
 @import 'tailwindcss';
 
-@theme {
-	--breakpoint-xs: 480px;
-	--font-primary-font: Noto Sans JP Variable, sans-serif;
+:root {
+	--font-primary-font: 'Noto Sans JP Variable', sans-serif;
+
+	/* Colores del tema claro */
+	--background-primary: rgb(249 250 251 / 0.3);
+	--text-primary: rgb(17 24 39);
+	--text-secondary: rgb(75 85 99);
 }
 
-/* Estilos del carrusel */
+:root.dark {
+	/* Colores del tema oscuro */
+	--background-primary: rgb(15 23 42 / 0.95);
+	--text-primary: rgb(248 250 252);
+	--text-secondary: rgb(203 213 225);
+}
+
+/* Aplicar colores base */
+body {
+	background-color: var(--background-primary);
+	color: var(--text-primary);
+}
+
+/* Contenedor principal responsive */
+.container-main {
+	width: 100%;
+	max-width: 80rem;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+	.container-main {
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	.container-main {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+}
+
+/* ========================= */
+/* Estilos del carrusel      */
+/* ========================= */
+
 .carousel-container {
 	--track-width: 100%;
 	--track-transform: translateX(0);
 	--slide-width: 100%;
 	position: relative;
 	overflow: hidden;
+
+	/* 👇 clave para que tome la altura del padre */
+	height: 100%;
+	min-height: 0;
 }
 
 .carousel-track {
@@ -20,14 +68,22 @@
 	transform: var(--track-transform);
 	transition: transform 500ms ease-in-out;
 	will-change: transform;
+
+	/* 👇 ocupar toda la altura del contenedor */
+	height: 100%;
+	min-height: 0;
 }
 
 .carousel-slide {
 	width: var(--slide-width);
 	flex-shrink: 0;
-	min-height: 1px;
+
+	/* 👇 cada slide llena la altura disponible */
+	height: 100%;
+	min-height: 0;
 }
 
+/* Flechas */
 .carousel-arrow {
 	position: absolute;
 	top: 50%;
@@ -61,6 +117,7 @@
 	right: 0.5rem;
 }
 
+/* Dots */
 .carousel-dots {
 	position: absolute;
 	bottom: 0.75rem;
@@ -77,7 +134,6 @@
 	border: none;
 	border-radius: 9999px;
 	background-color: rgba(255, 255, 255, 0.3);
-	transition: all 200ms;
 	cursor: pointer;
 	padding: 0;
 }

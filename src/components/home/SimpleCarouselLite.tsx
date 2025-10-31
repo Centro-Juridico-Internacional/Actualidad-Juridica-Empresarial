@@ -1,6 +1,6 @@
 // ts-ignore
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
 interface SimpleCarouselProps {
@@ -47,7 +47,6 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 				setIndex((i) => (i + 1) % len);
 			}, autoplaySpeed);
 		};
-
 		tick();
 		return () => {
 			if (timerRef.current) window.clearTimeout(timerRef.current);
@@ -71,7 +70,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 		};
 	}, [autoplay, autoplaySpeed, len]);
 
-	// Usar CSS personalizado para animaciones
+	// Variables CSS
 	useEffect(() => {
 		const root = containerRef.current;
 		if (root) {
@@ -139,7 +138,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 							key={i}
 							type="button"
 							role="tab"
-							aria-selected={i === index}
+							aria-selected={i === index ? 'true' : 'false'}
 							aria-controls={`slide-${i}`}
 							onClick={() => goTo(i)}
 							className="carousel-dot"
