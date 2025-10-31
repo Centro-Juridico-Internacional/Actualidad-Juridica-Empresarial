@@ -36,7 +36,8 @@ export async function getNews({ categoryId }: { categoryId: string }) {
 				? `${STRAPI_HOST}${imgRel}?token=${process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN}`
 				: null,
 			dia: d.toLocaleDateString(),
-			hora: d.toLocaleTimeString(),
+			hora: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+
 			UrlYoutube: a?.UrlYoutube ?? null,
 			autorName: autor?.name ?? null,
 			autorAvatar: autorAvatarRel
