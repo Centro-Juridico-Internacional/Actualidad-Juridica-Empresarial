@@ -64,7 +64,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					<a
 						key={cat + idx}
 						href={`/categorias/${cat.toLowerCase().replace(/\s+/g, '_')}`}
-						className={`inline-flex items-center rounded-full font-semibold tracking-wide shadow-sm transition-transform duration-200 hover:scale-[1.03] ${
+						className={`inline-block items-center rounded-full font-semibold tracking-wide shadow-sm transition-transform duration-200 first-letter:uppercase hover:scale-[1.03] ${
 							isCompact ? 'px-2 py-[2px] text-[10.5px]' : 'px-3 py-1.5 text-xs'
 						} ${
 							bgOverlay
