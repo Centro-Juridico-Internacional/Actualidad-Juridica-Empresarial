@@ -1,3 +1,5 @@
+// ts-ignore
+
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
