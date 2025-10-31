@@ -5,56 +5,82 @@ import { truncateBlocks } from '@/utils/truncateBlocks';
 
 const { product, truncateWords = 30 } = Astro.props;
 
-// Genera el slug del autor
 const autorSlug = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
-// Trunca el contenido
 const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 ---
 
-<article
-	class="flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl"
->
-	<img
-		src={product.image}
-		alt={`${product.titulo} imagen`}
-		class="h-52 w-full object-cover"
-		loading="lazy"
-	/>
-	<div class="flex flex-1 flex-col p-6">
-		<h1 class="mb-2 text-xl font-bold text-gray-900">{product.titulo}</h1>
-		<div class="mb-4 text-justify text-sm text-gray-700">
-			<BlocksRenderer content={blocks} client:load />
-			{
-				truncated && (
-					<a href={`/noticia/${product.slug}`} class="text-center text-blue-600 hover:underline">
-						...click para leer más
-					</a>
-				)
-			}
+<article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-md">
+	<!-- Imagen con overlay gradual -->
+	<div class="relative h-56 w-full overflow-hidden">
+		<img
+			src={product.image}
+			alt={`${product.titulo} imagen`}
+			class="h-full w-full object-cover transition-transform duration-700 ease-in-out"
+			loading="lazy"
+			decoding="async"
+		/>
+		<div
+			class="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-200/45 via-transparent to-transparent opacity-0 transition-opacity duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:opacity-100 after:absolute after:inset-x-6 after:bottom-4 after:h-4 after:translate-y-6 after:transform-gpu after:rounded-full after:bg-black/20 after:opacity-0 after:blur-md after:transition-all after:delay-[150ms] after:duration-[900ms] after:ease-[cubic-bezier(.22,1,.36,1)] after:will-change-transform after:content-[''] group-hover:after:translate-y-0 group-hover:after:opacity-100"
+		>
 		</div>
-		<div class="mb-4 flex items-center gap-2">
+	</div>
+
+	<div class="flex flex-1 flex-col p-6">
+		<!-- Categorías y Fecha -->
+		<div class="mb-4 flex flex-wrap items-center gap-2">
 			<span
-				class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-center text-xs font-semibold text-blue-800"
+				class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700"
 			>
-				{product.dia} &bull; {product.hora}
+				{product.dia} • {product.hora}
 			</span>
 			{
 				product.categorias.map((item: any) => (
 					<a
 						href={`/categorias/${item}`}
-						class="inline-block rounded-full bg-green-100 px-2 py-0.5 text-center text-xs font-medium text-green-700 transition hover:bg-green-200"
+						class="inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase hover:bg-green-50 hover:text-green-700"
 					>
 						{item}
 					</a>
 				))
 			}
 		</div>
+
+		<!-- Título -->
+		<h1
+			class="mb-3 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
+		>
+			<a href={`/noticia/${product.slug}`}>{product.titulo}</a>
+		</h1>
+
+		<!-- Contenido -->
+		<div class="mb-6 text-sm leading-relaxed text-gray-600">
+			<BlocksRenderer content={blocks} client:load />
+			{
+				truncated && (
+					<a
+						href={`/noticia/${product.slug}`}
+						class="mt-2 inline-flex items-center gap-1 text-green-600 hover:text-green-700"
+					>
+						Leer más
+						<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+							<path
+								fill-rule="evenodd"
+								d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+					</a>
+				)
+			}
+		</div>
+
+		<!-- Video de YouTube si existe -->
 		{
 			product.UrlYoutube && (
-				<div class="lazy-video mb-4" data-videoid={product.UrlYoutube}>
+				<div class="mb-6 overflow-hidden rounded-xl shadow-sm" data-videoid={product.UrlYoutube}>
 					<YouTubeLite
 						videoid={product.UrlYoutube}
 						title={product.titulo}
@@ -64,18 +90,28 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 				</div>
 			)
 		}
-		<div class="mt-auto flex items-center border-t border-gray-100 pt-4">
-			<a href={autorSlug} title={product.autorName}>
+
+		<!-- Autor -->
+		<div class="mt-auto flex items-center gap-3 border-t border-gray-100 pt-4">
+			<a
+				href={autorSlug}
+				title={product.autorName}
+				class="relative overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
+			>
 				<img
 					src={product.autorAvatar}
-					alt="Avatar del autor"
-					class="mr-3 h-8 w-8 rounded-full"
+					alt={product.autorName}
+					class="h-10 w-10 object-cover"
 					loading="lazy"
+					decoding="async"
 				/>
 			</a>
-			<a href={autorSlug} class="text-sm text-gray-600 hover:text-green-600 hover:underline">
-				{product.autorName}
-			</a>
+			<div class="flex flex-col">
+				<a href={autorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
+					{product.autorName}
+				</a>
+				<span class="text-xs text-gray-500">Autor</span>
+			</div>
 		</div>
 	</div>
 </article>

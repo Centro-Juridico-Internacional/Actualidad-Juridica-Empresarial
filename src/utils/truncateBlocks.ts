@@ -7,14 +7,15 @@ export function truncateBlocks(blocks: any[], maxWords: number) {
 		if (block.type === 'paragraph' && block.children && Array.isArray(block.children)) {
 			let newChildren = [];
 			for (const child of block.children) {
-				const words = (child.text || '').split(/\s+/);
+				const words = (child.text || '').split(/\s+/).filter(Boolean);
 				if (wordCount + words.length <= maxWords) {
 					newChildren.push(child);
 					wordCount += words.length;
 				} else {
 					const remaining = maxWords - wordCount;
 					if (remaining > 0) {
-						const truncatedText = words.slice(0, remaining).join(' ');
+						let truncatedText = words.slice(0, remaining).join(' ');
+						truncatedText = truncatedText.replace(/[.,;!?]*$/, '') + '...';
 						newChildren.push({ ...child, text: truncatedText });
 						wordCount += remaining;
 					}
@@ -30,5 +31,6 @@ export function truncateBlocks(blocks: any[], maxWords: number) {
 			truncatedBlocks.push(block);
 		}
 	}
+
 	return { blocks: truncatedBlocks, truncated };
 }
