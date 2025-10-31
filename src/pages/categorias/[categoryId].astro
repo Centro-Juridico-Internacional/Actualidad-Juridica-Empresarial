@@ -34,11 +34,11 @@ const { products } = await getNews({ categoryId });
 
 		<!-- Grid de noticias con animación -->
 		<section class="container-main py-12">
-			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+			<div class="grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{
 					products.map((product: any, index: number) => (
-						<div>
-							<NewsCard product={product} truncateWords={30} />
+						<div class="group h-full transform transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
+							<NewsCard product={product} truncateWords={30} className="h-full" />
 						</div>
 					))
 				}

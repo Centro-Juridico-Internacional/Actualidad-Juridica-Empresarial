@@ -12,9 +12,9 @@ const autorSlug = product.autorName
 const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 ---
 
-<article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-md">
-	<!-- Imagen con overlay gradual -->
-	<div class="relative h-56 w-full overflow-hidden">
+<article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md">
+	<!-- Imagen con overlay gradual (altura consistente) -->
+	<div class="relative aspect-[16/9] w-full overflow-hidden">
 		<img
 			src={product.image}
 			alt={`${product.titulo} imagen`}
@@ -28,7 +28,8 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		</div>
 	</div>
 
-	<div class="flex flex-1 flex-col p-6">
+	<!-- Contenido -->
+	<div class="flex min-h-0 flex-1 flex-col p-6">
 		<!-- Categorías y Fecha -->
 		<div class="mb-4 flex flex-wrap items-center gap-2">
 			<span
@@ -50,37 +51,23 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 
 		<!-- Título -->
 		<h1
-			class="mb-3 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
+			class="mb-2 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
 		>
 			<a href={`/noticia/${product.slug}`}>{product.titulo}</a>
 		</h1>
 
-		<!-- Contenido -->
-		<div class="mb-6 text-sm leading-relaxed text-gray-600">
+		<!-- Extracto con clamp para no romper alturas -->
+		<div class="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600 lg:line-clamp-4">
 			<BlocksRenderer content={blocks} client:load />
-			{
-				truncated && (
-					<a
-						href={`/noticia/${product.slug}`}
-						class="mt-2 inline-flex items-center gap-1 text-green-600 hover:text-green-700"
-					>
-						Leer más
-						<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-							<path
-								fill-rule="evenodd"
-								d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</a>
-				)
-			}
 		</div>
 
-		<!-- Video de YouTube si existe -->
+		<!-- Video de YouTube si existe (altura consistente) -->
 		{
 			product.UrlYoutube && (
-				<div class="mb-6 overflow-hidden rounded-xl shadow-sm" data-videoid={product.UrlYoutube}>
+				<div
+					class="mb-4 aspect-video overflow-hidden rounded-xl shadow-sm"
+					data-videoid={product.UrlYoutube}
+				>
 					<YouTubeLite
 						videoid={product.UrlYoutube}
 						title={product.titulo}
@@ -91,7 +78,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 			)
 		}
 
-		<!-- Autor -->
+		<!-- Empuja autor al fondo para que la card llene la fila -->
 		<div class="mt-auto flex items-center gap-3 border-t border-gray-100 pt-4">
 			<a
 				href={autorSlug}
