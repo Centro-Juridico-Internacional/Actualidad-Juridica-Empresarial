@@ -17,6 +17,8 @@ const latestNews = products.filter((news: any) => news.slug !== currentSlug).sli
 					src={news.image}
 					alt={news.titulo}
 					class="h-16 w-16 rounded-lg object-cover shadow-md"
+					loading="lazy"
+					decoding="async"
 				/>
 				<div class="flex-1">
 					<h3 class="text-sm font-semibold text-gray-800 hover:text-green-600">

@@ -8,6 +8,7 @@ interface NewsComponentProps {
 	bgOverlay?: boolean;
 	className?: string;
 	showContent?: boolean;
+	eagerImage?: boolean;
 }
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
@@ -15,7 +16,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	truncateWords = 30,
 	bgOverlay = false,
 	className = '',
-	showContent = true
+	showContent = true,
+	eagerImage = false
 }) => {
 	if (!product) return null;
 
@@ -65,6 +67,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 							src={product.autorAvatar}
 							alt={product.autorName}
 							className="h-8 w-8 rounded-full !border-2 !border-white !shadow transition hover:scale-105"
+							loading="lazy"
+							decoding="async"
 						/>
 					</a>
 				)}
@@ -88,7 +92,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					alt={product.titulo}
 					className="absolute inset-0 h-full min-h-full w-full min-w-full object-cover object-center"
 					draggable={false}
-					loading="eager"
+					loading={eagerImage ? 'eager' : 'lazy'}
 					decoding="async"
 				/>
 				<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/60 to-black/80" />
@@ -100,4 +104,4 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	return content;
 };
 
-export default NewsComponent;
+export default React.memo(NewsComponent);

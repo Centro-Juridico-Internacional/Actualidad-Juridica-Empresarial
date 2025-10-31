@@ -85,11 +85,27 @@ const { title, booleanLayout } = Astro.props;
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-		<!-- Astro ViewTransitions -->
+		<!-- Preload crítico -->
+		<link
+			rel="preload"
+			href="/fonts/noto-sans-jp-variable.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<link rel="preload" href="/header/logoMainCJI.svg" as="image" />
+
+		<!-- Cache control -->
+		<meta http-equiv="Cache-Control" content="max-age=31536000, immutable" />
+
+		<!-- Preconexiones -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+		<!-- View Transitions y Analytics -->
+		<meta name="view-transition" content="same-origin" />
 		<ClientRouter />
-		<!-- Vercel Analytics -->
 		<Analytics />
-		<!-- Vercel SpeedInsights -->
 		<SpeedInsights />
 	</head>
 

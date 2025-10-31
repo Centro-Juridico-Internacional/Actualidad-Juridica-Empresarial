@@ -19,7 +19,13 @@ const categories = await getCategories();
 						class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl"
 					>
 						<a href={`/categorias/${i.slug}`} class="block h-full">
-							<img src={i.image} alt={i.name} class="h-40 w-full object-cover" />
+							<img
+								src={i.image}
+								alt={i.name}
+								class="h-40 w-full object-cover"
+								loading="lazy"
+								decoding="async"
+							/>
 							<div class="flex h-full flex-col p-5">
 								<h2 class="mb-2 text-lg font-bold text-gray-900">{i.name}</h2>
 								<p class="mb-4 line-clamp-3 text-sm text-gray-600">{i.description}</p>

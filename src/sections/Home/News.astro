@@ -14,7 +14,7 @@ const { products } = await getNews({ categoryId: '' });
 		id="mainNews"
 		class="h-[18rem] w-[95%] bg-cover bg-center bg-no-repeat md:h-[26rem] md:w-[60%]"
 	>
-		<CarouselNews products={products} client:load />
+		<CarouselNews products={products} client:visible />
 	</div>
 	<div id="secondaryNews" class="flex h-[26rem] w-[95%] flex-col gap-y-3 md:w-[40%]">
 		{

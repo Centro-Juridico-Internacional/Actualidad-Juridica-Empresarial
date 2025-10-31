@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel } from 'antd';
+import SimpleCarouselLite from './SimpleCarouselLite';
 import YouTubeLite from '@/components/home/global/YouTubeLite';
 
 const Style = {
@@ -12,7 +12,7 @@ const CarouselInterview = ({ interviews = [] }) => {
 	const data = interviews.slice(-8).reverse();
 
 	return (
-		<Carousel autoplay={{ dotDuration: true }} autoplaySpeed={8000} style={Style} infinite arrows>
+		<SimpleCarouselLite autoplay autoplaySpeed={8000} style={Style} infinite arrows>
 			{data.map((item) => {
 				const contentStyle = { color: '#fff' };
 				return (
@@ -26,7 +26,7 @@ const CarouselInterview = ({ interviews = [] }) => {
 					</div>
 				);
 			})}
-		</Carousel>
+		</SimpleCarouselLite>
 	);
 };
 

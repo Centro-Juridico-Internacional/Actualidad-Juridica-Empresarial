@@ -1,5 +1,4 @@
 ---
-// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\components\home\NewsCard.astro
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import YouTubeLite from '@/components/home/global/YouTubeLite';
 import { truncateBlocks } from '@/utils/truncateBlocks';
@@ -18,11 +17,16 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 <article
 	class="flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl"
 >
-	<img src={product.image} alt={`${product.titulo} imagen`} class="h-52 w-full object-cover" />
+	<img
+		src={product.image}
+		alt={`${product.titulo} imagen`}
+		class="h-52 w-full object-cover"
+		loading="lazy"
+	/>
 	<div class="flex flex-1 flex-col p-6">
 		<h1 class="mb-2 text-xl font-bold text-gray-900">{product.titulo}</h1>
 		<div class="mb-4 text-justify text-sm text-gray-700">
-			<BlocksRenderer content={blocks} />
+			<BlocksRenderer content={blocks} client:load />
 			{
 				truncated && (
 					<a href={`/noticia/${product.slug}`} class="text-center text-blue-600 hover:underline">
@@ -50,14 +54,24 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		</div>
 		{
 			product.UrlYoutube && (
-				<div class="mb-4">
-					<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:load />
+				<div class="lazy-video mb-4" data-videoid={product.UrlYoutube}>
+					<YouTubeLite
+						videoid={product.UrlYoutube}
+						title={product.titulo}
+						client:visible
+						transition:persist
+					/>
 				</div>
 			)
 		}
 		<div class="mt-auto flex items-center border-t border-gray-100 pt-4">
 			<a href={autorSlug} title={product.autorName}>
-				<img src={product.autorAvatar} alt="Autor" class="mr-3 h-8 w-8 rounded-full" />
+				<img
+					src={product.autorAvatar}
+					alt="Avatar del autor"
+					class="mr-3 h-8 w-8 rounded-full"
+					loading="lazy"
+				/>
 			</a>
 			<a href={autorSlug} class="text-sm text-gray-600 hover:text-green-600 hover:underline">
 				{product.autorName}

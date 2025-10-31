@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel } from 'antd';
+import SimpleCarouselLite from './SimpleCarouselLite';
 import NewsComponent from '@/components/home/NewsComponent';
 
 const Style = {
@@ -10,12 +10,13 @@ const Style = {
 
 const CarouselNews = ({ products }) => {
 	return (
-		<Carousel
-			autoplay={{ dotDuration: true }}
+		<SimpleCarouselLite
+			autoplay
 			autoplaySpeed={5000}
 			style={Style}
-			infinite={true}
-			dots={true}
+			infinite
+			dots
+			arrows
 			className="rounded-3xl shadow-2xl"
 		>
 			{products.slice(0, 3).map((item) => (
@@ -32,7 +33,7 @@ const CarouselNews = ({ products }) => {
 					/>
 				</div>
 			))}
-		</Carousel>
+		</SimpleCarouselLite>
 	);
 };
 

@@ -1,4 +1,5 @@
 import { query, withHost } from './strapi';
+const STRAPI_HOST = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 
 export async function getNews({ categoryId }: { categoryId: string }) {
 	const qs =
@@ -31,12 +32,16 @@ export async function getNews({ categoryId }: { categoryId: string }) {
 			titulo: a?.titulo,
 			contenido: a?.contenido,
 			slug: a?.slug,
-			image: withHost(imgRel),
+			image: imgRel
+				? `${STRAPI_HOST}${imgRel}?token=${process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN}`
+				: null,
 			dia: d.toLocaleDateString(),
 			hora: d.toLocaleTimeString(),
 			UrlYoutube: a?.UrlYoutube ?? null,
 			autorName: autor?.name ?? null,
-			autorAvatar: withHost(autorAvatarRel),
+			autorAvatar: autorAvatarRel
+				? `${STRAPI_HOST}${autorAvatarRel}?token=${process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN}`
+				: null,
 			categorias
 		};
 	});

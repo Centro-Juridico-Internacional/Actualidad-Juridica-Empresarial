@@ -16,6 +16,8 @@ const banner = await getBanner();
 				src={banner.banner}
 				alt={banner.nombre}
 				class="h-32 w-32 rounded-lg object-cover shadow-md"
+				loading="lazy"
+				decoding="async"
 			/>
 			<h2 class="text-lg font-semibold text-gray-800">{banner.nombre}</h2>
 		</div>

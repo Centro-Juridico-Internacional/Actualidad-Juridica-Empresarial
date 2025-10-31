@@ -33,7 +33,13 @@ const SOCIALMEDIA = [
 	transition:name="footer"
 >
 	<div class="flex h-fit w-full">
-		<img src="/footer/logo.svg" alt="logoImage" class="w-full bg-white pt-20" />
+		<img
+			src="/footer/logo.svg"
+			alt="logoImage"
+			class="w-full bg-white pt-20"
+			loading="lazy"
+			decoding="async"
+		/>
 	</div>
 	<div class="flex flex-wrap justify-center xl:flex-nowrap">
 		<div
@@ -41,7 +47,13 @@ const SOCIALMEDIA = [
 		>
 			<div id="Bogota" class="mb-8 flex w-1/3 flex-col">
 				<h3 class="flex justify-between text-[80%]">
-					SEDE PRINCIPAL BOGOTA <img src="/footer/col.svg" alt="imageCol" class="w-auto max-w-12" />
+					SEDE PRINCIPAL BOGOTA <img
+						src="/footer/col.svg"
+						alt="imageCol"
+						class="w-auto max-w-12"
+						loading="lazy"
+						decoding="async"
+					/>
 				</h3>
 				<p>
 					Dirección: <a
@@ -119,7 +131,13 @@ const SOCIALMEDIA = [
 			</div>
 			<div id="Usa" class="mb-8 w-1/3">
 				<h3 class="flex justify-between text-[80%]">
-					CONTACTO USA <img src="/footer/usa.svg" alt="imageUsa" class="w-2/10" />
+					CONTACTO USA <img
+						src="/footer/usa.svg"
+						alt="imageUsa"
+						class="w-2/10"
+						loading="lazy"
+						decoding="async"
+					/>
 				</h3>
 				<p>
 					Dirección: 1395 Brickel AVE. <br />8 TH FLOOR<br />MIAMI, FL<br />Acevedo Associates<br
@@ -154,6 +172,8 @@ const SOCIALMEDIA = [
 									src={item.icon}
 									alt={`${item.name}Image`}
 									class="max-h-96 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105"
+									loading="lazy"
+									decoding="async"
 								/>
 							</a>
 						);

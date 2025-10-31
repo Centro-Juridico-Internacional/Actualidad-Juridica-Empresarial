@@ -1,44 +1,49 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 import compress from 'astro-compress';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  
+
+  // Optimizaciones de compilación
   build: {
     inlineStylesheets: 'auto',
+    splitting: true,
   },
 
+  // Configuración de Vercel
   adapter: vercel({
     webAnalytics: {
       enabled: true,
     },
+    speedInsights: {
+      enabled: true,
+    },
     imageService: true,
+    devImageService: 'sharp',
   }),
 
+  // Optimizaciones de Vite
   vite: {
     plugins: [tailwindcss()],
     build: {
       cssCodeSplit: true,
+      cssMinify: true,
       minify: 'terser',
       terserOptions: {
         compress: {
           drop_console: true,
+          pure_funcs: ['console.log'],
         },
       },
       rollupOptions: {
         output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('react')) {
-                return 'react-vendor';
-              }
-              return 'vendor';
-            }
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
           },
         },
       },
@@ -48,10 +53,26 @@ export default defineConfig({
     },
   },
 
+  // Integraciones
   integrations: [
     react({
-      include: ['**/*.tsx', '**/*.jsx'],
+      include: ['**/react/*', '**/React/*', '**/*.tsx', '**/*.jsx'],
     }),
-    compress(),
+    compress({
+      CSS: true,
+      HTML: {
+        removeAttributeQuotes: false,
+      },
+      Image: false,
+      JavaScript: true,
+      SVG: true,
+    }),
   ],
+
+  // Optimizaciones de imágenes
+  image: {
+    service: 'sharp',
+    format: ['webp', 'avif'],
+    quality: 80,
+  },
 });

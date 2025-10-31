@@ -10,8 +10,13 @@ import { getBanner } from '@/lib/get-banner';
 const banner = await getBanner();
 ---
 
-<img
-	src={banner.banner}
-	alt={banner.nombre}
-	class:list={['w-full md:max-w-[1260px]', { hidden: booleanBanner }]}
-/>
+{
+	banner?.banner && (
+		<img
+			src={banner.banner}
+			alt={banner.nombre}
+			class:list={['w-full md:max-w-[1260px]', { hidden: booleanBanner }]}
+			loading="eager"
+		/>
+	)
+}

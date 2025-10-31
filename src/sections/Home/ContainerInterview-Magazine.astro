@@ -16,7 +16,7 @@ const interviews = await getInterviewsUrl(); // <-- ahora aquí, en el server
 	class="mt-8 flex h-96 w-full flex-col items-center justify-center bg-white px-4 md:flex-row"
 >
 	<div class="h-[24rem] w-1/2 bg-green-600 py-6">
-		<CarouselInterview interviews={interviews} client:load />
+		<CarouselInterview interviews={interviews} client:visible />
 	</div>
 
 	<div class="flex h-[24rem] w-1/2 items-center justify-center bg-green-600 px-4">
@@ -25,7 +25,7 @@ const interviews = await getInterviewsUrl(); // <-- ahora aquí, en el server
 			autoplaySpeed={5000}
 			dotDuration={true}
 			data={pautas}
-			client:load
+			client:visible
 		/>
 	</div>
 </section>

@@ -22,6 +22,8 @@ const authors = await getAuthors();
 								src={author.avatar}
 								alt={author.name}
 								class="h-16 w-16 rounded-full object-cover shadow-md"
+								loading="lazy"
+								decoding="async"
 							/>
 						</a>
 						<div>

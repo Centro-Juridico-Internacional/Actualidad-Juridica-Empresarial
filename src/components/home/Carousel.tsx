@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel } from 'antd';
+import SimpleCarouselLite from './SimpleCarouselLite';
 
 import type { CarouselProps } from '@/lib/typesCarousel';
 
@@ -11,13 +11,11 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 }) => {
 	return (
 		<div className={`${width} rounded-xl shadow-xl`}>
-			<Carousel
-				autoplay={{ dotDuration: dotDuration }}
-				dots={{
-					className: ''
-				}}
+			<SimpleCarouselLite
+				autoplay={!!dotDuration}
 				autoplaySpeed={autoplaySpeed}
 				arrows
+				dots
 				infinite
 				style={{ height: '100%', width: '100%', margin: 'auto' }}
 			>
@@ -28,11 +26,13 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 								src={item.image}
 								alt={`${item.title} imagen`}
 								className={`flex h-full w-full items-center justify-center bg-green-600 object-cover`}
+								loading="lazy"
+								decoding="async"
 							/>
 						</div>
 					);
 				})}
-			</Carousel>
+			</SimpleCarouselLite>
 		</div>
 	);
 };

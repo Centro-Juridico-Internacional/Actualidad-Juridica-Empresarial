@@ -29,7 +29,13 @@ const autorSlug = product.autorName
 			<span>{product.dia} &bull; {product.hora}</span>
 			<div class="flex items-center gap-2">
 				<a href={autorSlug} title={product.autorName}>
-					<img src={product.autorAvatar} alt="Autor" class="h-8 w-8 rounded-full" />
+					<img
+						src={product.autorAvatar}
+						alt="Autor"
+						class="h-8 w-8 rounded-full"
+						loading="lazy"
+						decoding="async"
+					/>
 				</a>
 				<a href={autorSlug} class="text-sm text-gray-600 hover:text-green-600 hover:underline">
 					{product.autorName}
@@ -49,6 +55,9 @@ const autorSlug = product.autorName
 				src={product.image}
 				alt={`${product.titulo} imagen`}
 				class="w-[35vw] rounded-lg shadow-lg"
+				loading="eager"
+				decoding="async"
+				fetchpriority="high"
 			/>
 		</div>
 		<div class="mb-8 text-justify text-gray-700">
@@ -57,7 +66,7 @@ const autorSlug = product.autorName
 		{
 			product.UrlYoutube && (
 				<div class="mt-8">
-					<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:load />
+					<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:visible />
 				</div>
 			)
 		}
