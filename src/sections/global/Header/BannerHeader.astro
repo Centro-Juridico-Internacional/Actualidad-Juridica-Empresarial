@@ -12,11 +12,30 @@ const banner = await getBanner();
 
 {
 	banner?.banner && (
-		<img
-			src={banner.banner}
-			alt={banner.nombre}
-			class:list={['w-full md:max-w-[1260px]', { hidden: booleanBanner }]}
-			loading="eager"
-		/>
+		<a
+			class:list={[
+				'relative mx-auto w-full max-w-[1260px] overflow-hidden rounded-b-lg shadow-lg transition-transform duration-300 hover:scale-[1.005]',
+				{ hidden: booleanBanner }
+			]}
+			href="https://seminariojuridico.com/"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			<img
+				src={banner.banner}
+				alt={banner.nombre}
+				class="h-auto w-full object-cover"
+				loading="eager"
+				decoding="async"
+			/>
+			<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
+		</a>
 	)
 }
+
+<style>
+	img {
+		aspect-ratio: 16/3;
+		transform: translateZ(0);
+	}
+</style>
