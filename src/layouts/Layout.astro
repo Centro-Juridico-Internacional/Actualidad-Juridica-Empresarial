@@ -109,16 +109,90 @@ const { title, booleanLayout } = Astro.props;
 		<SpeedInsights />
 	</head>
 
-	<body class="flex h-full flex-col items-center overflow-x-hidden">
+	<body
+		class="flex min-h-screen flex-col overflow-x-hidden bg-gray-50/30 transition-colors duration-300"
+	>
+		<!-- Header con animación suave -->
 		<Header booleanHeader={booleanLayout} />
-		<main class="w-full md:max-w-[1260px]">
-			<slot />
+
+		<!-- Main content con animaciones de entrada -->
+		<main class="w-full flex-1">
+			<div class="animate-fadeIn">
+				<slot />
+			</div>
 		</main>
+
+		<!-- Footer con transición suave -->
 		<Footer />
-	</body>
+	</body><style>
+		/* Animaciones personalizadas */
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(5px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.animate-fadeIn {
+			animation: fadeIn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+		}
+
+		/* Estilos de scroll suave */
+		:global(html) {
+			scroll-behavior: smooth;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		:global(body) {
+			background-color: rgb(249 250 251 / 0.3);
+		}
+
+		/* Estilo de selección personalizado */
+		:global(::selection) {
+			background-color: rgb(187 247 208);
+			color: rgb(20 83 45);
+		}
+
+		/* Mejora del scrollbar */
+		:global(::-webkit-scrollbar) {
+			width: 10px;
+			background-color: transparent;
+		}
+
+		:global(::-webkit-scrollbar-thumb) {
+			border-radius: 9999px;
+			background-color: rgb(22 163 74 / 0.2);
+			transition-property: color, background-color, border-color;
+			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: 200ms;
+		}
+
+		:global(::-webkit-scrollbar-thumb:hover) {
+			background-color: rgb(22 163 74 / 0.3);
+		}
+
+		/* Mejoras de enfoque para accesibilidad */
+		:global(*:focus-visible) {
+			outline: 2px solid transparent;
+			outline-offset: 2px;
+			--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width)
+				var(--tw-ring-offset-color);
+			--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width))
+				var(--tw-ring-color);
+			box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow);
+			--tw-ring-color: rgb(34 197 94);
+			--tw-ring-offset-width: 2px;
+			--tw-ring-offset-color: white;
+		}
+	</style>
 </html>
 
 <script>
+	// Manejo del título
 	let title = document.title;
 	document.addEventListener('astro:page-load', () => {
 		return (title = document.title);
@@ -130,4 +204,6 @@ const { title, booleanLayout } = Astro.props;
 			document.title = title;
 		}
 	});
+
+	// Solo manejo del título en cambio de pestañas
 </script>
