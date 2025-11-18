@@ -23,57 +23,138 @@ const autorSlug = product.autorName
 ---
 
 <Layout title={product.titulo} booleanLayout={true}>
-	<section class="mx-auto max-w-6xl px-4 py-8">
-		<h1 class="mb-4 text-4xl font-extrabold text-green-600">{product.titulo}</h1>
-		<div class="mb-4 flex items-center gap-4 text-sm text-gray-600">
-			<span>{product.dia} &bull; {product.hora}</span>
-			<div class="flex items-center gap-2">
-				<a href={autorSlug} title={product.autorName}>
-					<img
-						src={product.autorAvatar}
-						alt="Autor"
-						class="h-8 w-8 rounded-full"
-						loading="lazy"
-						decoding="async"
-					/>
-				</a>
-				<a href={autorSlug} class="text-sm text-gray-600 hover:text-green-600 hover:underline">
-					{product.autorName}
-				</a>
-			</div>
-			<div>
-				<a
-					href={`/categorias/${product.categorias[0]}`}
-					class="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 transition hover:bg-green-200"
-				>
-					{product.categorias[0].charAt(0).toUpperCase() + product.categorias[0].slice(1)}
-				</a>
-			</div>
-		</div>
-		<div class="mb-8 flex items-center justify-center">
+	<article class="animate-fadeIn">
+		<!-- Hero Section -->
+		<div class="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
 			<img
 				src={product.image}
 				alt={`${product.titulo} imagen`}
-				class="w-[35vw] rounded-lg shadow-lg"
+				class="absolute inset-0 h-full w-full object-cover"
 				loading="eager"
 				decoding="async"
 				fetchpriority="high"
 			/>
-		</div>
-		<div class="mb-8 text-justify text-gray-700">
-			<BlocksRenderer content={product.contenido} />
-		</div>
-		{
-			product.UrlYoutube && (
-				<div class="mt-8">
-					<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:visible />
+			<div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent">
+			</div>
+			<div class="container-main relative flex h-full items-end pb-16">
+				<div class="animate-slideUp max-w-3xl">
+					<div class="mb-6 flex flex-wrap gap-3">
+						{
+							product.categorias.map((cat: string) => (
+								<a
+									href={`/categorias/${cat}`}
+									class="rounded-full bg-green-500/90 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-green-600"
+								>
+									{cat.charAt(0).toUpperCase() + cat.slice(1)}
+								</a>
+							))
+						}
+					</div>
+					<h1 class="text-4xl leading-tight font-bold text-white md:text-5xl lg:text-6xl">
+						{product.titulo}
+					</h1>
 				</div>
-			)
-		}
-	</section>
+			</div>
+		</div>
 
-	<section class="mt-12 w-[20vw]">
-		<h2 class="mb-4 text-2xl font-bold text-gray-800">Últimas noticias</h2>
-		<LatestNews layout="vertical" currentSlug={newsId} />
-	</section>
+		<!-- Contenido Principal -->
+		<div class="container-main py-12">
+			<div class="ml-26 grid gap-8 lg:grid-cols-3">
+				<!-- Artículo -->
+				<div class="lg:col-span-2">
+					<!-- Meta información -->
+					<div class="mb-8 flex items-center gap-6 border-b border-gray-100 pb-6">
+						<a href={autorSlug} class="group flex items-center gap-3">
+							<img
+								src={product.autorAvatar}
+								alt={product.autorName}
+								class="h-12 w-12 rounded-full ring-2 ring-green-100 transition-all group-hover:ring-green-300"
+								loading="lazy"
+							/>
+							<div>
+								<p class="font-medium text-gray-900 group-hover:text-green-600">
+									{product.autorName}
+								</p>
+								<p class="text-sm text-gray-500">
+									{product.dia} • {product.hora}
+								</p>
+							</div>
+						</a>
+					</div>
+
+					<!-- Contenido -->
+					<div
+						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none"
+					>
+						<BlocksRenderer content={product.contenido} />
+					</div>
+
+					<!-- Video de YouTube -->
+					{
+						product.UrlYoutube && (
+							<div class="mt-12 overflow-hidden rounded-2xl shadow-lg">
+								<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:visible />
+							</div>
+						)
+					}
+				</div>
+
+				<!-- Sidebar -->
+				<aside class="space-y-6 lg:sticky lg:top-8">
+					<div class="rounded-2xl bg-white p-6 shadow-md">
+						<h2 class="mb-6 text-xl font-bold text-gray-900">Últimas noticias</h2>
+						<LatestNews layout="vertical" currentSlug={newsId} />
+					</div>
+				</aside>
+			</div>
+		</div>
+	</article>
 </Layout>
+
+<style>
+	/* Animaciones */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fadeIn {
+		animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+	}
+
+	.animate-slideUp {
+		animation: slideUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+	}
+
+	/* Mejoras en la prosa */
+	:global(.prose img) {
+		border-radius: 0.75rem;
+		box-shadow:
+			0 4px 6px -1px rgb(0 0 0 / 0.1),
+			0 2px 4px -2px rgb(0 0 0 / 0.1);
+		transition-property: transform;
+		transition-duration: 300ms;
+	}
+	:global(.prose img:hover) {
+		transform: scale(1.02);
+	}
+
+	:global(.prose blockquote) {
+		border-radius: 0.5rem;
+	}
+</style>
