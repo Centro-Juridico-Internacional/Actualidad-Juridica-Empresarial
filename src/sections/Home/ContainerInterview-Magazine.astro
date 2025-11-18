@@ -7,25 +7,80 @@ import { getInterviewsUrl } from '@/lib/get-interviewsUrl';
 import Titles from '@/components/home/global/Titles.astro';
 
 const pautas = await getPautas();
-const interviews = await getInterviewsUrl(); // <-- ahora aquí, en el server
+const interviews = await getInterviewsUrl();
 ---
 
 <Titles text="Entrevista y pautas del mes" />
-<section
-	id="ContainerInterview-Magazine"
-	class="mt-8 flex h-96 w-full flex-col items-center justify-center bg-white px-4 md:flex-row"
->
-	<div class="h-[24rem] w-1/2 bg-green-600 py-6">
-		<CarouselInterview interviews={interviews} client:visible />
-	</div>
 
-	<div class="flex h-[24rem] w-1/2 items-center justify-center bg-green-600 px-4">
-		<Carousel
-			width="w-[90%] ml-[5%]"
-			autoplaySpeed={5000}
-			dotDuration={true}
-			data={pautas}
-			client:visible
-		/>
+<section id="ContainerInterview-Magazine" class="container-main my-16">
+	<div class="grid gap-8 md:grid-cols-2">
+		<!-- Entrevistas -->
+		<div
+			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-700 to-green-800 shadow-xl transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl"
+		>
+			<div class="relative min-h-[260px] w-full">
+				<div class="absolute inset-0 bg-black/25"></div>
+				<CarouselInterview interviews={interviews} client:visible />
+			</div>
+
+			<div
+				class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6"
+			>
+				<div class="relative top-3.5">
+					<h3 class="text-xl font-semibold text-white md:text-2xl">Entrevistas Destacadas</h3>
+					<p class="text-sm text-gray-200/90">Conversaciones con expertos del derecho</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Pautas -->
+		<div
+			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-700 via-emerald-800 to-emerald-900 shadow-xl transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl"
+		>
+			<div class="relative min-h-[260px] w-full">
+				<div class="absolute inset-0 bg-black/25"></div>
+				<Carousel
+					width="w-full"
+					autoplaySpeed={5000}
+					dotDuration={true}
+					data={pautas}
+					client:visible
+				/>
+			</div>
+
+			<!-- Texto ARRIBA -->
+			<div
+				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent p-6"
+			>
+				<div class="space-y-1">
+					<h3 class="text-xl font-semibold text-white md:text-2xl">Pautas Destacadas</h3>
+					<p class="text-sm text-gray-200/90">Mensajes de nuestros aliados y patrocinadores</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </section>
+
+<style>
+	.container-main {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 80rem;
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.container-main {
+			padding-left: 1.5rem;
+			padding-right: 1.5rem;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.container-main {
+			padding-left: 2rem;
+			padding-right: 2rem;
+		}
+	}
+</style>

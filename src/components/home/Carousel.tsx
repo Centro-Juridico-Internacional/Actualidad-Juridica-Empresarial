@@ -21,7 +21,7 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 			>
 				{DATA.map((item) => {
 					return (
-						<div id={item.title} className="overflow-hidden rounded-xl border-4 border-green-950">
+						<div id={item.title} className="overflow-hidden rounded-2xl border-4 border-green-950">
 							<img
 								src={item.image}
 								alt={`${item.title} imagen`}

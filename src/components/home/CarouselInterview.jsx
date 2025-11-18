@@ -19,7 +19,7 @@ const CarouselInterview = ({ interviews = [] }) => {
 					<div key={item.title}>
 						<div
 							style={contentStyle}
-							className="m-auto flex h-full w-[95%] items-center justify-center"
+							className="m-auto flex h-full w-[100%] items-center justify-center"
 						>
 							<YouTubeLite videoid={item.url} title={item.title} />
 						</div>
