@@ -24,15 +24,19 @@
     "astro": "^5.8.0",
     "astro-compress": "^2.3.8",
     "dotenv": "^17.2.1",
+    "page-flip": "^2.0.7",
+    "pdfjs-dist": "^5.4.394",
     "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-pdf": "^10.2.0",
     "sharp": "^0.34.4",
     "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
+    "@types/page-flip": "^2.0.4",
     "husky": "^9.1.7"
   }
 }
