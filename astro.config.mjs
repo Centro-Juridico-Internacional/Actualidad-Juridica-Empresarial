@@ -22,7 +22,31 @@ export default defineConfig({
   }),
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,pdf}'],
+          runtimeCaching: [
+            {
+              urlPattern: /\.pdf$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'pdf-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
+            }
+          ]
+        }
+      })
+    ],
     build: {
       cssCodeSplit: true,
       minify: 'terser',
@@ -54,27 +78,5 @@ export default defineConfig({
       include: ['**/*.tsx', '**/*.jsx'],
     }),
     compress(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,pdf}'],
-        runtimeCaching: [
-          {
-            urlPattern: /\.pdf$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'pdf-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
-      }
-    })
   ],
 });
