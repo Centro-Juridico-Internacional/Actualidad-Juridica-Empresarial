@@ -224,6 +224,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 			<style>{`
         .flipbook-container {
           margin: 0 auto;
+          transform-style: preserve-3d;
         }
 
         .page {
@@ -240,18 +241,88 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
           -ms-user-select: none;
         }
 
-        /* Estilos para mejorar la apariencia del flipbook */
+        /* Estilos mejorados para el flipbook con sombras multicapa */
         .stf__wrapper {
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-          border-radius: 4px;
+          box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.3),
+            0 10px 30px rgba(0, 0, 0, 0.2),
+            0 5px 15px rgba(0, 0, 0, 0.15);
+          border-radius: 8px;
+          transition: box-shadow 0.3s ease;
+        }
+
+        .stf__wrapper:hover {
+          box-shadow: 
+            0 25px 70px rgba(0, 0, 0, 0.35),
+            0 15px 40px rgba(0, 0, 0, 0.25),
+            0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .stf__block {
-          box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+          box-shadow: 
+            0 2px 10px rgba(0, 0, 0, 0.12),
+            0 1px 5px rgba(0, 0, 0, 0.08);
         }
 
         .stf__item {
-          border: 1px solid #e0e0e0;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          background: #fff;
+        }
+
+        /* Sombras más realistas durante el volteo */
+        .stf__hardPageShadow {
+          background: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.15) 50%,
+            rgba(0, 0, 0, 0) 100%
+          );
+        }
+
+        .stf__hardInnerShadow {
+          background: linear-gradient(
+            to left,
+            rgba(0, 0, 0, 0.2) 0%,
+            rgba(0, 0, 0, 0.05) 50%,
+            rgba(0, 0, 0, 0) 100%
+          );
+        }
+
+        /* Mejorar botones con transiciones suaves */
+        button {
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        button:not(:disabled):hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        button:not(:disabled):active {
+          transform: translateY(0);
+          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Animación suave para la barra de progreso */
+        .transition-all {
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Mejorar esquinas de página */
+        .stf__pageCorner {
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(0, 0, 0, 0.05) 100%
+          );
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+          .stf__wrapper {
+            box-shadow: 
+              0 15px 45px rgba(0, 0, 0, 0.25),
+              0 8px 20px rgba(0, 0, 0, 0.15);
+          }
         }
       `}</style>
 		</div>
