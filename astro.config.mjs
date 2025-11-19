@@ -4,11 +4,12 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel/serverless';
 import react from '@astrojs/react';
 import compress from 'astro-compress';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  
+
   build: {
     inlineStylesheets: 'auto',
   },
@@ -53,5 +54,27 @@ export default defineConfig({
       include: ['**/*.tsx', '**/*.jsx'],
     }),
     compress(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,pdf}'],
+        runtimeCaching: [
+          {
+            urlPattern: /\.pdf$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'pdf-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      }
+    })
   ],
 });

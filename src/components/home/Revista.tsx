@@ -10,6 +10,126 @@ import 'react-pdf/dist/Page/TextLayer.css';
 // Configurar el worker de PDF.js usando jsDelivr CDN (con CORS habilitado)
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+interface FlipBookInternalProps {
+	pdfUrl: string;
+	width: number;
+	height: number;
+	onInit: (pageFlip: any) => void;
+	onFlip: (page: number) => void;
+	onLoadSuccess: (data: { numPages: number }) => void;
+	onLoadError: (error: Error) => void;
+}
+
+// Componente interno que NO se re-renderiza cuando cambia la página actual
+const FlipBookInternal = React.memo(
+	({
+		pdfUrl,
+		width,
+		height,
+		onInit,
+		onFlip,
+		onLoadSuccess,
+		onLoadError
+	}: FlipBookInternalProps) => {
+		const bookRef = useRef<HTMLDivElement>(null);
+		const [localNumPages, setLocalNumPages] = useState<number>(0);
+
+		const onDocumentLoadSuccess = (data: { numPages: number }) => {
+			setLocalNumPages(data.numPages);
+			onLoadSuccess(data);
+		};
+
+		// Inicializar PageFlip solo cuando tengamos páginas renderizadas
+		useEffect(() => {
+			if (localNumPages > 0 && bookRef.current) {
+				const timeout = setTimeout(() => {
+					try {
+						const pages = bookRef.current?.querySelectorAll('.page');
+						if (pages && pages.length > 0) {
+							console.log('Inicializando PageFlip con', pages.length, 'páginas');
+
+							const pageFlip = new PageFlip(bookRef.current as HTMLElement, {
+								width: width,
+								height: height,
+								size: 'fixed',
+								minWidth: 300,
+								maxWidth: 1000,
+								minHeight: 400,
+								maxHeight: 1533,
+								showCover: true,
+								mobileScrollSupport: true,
+								swipeDistance: 30,
+								flippingTime: 1000,
+								usePortrait: true,
+								startZIndex: 0,
+								autoSize: true,
+								maxShadowOpacity: 0.5,
+								showPageCorners: true,
+								disableFlipByClick: false
+							});
+
+							pageFlip.loadFromHTML(pages as any);
+
+							pageFlip.on('flip', (e: any) => {
+								onFlip(e.data + 1);
+							});
+
+							onInit(pageFlip);
+						}
+					} catch (err) {
+						console.error('Error en PageFlip:', err);
+					}
+				}, 500); // Esperar a que React termine de pintar
+
+				return () => clearTimeout(timeout);
+			}
+		}, [localNumPages, width, height]); // Solo re-ejecutar si cambia el número de páginas o dimensiones
+
+		return (
+			<div className="flex items-center justify-center">
+				<Document
+					file={pdfUrl}
+					onLoadSuccess={onDocumentLoadSuccess}
+					onLoadError={onLoadError}
+					loading=""
+					options={{
+						cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+						cMapPacked: true,
+						standardFontDataUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+						disableAutoFetch: true,
+						disableStream: false,
+						disableRange: false
+					}}
+				>
+					<div ref={bookRef} className="flipbook-container">
+						{localNumPages > 0 &&
+							Array.from({ length: localNumPages }, (_, index) => (
+								<div key={index + 1} className="page bg-white shadow-2xl" data-density="hard">
+									<Page
+										pageNumber={index + 1}
+										width={width}
+										renderTextLayer={false}
+										renderAnnotationLayer={false}
+										loading={
+											<div className="flex h-full items-center justify-center">
+												<div className="animate-pulse text-gray-400">Cargando...</div>
+											</div>
+										}
+									/>
+								</div>
+							))}
+					</div>
+				</Document>
+			</div>
+		);
+	},
+	(prev, next) => {
+		// Custom comparison: Solo re-renderizar si cambian props críticas
+		// NO re-renderizar por cambios en funciones callback
+		return prev.pdfUrl === next.pdfUrl && prev.width === next.width && prev.height === next.height;
+	}
+);
+
 interface RevistaProps {
 	pdfUrl: string;
 	className?: string;
@@ -23,99 +143,43 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const pageFlipRef = useRef<any>(null);
-	const bookRef = useRef<HTMLDivElement>(null);
 
-	const handleLoadSuccess = ({ numPages }: { numPages: number }) => {
-		console.log('PDF cargado exitosamente:', numPages, 'páginas');
+	// Callbacks estables con useCallback
+	const handleInit = React.useCallback((pageFlip: any) => {
+		pageFlipRef.current = pageFlip;
+	}, []);
+
+	const handleFlip = React.useCallback((page: number) => {
+		setCurrentPage(page);
+	}, []);
+
+	const handleLoadSuccess = React.useCallback(({ numPages }: { numPages: number }) => {
 		setNumPages(numPages);
 		setLoading(false);
 		setError(null);
-	};
+	}, []);
 
-	const handleLoadError = (error: Error) => {
+	const handleLoadError = React.useCallback((error: Error) => {
 		console.error('Error cargando PDF:', error);
-		setError('Error al cargar el PDF. Por favor verifica la URL del archivo.');
+		setError('Error al cargar el PDF.');
 		setLoading(false);
-	};
-
-	// Inicializar PageFlip después de que el PDF esté cargado
-	useEffect(() => {
-		if (bookRef.current && numPages > 0 && !pageFlipRef.current) {
-			// Esperar un momento para que los elementos Page se rendericen
-			setTimeout(() => {
-				try {
-					const pages = document.querySelectorAll('.page');
-					console.log('Páginas encontradas para PageFlip:', pages.length);
-					console.log('bookRef.current:', bookRef.current);
-
-					if (pages.length > 0 && bookRef.current) {
-						console.log('Intentando inicializar PageFlip...');
-
-						const pageFlip = new PageFlip(bookRef.current, {
-							width: width,
-							height: height,
-							size: 'fixed' as const,
-							minWidth: 300,
-							maxWidth: 1000,
-							minHeight: 400,
-							maxHeight: 1533,
-							showCover: true,
-							mobileScrollSupport: true,
-							swipeDistance: 30,
-							flippingTime: 1000,
-							usePortrait: true,
-							startZIndex: 0,
-							autoSize: true,
-							maxShadowOpacity: 0.5,
-							showPageCorners: true,
-							disableFlipByClick: false
-						});
-
-						console.log('PageFlip instance created:', pageFlip);
-
-						pageFlip.loadFromHTML(pages as any);
-						console.log('loadFromHTML called');
-
-						pageFlip.on('flip', (e: any) => {
-							console.log('Page flipped to:', e.data + 1);
-							setCurrentPage(e.data + 1);
-						});
-
-						pageFlipRef.current = pageFlip;
-						console.log('PageFlip inicializado correctamente');
-					} else {
-						console.warn('No pages found or bookRef is null');
-					}
-				} catch (err) {
-					console.error('Error inicializando PageFlip dentro del setTimeout:', err);
-				}
-			}, 1000); // Incrementé el timeout a 1 segundo
-		}
-	}, [numPages, width, height]);
+	}, []);
 
 	const goToPreviousPage = () => {
-		if (pageFlipRef.current && currentPage > 1) {
-			pageFlipRef.current.flipPrev();
-		}
+		if (pageFlipRef.current) pageFlipRef.current.flipPrev();
 	};
 
 	const goToNextPage = () => {
-		if (pageFlipRef.current && currentPage < numPages) {
-			pageFlipRef.current.flipNext();
-		}
+		if (pageFlipRef.current) pageFlipRef.current.flipNext();
 	};
 
 	const goToPage = (pageNumber: number) => {
-		if (pageFlipRef.current && pageNumber >= 1 && pageNumber <= numPages) {
-			pageFlipRef.current.flip(pageNumber - 1);
-		}
+		if (pageFlipRef.current) pageFlipRef.current.flip(pageNumber - 1);
 	};
 
 	const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const pageNum = parseInt(e.target.value);
-		if (!isNaN(pageNum)) {
-			goToPage(pageNum);
-		}
+		if (!isNaN(pageNum)) goToPage(pageNum);
 	};
 
 	return (
@@ -126,7 +190,6 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 					onClick={goToPreviousPage}
 					disabled={currentPage === 1 || loading}
 					className="rounded-lg bg-blue-600 px-6 py-2 text-white shadow-lg transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
-					aria-label="Página anterior"
 				>
 					← Anterior
 				</button>
@@ -141,7 +204,6 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 						onChange={handlePageInputChange}
 						className="w-16 rounded border border-gray-300 px-2 py-1 text-center focus:ring-2 focus:ring-blue-500 focus:outline-none"
 						disabled={loading}
-						aria-label="Número de página"
 					/>
 					<span className="font-medium text-gray-700">de {numPages || '...'}</span>
 				</div>
@@ -150,7 +212,6 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 					onClick={goToNextPage}
 					disabled={currentPage === numPages || loading}
 					className="rounded-lg bg-blue-600 px-6 py-2 text-white shadow-lg transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
-					aria-label="Página siguiente"
 				>
 					Siguiente →
 				</button>
@@ -167,44 +228,20 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 			{/* Mensaje de error */}
 			{error && (
 				<div className="mb-4 rounded-lg border border-red-400 bg-red-100 px-6 py-4 text-red-700">
-					<p className="font-bold">Error</p>
 					<p>{error}</p>
 				</div>
 			)}
 
-			{/* Contenedor del libro */}
-			<div className="flex items-center justify-center">
-				<Document
-					file={pdfUrl}
-					onLoadSuccess={handleLoadSuccess}
-					onLoadError={handleLoadError}
-					loading=""
-				>
-					<div ref={bookRef} className="flipbook-container">
-						{numPages > 0 &&
-							Array.from({ length: numPages }, (_, index) => {
-								const pageNumber = index + 1;
-								return (
-									<div key={pageNumber} className="page bg-white shadow-2xl" data-density="hard">
-										<Page
-											pageNumber={pageNumber}
-											width={width}
-											renderTextLayer={false}
-											renderAnnotationLayer={false}
-											loading={
-												<div className="flex h-full items-center justify-center">
-													<div className="animate-pulse text-gray-400">
-														Cargando página {pageNumber}...
-													</div>
-												</div>
-											}
-										/>
-									</div>
-								);
-							})}
-					</div>
-				</Document>
-			</div>
+			{/* Componente FlipBook Aislado */}
+			<FlipBookInternal
+				pdfUrl={pdfUrl}
+				width={width}
+				height={height}
+				onInit={handleInit}
+				onFlip={handleFlip}
+				onLoadSuccess={handleLoadSuccess}
+				onLoadError={handleLoadError}
+			/>
 
 			{/* Barra de progreso */}
 			{!loading && numPages > 0 && (
@@ -329,4 +366,4 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 	);
 };
 
-export default Revista;
+export default React.memo(Revista);
