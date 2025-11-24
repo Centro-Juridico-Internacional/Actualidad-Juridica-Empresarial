@@ -16,13 +16,7 @@ import Revista from '@/components/home/Revista';
 
 		<!-- Componente Flipbook -->
 		<div class="flex min-h-screen items-center justify-center">
-			<Revista
-				client:only="react"
-				pdfUrl="/revistas/revista.pdf"
-				width={700}
-				height={900}
-				className="revista-flipbook"
-			/>
+			<Revista client:only="react" pdfUrl="/revistas/revista.pdf" className="revista-flipbook" />
 		</div>
 	</section>
 </Layout>

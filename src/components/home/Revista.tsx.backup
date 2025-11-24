@@ -85,19 +85,6 @@ const FlipBookInternal = React.memo(
 			}
 		}, [localNumPages, width, height]); // Solo re-ejecutar si cambia el número de páginas o dimensiones
 
-		// Memoizar opciones de PDF.js para evitar re-renders y "Transport destroyed"
-		const pdfOptions = React.useMemo(
-			() => ({
-				cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
-				cMapPacked: true,
-				standardFontDataUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
-				disableAutoFetch: false,
-				disableStream: false,
-				disableRange: false
-			}),
-			[]
-		);
-
 		return (
 			<div className="flex items-center justify-center">
 				<Document
@@ -105,7 +92,14 @@ const FlipBookInternal = React.memo(
 					onLoadSuccess={onDocumentLoadSuccess}
 					onLoadError={onLoadError}
 					loading=""
-					options={pdfOptions}
+					options={{
+						cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+						cMapPacked: true,
+						standardFontDataUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+						disableAutoFetch: true,
+						disableStream: false,
+						disableRange: false
+					}}
 				>
 					<div ref={bookRef} className="flipbook-container">
 						{localNumPages > 0 &&
@@ -238,20 +232,16 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 				</div>
 			)}
 
-			{/* Componente FlipBook Aislado - Responsive wrapper */}
-			<div className="flex w-full justify-center">
-				<div className="w-full max-w-[95vw] sm:max-w-[600px] md:max-w-[800px] lg:max-w-[1000px] xl:max-w-[1200px]">
-					<FlipBookInternal
-						pdfUrl={pdfUrl}
-						width={width}
-						height={height}
-						onInit={handleInit}
-						onFlip={handleFlip}
-						onLoadSuccess={handleLoadSuccess}
-						onLoadError={handleLoadError}
-					/>
-				</div>
-			</div>
+			{/* Componente FlipBook Aislado */}
+			<FlipBookInternal
+				pdfUrl={pdfUrl}
+				width={width}
+				height={height}
+				onInit={handleInit}
+				onFlip={handleFlip}
+				onLoadSuccess={handleLoadSuccess}
+				onLoadError={handleLoadError}
+			/>
 
 			{/* Barra de progreso */}
 			{!loading && numPages > 0 && (
