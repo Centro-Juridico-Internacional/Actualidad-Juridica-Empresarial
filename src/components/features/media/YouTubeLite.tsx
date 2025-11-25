@@ -1,10 +1,23 @@
 import React, { useEffect, useState, memo } from 'react';
 
-// Props
 interface YouTubeLiteProps {
 	videoid: string;
 	title: string;
 }
+
+/**
+ * Componente ligero para insertar videos de YouTube con carga diferida
+ *
+ * Utiliza el custom element 'lite-youtube' para optimizar la carga:
+ * - Carga el reproductor de YouTube solo cuando se necesita
+ * - Reduce significativamente el tiempo de carga inicial
+ * - Mejora el rendimiento general de la página
+ *
+ * Incluye manejo de errores con fallback a enlace directo de YouTube.
+ *
+ * @param videoid - ID del video de YouTube (ej: 'dQw4w9WgXcQ')
+ * @param title - Título descriptivo del video para accesibilidad
+ */
 
 function YouTubeLite({ videoid, title }: YouTubeLiteProps) {
 	const [loaded, setLoaded] = useState(false);
