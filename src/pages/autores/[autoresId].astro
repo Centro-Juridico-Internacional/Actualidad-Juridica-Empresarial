@@ -15,17 +15,25 @@ const authorNews = products.filter((item: any) => {
 });
 
 if (authorNews.length === 0) throw Astro.redirect('/404');
+
+// Función para capitalizar la primera letra de cada palabra
+const capitalizeWords = (str: string) => {
+	return str
+		.split(' ')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(' ');
+};
+
+const authorName = capitalizeWords(autoresId.replace(/_/g, ' '));
 ---
 
-<Layout title={`Noticias de ${autoresId.replace(/_/g, ' ')}`} booleanLayout={true}>
+<Layout title={`Noticias de ${authorName}`} booleanLayout={true}>
 	<div class="min-h-screen bg-gradient-to-b from-green-50/50 to-white">
 		<section class="container-main py-16">
 			<div class="relative mb-12 text-center">
 				<h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
 					<span class="relative inline-block">
-						Noticias de <span class="inline-block text-green-600 first-letter:uppercase"
-							>{autoresId.replace(/_/g, ' ')}</span
-						>
+						Noticias de <span class="inline-block text-green-600">{authorName}</span>
 						<span
 							class="absolute bottom-[-8px] left-0 h-1 w-full transform bg-green-500 transition-transform duration-300 ease-out"
 							style="transform-origin: center;"></span>

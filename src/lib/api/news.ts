@@ -1,5 +1,11 @@
 import { query, withHost } from '../strapi';
 
+/**
+ * Type for Strapi rich text block content
+ * This matches the structure expected by BlocksRenderer from @strapi/blocks-react-renderer
+ */
+type StrapiBlockContent = any[];
+
 /** Host del servidor Strapi */
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 
@@ -21,7 +27,7 @@ export interface NewsArticle {
 	/** Título de la noticia */
 	titulo: string;
 	/** Contenido de la noticia */
-	contenido: unknown;
+	contenido: StrapiBlockContent;
 	/** Slug de la noticia (para URLs) */
 	slug: string;
 	/** URL de la imagen de la noticia */
@@ -36,6 +42,8 @@ export interface NewsArticle {
 	autorName: string | null;
 	/** URL del avatar del autor */
 	autorAvatar: string | null;
+	/** Rol del autor */
+	autorRol: string | null;
 	/** Array de nombres de categorías */
 	categorias: string[];
 }
@@ -67,6 +75,7 @@ interface StrapiAutor {
 	data?: {
 		attributes?: {
 			name?: string;
+			role?: string;
 			avatar?: {
 				data?: {
 					attributes?: {
@@ -78,6 +87,7 @@ interface StrapiAutor {
 		};
 	};
 	name?: string;
+	role?: string;
 	avatar?: {
 		data?: {
 			attributes?: {
@@ -104,7 +114,7 @@ interface StrapiCategoria {
 interface StrapiNewsItem {
 	attributes?: {
 		titulo?: string;
-		contenido?: unknown;
+		contenido?: StrapiBlockContent;
 		slug?: string;
 		imagenes?: {
 			data?: {
@@ -126,7 +136,7 @@ interface StrapiNewsItem {
 		createdAt?: string;
 	};
 	titulo?: string;
-	contenido?: unknown;
+	contenido?: StrapiBlockContent;
 	slug?: string;
 	imagenes?: {
 		data?: {
@@ -172,6 +182,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
+			`&populate[autor][fields][1]=role` +
 			`&populate[categorias][fields][0]=name` +
 			`&sort=updatedAt:desc`;
 
@@ -205,7 +216,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 
 			return {
 				titulo: atributos?.titulo ?? '',
-				contenido: atributos?.contenido,
+				contenido: atributos?.contenido ?? [],
 				slug: atributos?.slug ?? '',
 				image: imagenRelativa ? `${STRAPI_HOST}${imagenRelativa}?token=${STRAPI_TOKEN}` : null,
 				dia: fechaPublicacion.toLocaleDateString(),
@@ -216,6 +227,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 				autorAvatar: autorAvatarRelativo
 					? `${STRAPI_HOST}${autorAvatarRelativo}?token=${STRAPI_TOKEN}`
 					: null,
+				autorRol: autor?.role ?? null,
 				categorias
 			};
 		});

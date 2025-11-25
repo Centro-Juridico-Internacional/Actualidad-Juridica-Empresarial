@@ -97,7 +97,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 				<a href={autorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
 					{product.autorName}
 				</a>
-				<span class="text-xs text-gray-500">Autor</span>
+				<span class="text-xs text-gray-500">{product.autorRol ?? 'Autor'}</span>
 			</div>
 		</div>
 	</div>
