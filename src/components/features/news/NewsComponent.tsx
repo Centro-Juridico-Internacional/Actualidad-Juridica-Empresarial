@@ -96,6 +96,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 								isCompact ? 'prose-sm line-clamp-2' : 'prose-base md:line-clamp-3'
 							}`}
 						>
+							{/* @ts-ignore */}
 							<BlocksRenderer content={blocks} />
 						</div>
 

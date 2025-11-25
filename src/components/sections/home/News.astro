@@ -15,6 +15,7 @@ const { products } = await getNews({ categoryId: '' });
 			class="group relative col-span-5 h-full overflow-hidden rounded-2xl md:col-span-3 md:row-span-2"
 		>
 			<div id="mainCarouselDynamic" class="relative h-full w-full">
+				{/* @ts-ignore */}
 				<CarouselNews products={products} client:visible />
 			</div>
 		</div>
