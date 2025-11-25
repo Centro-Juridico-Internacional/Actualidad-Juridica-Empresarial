@@ -1,0 +1,173 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import NewsComponent from '@/components/features/news/NewsComponent';
+import { searchNews } from '@/lib/api/search';
+
+const query = Astro.url.searchParams.get('q');
+const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
+
+let results = { products: [], pagination: undefined };
+let hasSearched = false;
+
+if (query && query.trim()) {
+	hasSearched = true;
+	try {
+		results = await searchNews({ query: query.trim(), page: currentPage, pageSize: 12 });
+	} catch (error) {
+		console.error('Error searching news:', error);
+	}
+}
+
+const { products, pagination } = results;
+const totalResults = pagination?.total ?? 0;
+---
+
+<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'}>
+	<main class="container-main py-12">
+		<!-- Search Header -->
+		<div class="mb-8">
+			<h1 class="mb-2 text-4xl font-bold text-gray-900">
+				{hasSearched ? 'Resultados de Búsqueda' : 'Buscar Noticias'}
+			</h1>
+			{
+				hasSearched && (
+					<p class="text-lg text-gray-600">
+						{totalResults > 0 ? (
+							<>
+								Se encontraron <span class="font-semibold text-green-700">{totalResults}</span>{' '}
+								{totalResults === 1 ? 'resultado' : 'resultados'} para{' '}
+								<span class="font-semibold">"{query}"</span>
+							</>
+						) : (
+							<>
+								No se encontraron resultados para <span class="font-semibold">"{query}"</span>
+							</>
+						)}
+					</p>
+				)
+			}
+		</div>
+
+		<!-- Results -->
+		{
+			!hasSearched ? (
+				<div class="rounded-xl bg-gray-50 p-12 text-center">
+					<svg
+						class="mx-auto mb-4 h-16 w-16 text-gray-400"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+						/>
+					</svg>
+					<h2 class="mb-2 text-2xl font-semibold text-gray-900">Realiza una búsqueda</h2>
+					<p class="text-gray-600">
+						Busca noticias por título, autor, rol o categoría usando el buscador del header
+					</p>
+				</div>
+			) : products.length === 0 ? (
+				<div class="rounded-xl bg-gray-50 p-12 text-center">
+					<svg
+						class="mx-auto mb-4 h-16 w-16 text-gray-400"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<h2 class="mb-2 text-2xl font-semibold text-gray-900">No se encontraron resultados</h2>
+					<p class="mb-4 text-gray-600">Intenta con otros términos de búsqueda</p>
+					<div class="text-sm text-gray-500">
+						<p class="mb-2">Puedes buscar por:</p>
+						<ul class="inline-flex flex-wrap gap-2">
+							<li class="rounded-full bg-white px-3 py-1 shadow-sm">Título de la noticia</li>
+							<li class="rounded-full bg-white px-3 py-1 shadow-sm">Nombre del autor</li>
+							<li class="rounded-full bg-white px-3 py-1 shadow-sm">Rol del autor</li>
+							<li class="rounded-full bg-white px-3 py-1 shadow-sm">Categoría</li>
+						</ul>
+					</div>
+				</div>
+			) : (
+				<>
+					<!-- Results Grid -->
+					<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+						{products.map((product) => (
+							<a
+								href={`/noticia/${product.slug}`}
+								class="group overflow-hidden rounded-2xl bg-white shadow-md transition-all hover:shadow-xl"
+							>
+								{product.image && (
+									<div class="relative aspect-video w-full overflow-hidden bg-gray-100">
+										<img
+											src={product.image}
+											alt={product.titulo}
+											class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+											loading="lazy"
+											decoding="async"
+										/>
+										<div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+									</div>
+								)}
+								<div class="relative">
+									<NewsComponent
+										product={product}
+										truncateWords={30}
+										className="min-h-[200px]"
+										showContent={true}
+										variant="compact"
+									/>
+								</div>
+							</a>
+						))}
+					</div>
+
+					<!-- Pagination -->
+					{pagination && pagination.pageCount && pagination.pageCount > 1 && (
+						<div class="mt-12 flex justify-center gap-2">
+							{currentPage > 1 && (
+								<a
+									href={`/buscar?q=${encodeURIComponent(query || '')}&page=${currentPage - 1}`}
+									class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+								>
+									← Anterior
+								</a>
+							)}
+
+							{Array.from({ length: pagination.pageCount }, (_, i) => i + 1).map((pageNum) => (
+								<a
+									href={`/buscar?q=${encodeURIComponent(query || '')}&page=${pageNum}`}
+									class={`rounded-lg px-4 py-2 text-sm font-medium shadow-sm ${
+										pageNum === currentPage
+											? 'bg-green-700 text-white'
+											: 'bg-white text-gray-700 hover:bg-gray-50'
+									}`}
+								>
+									{pageNum}
+								</a>
+							))}
+
+							{currentPage < pagination.pageCount && (
+								<a
+									href={`/buscar?q=${encodeURIComponent(query || '')}&page=${currentPage + 1}`}
+									class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+								>
+									Siguiente →
+								</a>
+							)}
+						</div>
+					)}
+				</>
+			)
+		}
+	</main>
+</Layout>

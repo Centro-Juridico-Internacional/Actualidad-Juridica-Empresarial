@@ -1,72 +1,39 @@
-import { query, withHost } from '../strapi';
+import { query } from '../strapi';
+import type { NewsArticle, Pagination } from './news';
 
-/** Host del servidor Strapi */
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
-
-/** Token de autenticación para la API de Strapi */
 const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
 
 /**
- * Parámetros para obtener noticias
+ * Parámetros para la búsqueda de noticias
  */
-interface GetNewsParams {
-	/** ID de la categoría para filtrar noticias */
-	categoryId: string;
-}
-
-/**
- * Representa un artículo de noticia
- */
-export interface NewsArticle {
-	/** Título de la noticia */
-	titulo: string;
-	/** Contenido de la noticia */
-	contenido: unknown;
-	/** Slug de la noticia (para URLs) */
-	slug: string;
-	/** URL de la imagen de la noticia */
-	image: string | null;
-	/** Fecha de publicación */
-	dia: string;
-	/** Hora de publicación */
-	hora: string;
-	/** URL de YouTube asociada */
-	UrlYoutube: string | null;
-	/** Nombre del autor */
-	autorName: string | null;
-	/** URL del avatar del autor */
-	autorAvatar: string | null;
-	/** Array de nombres de categorías */
-	categorias: string[];
-}
-
-/**
- * Estructura de paginación de Strapi
- */
-export interface Pagination {
+interface SearchParams {
+	/** Término de búsqueda */
+	query: string;
+	/** Número de página para paginación */
 	page?: number;
+	/** Cantidad de resultados por página */
 	pageSize?: number;
-	pageCount?: number;
-	total?: number;
 }
 
 /**
- * Resultado de la consulta de noticias
+ * Resultado de la búsqueda de noticias
  */
-interface NewsResult {
-	/** Array de artículos de noticias */
+interface SearchResult {
+	/** Array de artículos encontrados */
 	products: NewsArticle[];
 	/** Información de paginación */
 	pagination?: Pagination;
 }
 
 /**
- * Representa la información del autor en Strapi
+ * Representa un item de autor en Strapi
  */
 interface StrapiAutor {
 	data?: {
 		attributes?: {
 			name?: string;
+			role?: string;
 			avatar?: {
 				data?: {
 					attributes?: {
@@ -78,6 +45,7 @@ interface StrapiAutor {
 		};
 	};
 	name?: string;
+	role?: string;
 	avatar?: {
 		data?: {
 			attributes?: {
@@ -149,9 +117,9 @@ interface StrapiNewsItem {
 }
 
 /**
- * Respuesta de Strapi para noticias
+ * Respuesta de Strapi para búsqueda de noticias
  */
-interface StrapiNewsResponse {
+interface StrapiSearchResponse {
 	data: StrapiNewsItem[];
 	meta?: {
 		pagination?: Pagination;
@@ -159,24 +127,51 @@ interface StrapiNewsResponse {
 }
 
 /**
- * Obtiene noticias filtradas por categoría desde Strapi
- * @param params - Parámetros de búsqueda incluyendo el ID de categoría
- * @returns Promesa con el array de noticias y la información de paginación
+ * Busca noticias en Strapi por múltiples criterios
+ * Busca en: título, nombre del autor, rol del autor, y categorías
+ *
+ * @param params - Parámetros de búsqueda incluyendo el término a buscar
+ * @returns Promesa con los resultados de búsqueda y paginación
  * @throws Error si la consulta a la API falla
  */
-export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult> {
+export async function searchNews({
+	query: searchQuery,
+	page = 1,
+	pageSize = 20
+}: SearchParams): Promise<SearchResult> {
 	try {
-		const consultaNoticias =
+		if (!searchQuery || searchQuery.trim() === '') {
+			return { products: [], pagination: undefined };
+		}
+
+		const encodedQuery = encodeURIComponent(searchQuery.trim());
+
+		// Construir query de búsqueda con filtros $or para buscar en múltiples campos
+		const searchQueryString =
 			`news?` +
-			`filters[categorias][slug][$contains]=${encodeURIComponent(categoryId ?? '')}` +
+			// Buscar en título
+			`filters[$or][0][titulo][$containsi]=${encodedQuery}` +
+			// Buscar en nombre del autor
+			`&filters[$or][1][autor][name][$containsi]=${encodedQuery}` +
+			// Buscar en rol del autor
+			`&filters[$or][2][autor][role][$containsi]=${encodedQuery}` +
+			// Buscar en categorías
+			`&filters[$or][3][categorias][name][$containsi]=${encodedQuery}` +
+			// Populate para obtener toda la información necesaria
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
+			`&populate[autor][fields][1]=role` +
 			`&populate[categorias][fields][0]=name` +
-			`&sort=updatedAt:desc`;
+			// Ordenar por fecha de actualización descendente
+			`&sort=updatedAt:desc` +
+			// Paginación
+			`&pagination[page]=${page}` +
+			`&pagination[pageSize]=${pageSize}`;
 
-		const respuesta = (await query(consultaNoticias)) as StrapiNewsResponse;
+		const respuesta = (await query(searchQueryString)) as StrapiSearchResponse;
 
+		// Transformar los datos de Strapi al formato esperado
 		const noticias = respuesta.data.map((item: StrapiNewsItem) => {
 			const atributos = item.attributes ?? item;
 
@@ -210,7 +205,6 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 				image: imagenRelativa ? `${STRAPI_HOST}${imagenRelativa}?token=${STRAPI_TOKEN}` : null,
 				dia: fechaPublicacion.toLocaleDateString(),
 				hora: fechaPublicacion.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-
 				UrlYoutube: atributos?.UrlYoutube ?? null,
 				autorName: autor?.name ?? null,
 				autorAvatar: autorAvatarRelativo
@@ -222,7 +216,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 
 		return { products: noticias, pagination: respuesta?.meta?.pagination };
 	} catch (error) {
-		console.error('Error al obtener las noticias:', error);
+		console.error('Error al buscar noticias:', error);
 		throw error;
 	}
 }
