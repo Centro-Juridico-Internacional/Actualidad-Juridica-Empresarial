@@ -1,36 +1,74 @@
-export function truncateBlocks(blocks: any[], maxWords: number) {
-	let wordCount = 0;
-	let truncatedBlocks = [];
-	let truncated = false;
+/**
+ * Representa un elemento hijo de un bloque de texto
+ */
+interface BlockChild {
+	/** Texto del elemento */
+	text?: string;
+	/** Propiedades adicionales del elemento */
+	[key: string]: unknown;
+}
 
-	for (const block of blocks) {
-		if (block.type === 'paragraph' && block.children && Array.isArray(block.children)) {
-			let newChildren = [];
-			for (const child of block.children) {
-				const words = (child.text || '').split(/\s+/).filter(Boolean);
-				if (wordCount + words.length <= maxWords) {
-					newChildren.push(child);
-					wordCount += words.length;
+/**
+ * Representa un bloque de contenido
+ */
+interface Block {
+	/** Tipo de bloque (ej: 'paragraph', 'heading', etc.) */
+	type: string;
+	/** Elementos hijos del bloque */
+	children?: BlockChild[];
+	/** Propiedades adicionales del bloque */
+	[key: string]: unknown;
+}
+
+/**
+ * Resultado de la operación de truncado
+ */
+interface TruncateResult {
+	/** Bloques truncados */
+	blocks: Block[];
+	/** Indica si se truncó el contenido */
+	truncated: boolean;
+}
+
+/**
+ * Trunca un array de bloques de texto a un número máximo de palabras
+ * @param blocks - Array de bloques a truncar
+ * @param maxWords - Número máximo de palabras permitidas
+ * @returns Objeto con los bloques truncados y un indicador de si se truncó
+ */
+export function truncateBlocks(blocks: Block[], maxWords: number): TruncateResult {
+	let contadorPalabras = 0;
+	const bloquesTruncados: Block[] = [];
+	let seTrunco = false;
+
+	for (const bloque of blocks) {
+		if (bloque.type === 'paragraph' && bloque.children && Array.isArray(bloque.children)) {
+			const hijosNuevos: BlockChild[] = [];
+			for (const hijo of bloque.children) {
+				const palabras = (hijo.text || '').split(/\s+/).filter(Boolean);
+				if (contadorPalabras + palabras.length <= maxWords) {
+					hijosNuevos.push(hijo);
+					contadorPalabras += palabras.length;
 				} else {
-					const remaining = maxWords - wordCount;
-					if (remaining > 0) {
-						let truncatedText = words.slice(0, remaining).join(' ');
-						truncatedText = truncatedText.replace(/[.,;!?]*$/, '') + '...';
-						newChildren.push({ ...child, text: truncatedText });
-						wordCount += remaining;
+					const palabrasRestantes = maxWords - contadorPalabras;
+					if (palabrasRestantes > 0) {
+						let textoTruncado = palabras.slice(0, palabrasRestantes).join(' ');
+						textoTruncado = textoTruncado.replace(/[.,;!?]*$/, '') + '...';
+						hijosNuevos.push({ ...hijo, text: textoTruncado });
+						contadorPalabras += palabrasRestantes;
 					}
-					truncated = true;
+					seTrunco = true;
 					break;
 				}
 			}
-			if (newChildren.length > 0) {
-				truncatedBlocks.push({ ...block, children: newChildren });
+			if (hijosNuevos.length > 0) {
+				bloquesTruncados.push({ ...bloque, children: hijosNuevos });
 			}
-			if (truncated) break;
+			if (seTrunco) break;
 		} else {
-			truncatedBlocks.push(block);
+			bloquesTruncados.push(bloque);
 		}
 	}
 
-	return { blocks: truncatedBlocks, truncated };
+	return { blocks: bloquesTruncados, truncated: seTrunco };
 }
