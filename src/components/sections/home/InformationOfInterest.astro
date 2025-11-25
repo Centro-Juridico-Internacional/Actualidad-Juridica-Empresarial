@@ -1,7 +1,7 @@
 ---
-import NewsComponent from '@/components/home/NewsComponent';
-import { getNews } from '@/lib/get-news';
-import Titles from '@/components/home/global/Titles.astro';
+import NewsComponent from '@/components/features/news/NewsComponent';
+import { getNews } from '@/lib/api/news';
+import Titles from '@/components/ui/Titles.astro';
 
 const { products } = await getNews({ categoryId: '' });
 ---

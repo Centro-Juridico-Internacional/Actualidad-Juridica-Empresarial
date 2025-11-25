@@ -1,8 +1,8 @@
 ---
 // filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\autores\[autoresId].astro
 import Layout from '@/layouts/Layout.astro';
-import { getNews } from '@/lib/get-news';
-import NewsCard from '@/components/home/NewsCard.astro';
+import { getNews } from '@/lib/api/news';
+import NewsCard from '@/components/ui/NewsCard.astro';
 
 const { autoresId } = Astro.params;
 if (!autoresId) throw Astro.redirect('/404');

@@ -1,6 +1,6 @@
 import React from 'react';
 import SimpleCarouselLite from './SimpleCarouselLite';
-import YouTubeLite from '@/components/home/global/YouTubeLite';
+import YouTubeLite from '@/components/features/media/YouTubeLite';
 
 interface Interview {
 	title: string;

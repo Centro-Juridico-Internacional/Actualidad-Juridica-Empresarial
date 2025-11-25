@@ -1,8 +1,8 @@
 ---
 // filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\categorias\[categoryId].astro
 import Layout from '@/layouts/Layout.astro';
-import { getNews } from '@/lib/get-news';
-import NewsCard from '@/components/home/NewsCard.astro';
+import { getNews } from '@/lib/api/news';
+import NewsCard from '@/components/ui/NewsCard.astro';
 
 const { categoryId } = Astro.params;
 if (!categoryId) throw Astro.redirect('/404');

@@ -1,16 +1,16 @@
 ---
-import CarouselInterview from '@/components/home/InterviewCarousel';
-import Carousel from '@/components/home/Carousel';
+import CarouselInterview from '@/components/features/carousel/InterviewCarousel';
+import Carousel from '@/components/features/carousel/Carousel';
 
-import { getPautas } from '@/lib/get-pautas';
-import { getInterviewsUrl } from '@/lib/get-interviewsUrl';
-import Titles from '@/components/home/global/Titles.astro';
+import { getPautas } from '@/lib/api/pautas';
+import { getInterviewsUrl } from '@/lib/api/interviews';
+import Titles from '@/components/ui/Titles.astro';
 
 const pautas = await getPautas();
 const interviews = await getInterviewsUrl();
 ---
 
-<Titles text="Videos & Podcast" />
+<Titles text="Entrevista y pautas del mes" />
 
 <section id="ContainerInterview-Magazine" class="container-main my-16">
 	<div class="grid gap-8 md:grid-cols-2">

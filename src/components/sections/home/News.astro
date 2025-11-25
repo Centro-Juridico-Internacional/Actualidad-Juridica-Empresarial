@@ -1,7 +1,7 @@
 ---
-import CarouselNews from '@/components/home/NewsCarousel';
-import NewsComponent from '@/components/home/NewsComponent';
-import { getNews } from '@/lib/get-news';
+import CarouselNews from '@/components/features/carousel/NewsCarousel';
+import NewsComponent from '@/components/features/news/NewsComponent';
+import { getNews } from '@/lib/api/news';
 
 const { products } = await getNews({ categoryId: '' });
 ---

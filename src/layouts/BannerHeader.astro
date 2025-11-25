@@ -5,7 +5,7 @@ interface Props {
 
 const { booleanBanner } = Astro.props;
 
-import { getBanner } from '@/lib/get-banner';
+import { getBanner } from '@/lib/api/banner';
 
 const banner = await getBanner();
 ---

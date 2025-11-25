@@ -1,4 +1,4 @@
-import { query, withHost } from './strapi';
+import { query, withHost } from '../strapi';
 
 export async function getBanner() {
 	const res = await query('banner?populate[imagen][fields][0]=url');

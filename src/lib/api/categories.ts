@@ -1,4 +1,4 @@
-import { query, withHost } from './strapi';
+import { query, withHost } from '../strapi';
 
 export async function getCategories() {
 	const res = await query(

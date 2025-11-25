@@ -1,7 +1,7 @@
 import React from 'react';
 import SimpleCarouselLite from './SimpleCarouselLite';
 
-import type { CarouselProps } from '@/lib/typesCarousel';
+import type { CarouselProps } from '@/lib/types/carousel';
 
 const CarouselComponent: React.FC<CarouselProps> = ({
 	width,

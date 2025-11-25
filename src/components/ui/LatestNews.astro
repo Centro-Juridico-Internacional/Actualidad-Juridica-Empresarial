@@ -1,6 +1,6 @@
 ---
 // filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\components\home\LatestNews.astro
-import { getNews } from '@/lib/get-news';
+import { getNews } from '@/lib/api/news';
 
 const { products } = await getNews({ categoryId: '' });
 const { currentSlug = null, layout = 'vertical' } = Astro.props; // Recibe el slug actual como prop

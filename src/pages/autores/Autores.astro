@@ -1,7 +1,7 @@
 ---
 // filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\autores\Autores.astro
 import Layout from '@/layouts/Layout.astro';
-import { getAuthors } from '@/lib/get-authors';
+import { getAuthors } from '@/lib/api/authors';
 
 // Recupera todos los autores
 const authors = await getAuthors();

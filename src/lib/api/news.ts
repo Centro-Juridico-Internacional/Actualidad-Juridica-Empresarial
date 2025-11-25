@@ -1,4 +1,4 @@
-import { query, withHost } from './strapi';
+import { query, withHost } from '../strapi';
 const STRAPI_HOST = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 
 export async function getNews({ categoryId }: { categoryId: string }) {

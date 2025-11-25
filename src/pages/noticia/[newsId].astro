@@ -1,10 +1,10 @@
 ---
 // filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\noticia\[newsId].astro
 import Layout from '@/layouts/Layout.astro';
-import { getNews } from '@/lib/get-news';
+import { getNews } from '@/lib/api/news';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import YouTubeLite from '@/components/home/global/YouTubeLite';
-import LatestNews from '@/components/home/LatestNews.astro';
+import YouTubeLite from '@/components/features/media/YouTubeLite';
+import LatestNews from '@/components/ui/LatestNews.astro';
 
 const { newsId } = Astro.params;
 if (!newsId) throw Astro.redirect('/404');

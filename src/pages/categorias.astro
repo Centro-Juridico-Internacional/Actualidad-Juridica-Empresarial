@@ -1,7 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import { getCategories } from '@/lib/get-categories';
+import { getCategories } from '@/lib/api/categories';
 
 const categories = await getCategories();
 ---

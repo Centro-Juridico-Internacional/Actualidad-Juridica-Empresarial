@@ -1,6 +1,6 @@
 import React from 'react';
 import SimpleCarouselLite from './SimpleCarouselLite';
-import NewsComponent from '@/components/home/NewsComponent';
+import NewsComponent from '@/components/features/news/NewsComponent';
 
 interface NewsItem {
 	slug: string;

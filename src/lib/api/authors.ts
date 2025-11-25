@@ -1,5 +1,5 @@
 // src/lib/get-authors.ts
-import { query, withHost } from './strapi';
+import { query, withHost } from '../strapi';
 
 export async function getAuthors() {
 	// Strapi v4/v5: /api/authors?fields[0]=name&fields[1]=role&populate[avatar][fields][0]=url

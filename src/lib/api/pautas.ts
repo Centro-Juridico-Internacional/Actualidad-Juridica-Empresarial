@@ -1,4 +1,4 @@
-import { query, withHost } from './strapi';
+import { query, withHost } from '../strapi';
 
 export async function getPautas() {
 	const res = await query('imagenes-pautas?fields[0]=Titulo&populate[Imagen][fields][0]=url');
