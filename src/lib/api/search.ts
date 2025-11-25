@@ -144,28 +144,90 @@ export async function searchNews({
 			return { products: [], pagination: undefined };
 		}
 
-		const encodedQuery = encodeURIComponent(searchQuery.trim());
+		// 1. Limpieza básica: quitar caracteres extraños pero dejar letras, números y espacios
+		// También normalizamos espacios múltiples
+		const cleanQuery = searchQuery
+			.trim()
+			.replace(/[^\w\s\u00C0-\u00FF]/g, ' ') // Mantener letras con tildes y caracteres latinos
+			.replace(/\s+/g, ' ');
 
-		// Construir query de búsqueda con filtros $or para buscar en múltiples campos
+		const lowerQuery = cleanQuery.toLowerCase();
+
+		// Función para quitar tildes
+		const removeAccents = (str: string) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		const noAccentQuery = removeAccents(lowerQuery);
+
+		const variations = new Set<string>();
+		variations.add(cleanQuery);
+		variations.add(lowerQuery);
+		variations.add(noAccentQuery);
+
+		// 2. Variaciones de formato (guiones)
+		variations.add(lowerQuery.replace(/ /g, '-'));
+		variations.add(lowerQuery.replace(/-/g, ' '));
+		variations.add(lowerQuery.replace(/-/g, ''));
+
+		// 3. Expansión de Sinónimos y Conceptos Relacionados
+		const synonymGroups = [
+			{
+				// Grupo SG-SST
+				triggers: [
+					'sg-sst',
+					'sgsst',
+					'sg sst',
+					'gestion',
+					'sistema de gestion',
+					'sistema de gestión',
+					'seguridad y salud',
+					'salud en el trabajo'
+				],
+				expansions: ['sg-sst', 'sgsst', 'Sistema de Gestión de Seguridad y Salud en el Trabajo']
+			}
+		];
+
+		// Verificar triggers (usando la versión sin tildes para facilitar el match)
+		synonymGroups.forEach((group) => {
+			const match = group.triggers.some((trigger) =>
+				noAccentQuery.includes(removeAccents(trigger))
+			);
+			if (match) {
+				group.expansions.forEach((term) => variations.add(term));
+			}
+		});
+
+		const uniqueVariations = Array.from(variations);
+
+		// Construir filtros dinámicamente
+		let filterIndex = 0;
+		let filtersString = '';
+
+		const fields = [
+			'[titulo][$containsi]',
+			'[autor][name][$containsi]',
+			'[autor][role][$containsi]',
+			'[categorias][name][$containsi]'
+		];
+
+		uniqueVariations.forEach((variation) => {
+			if (variation.length < 2) return;
+
+			const encodedVar = encodeURIComponent(variation);
+			fields.forEach((field) => {
+				filtersString += `&filters[$or][${filterIndex}]${field}=${encodedVar}`;
+				filterIndex++;
+			});
+		});
+
+		// Construir query completa
 		const searchQueryString =
 			`news?` +
-			// Buscar en título
-			`filters[$or][0][titulo][$containsi]=${encodedQuery}` +
-			// Buscar en nombre del autor
-			`&filters[$or][1][autor][name][$containsi]=${encodedQuery}` +
-			// Buscar en rol del autor
-			`&filters[$or][2][autor][role][$containsi]=${encodedQuery}` +
-			// Buscar en categorías
-			`&filters[$or][3][categorias][name][$containsi]=${encodedQuery}` +
-			// Populate para obtener toda la información necesaria
+			filtersString +
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
 			`&populate[autor][fields][1]=role` +
 			`&populate[categorias][fields][0]=name` +
-			// Ordenar por fecha de actualización descendente
 			`&sort=updatedAt:desc` +
-			// Paginación
 			`&pagination[page]=${page}` +
 			`&pagination[pageSize]=${pageSize}`;
 
