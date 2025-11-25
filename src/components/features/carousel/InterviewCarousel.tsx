@@ -36,4 +36,7 @@ const InterviewCarousel: React.FC<InterviewCarouselProps> = ({ interviews = [] }
 	);
 };
 
-export default React.memo(InterviewCarousel);
+export default React.memo(InterviewCarousel, (prevProps, nextProps) => {
+	// Only re-render if interviews array reference changes
+	return prevProps.interviews === nextProps.interviews;
+});

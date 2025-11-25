@@ -3,12 +3,17 @@ import SimpleCarouselLite from './SimpleCarouselLite';
 
 import type { CarouselProps } from '@/lib/types/carousel';
 
-const CarouselComponent: React.FC<CarouselProps> = ({
-	width,
-	dotDuration,
-	autoplaySpeed,
-	data: DATA
-}) => {
+const carouselStyle = {
+	height: '100%',
+	width: '100%',
+	margin: 'auto'
+} as const;
+
+/**
+ * Carousel component for displaying images in a rotating carousel
+ * Uses SimpleCarouselLite internally for carousel functionality
+ */
+const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, data: DATA }) => {
 	return (
 		<div className={`${width} rounded-xl shadow-xl`}>
 			<SimpleCarouselLite
@@ -17,11 +22,15 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 				arrows
 				dots
 				infinite
-				style={{ height: '100%', width: '100%', margin: 'auto' }}
+				style={carouselStyle}
 			>
 				{DATA.map((item) => {
 					return (
-						<div id={item.title} className="overflow-hidden rounded-2xl border-4 border-green-950">
+						<div
+							key={item.title}
+							id={item.title}
+							className="overflow-hidden rounded-2xl border-4 border-green-950"
+						>
 							<img
 								src={item.image}
 								alt={`${item.title} imagen`}
@@ -37,4 +46,12 @@ const CarouselComponent: React.FC<CarouselProps> = ({
 	);
 };
 
-export default CarouselComponent;
+export default React.memo(Carousel, (prevProps, nextProps) => {
+	// Only re-render if these props actually change
+	return (
+		prevProps.width === nextProps.width &&
+		prevProps.autoplaySpeed === nextProps.autoplaySpeed &&
+		prevProps.dotDuration === nextProps.dotDuration &&
+		prevProps.data === nextProps.data
+	);
+});

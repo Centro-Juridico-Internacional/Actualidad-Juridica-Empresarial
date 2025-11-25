@@ -60,4 +60,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
 	);
 };
 
-export default React.memo(NewsCarousel);
+export default React.memo(NewsCarousel, (prevProps, nextProps) => {
+	// Only re-render if products array reference changes
+	return prevProps.products === nextProps.products;
+});
