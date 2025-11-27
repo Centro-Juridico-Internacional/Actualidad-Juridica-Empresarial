@@ -1,0 +1,50 @@
+/* src/styles/revista-responsive.css */
+
+/* Wrapper que le pasas desde Astro */
+.revista-flipbook {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+/* Dentro del componente React, el contenedor del libro tiene esta clase */
+.revista-flipbook .flipbook-container {
+	transform-origin: top center;
+}
+
+/* Desktop grande */
+@media (min-width: 1200px) {
+	.revista-flipbook .flipbook-container {
+		transform: scale(1);
+	}
+}
+
+/* Laptop / desktop mediano */
+@media (max-width: 1199px) and (min-width: 1024px) {
+	.revista-flipbook .flipbook-container {
+		transform: scale(0.95);
+	}
+}
+
+/* Tablet (aún doble página, pero más pequeña) */
+@media (max-width: 1023px) and (min-width: 769px) {
+	.revista-flipbook .flipbook-container {
+		transform: scale(0.85);
+	}
+}
+
+/* 👉 Mobile (single page por lógica de React) */
+/* Móvil grande */
+@media (max-width: 768px) and (min-width: 480px) {
+	.revista-flipbook .flipbook-container {
+		transform: scale(0.75);
+	}
+}
+
+/* Móvil pequeño */
+@media (max-width: 479px) {
+	.revista-flipbook .flipbook-container {
+		transform: scale(0.65);
+	}
+}

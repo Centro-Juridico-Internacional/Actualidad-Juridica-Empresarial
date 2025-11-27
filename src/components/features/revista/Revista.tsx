@@ -1,4 +1,4 @@
-// filepath: src/components/home/Revista.tsx
+// filepath: src/components/features/revista/Revista.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { PageFlip } from 'page-flip';
@@ -14,18 +14,19 @@ interface FlipBookInternalProps {
 	pdfUrl: string;
 	width: number;
 	height: number;
+	isMobile: boolean;
 	onInit: (pageFlip: any) => void;
 	onFlip: (page: number) => void;
 	onLoadSuccess: (data: { numPages: number }) => void;
 	onLoadError: (error: Error) => void;
 }
 
-// Componente interno que NO se re-renderiza cuando cambia la página actual
 const FlipBookInternal = React.memo(
 	({
 		pdfUrl,
 		width,
 		height,
+		isMobile,
 		onInit,
 		onFlip,
 		onLoadSuccess,
@@ -33,21 +34,27 @@ const FlipBookInternal = React.memo(
 	}: FlipBookInternalProps) => {
 		const bookRef = useRef<HTMLDivElement>(null);
 		const [localNumPages, setLocalNumPages] = useState<number>(0);
+		const flipInstanceRef = useRef<any>(null);
 
 		const onDocumentLoadSuccess = (data: { numPages: number }) => {
 			setLocalNumPages(data.numPages);
 			onLoadSuccess(data);
 		};
 
-		// Inicializar PageFlip solo cuando tengamos páginas renderizadas
+		// Inicializar / reinicializar PageFlip cuando haya páginas o cambie modo (mobile/desktop)
 		useEffect(() => {
 			if (localNumPages > 0 && bookRef.current) {
 				const timeout = setTimeout(() => {
 					try {
 						const pages = bookRef.current?.querySelectorAll('.page');
 						if (pages && pages.length > 0) {
+							// Destruir instancia anterior si existe
+							if (flipInstanceRef.current) {
+								flipInstanceRef.current.destroy();
+								flipInstanceRef.current = null;
+							}
+
 							const pageFlip = new PageFlip(bookRef.current as HTMLElement, {
-								// Tamaño de UNA página (PageFlip se encarga de juntar dos)
 								width,
 								height,
 								size: 'fixed',
@@ -56,11 +63,12 @@ const FlipBookInternal = React.memo(
 								minHeight: 400,
 								maxHeight: 1533,
 
-								// Comportamiento tipo revista real
-								showCover: true, // portada / contraportada
-								usePortrait: false, // doble página en vista "libro"
-								flippingTime: 900, // velocidad del giro (ms) similar a revista real
-								maxShadowOpacity: 0.6, // sombras marcadas pero no exageradas
+								showCover: true,
+								// En mobile: una sola página; en desktop: doble página
+								usePortrait: isMobile,
+
+								flippingTime: 900,
+								maxShadowOpacity: 0.6,
 								drawShadow: true,
 								showPageCorners: true,
 								disableFlipByClick: false,
@@ -77,6 +85,7 @@ const FlipBookInternal = React.memo(
 								onFlip(e.data + 1);
 							});
 
+							flipInstanceRef.current = pageFlip;
 							onInit(pageFlip);
 						}
 					} catch (err) {
@@ -84,11 +93,12 @@ const FlipBookInternal = React.memo(
 					}
 				}, 300);
 
-				return () => clearTimeout(timeout);
+				return () => {
+					clearTimeout(timeout);
+				};
 			}
-		}, [localNumPages, width, height]);
+		}, [localNumPages, width, height, isMobile, onFlip, onInit]);
 
-		// Opciones de PDF.js
 		const pdfOptions = React.useMemo(
 			() => ({
 				cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
@@ -141,22 +151,51 @@ const FlipBookInternal = React.memo(
 		);
 	},
 	(prev, next) =>
-		prev.pdfUrl === next.pdfUrl && prev.width === next.width && prev.height === next.height
+		prev.pdfUrl === next.pdfUrl &&
+		prev.width === next.width &&
+		prev.height === next.height &&
+		prev.isMobile === next.isMobile
 );
 
 interface RevistaProps {
 	pdfUrl: string;
-	className?: string;
-	width?: number;
-	height?: number;
+	className: string; // obligatorio
+	height: number; // obligatorio
+	width?: number; // opcional, se calcula si no viene
 }
 
-const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, height = 800 }) => {
+// Proporción real de tus medidas
+const BASE_HEIGHT = 900;
+const BASE_WIDTH = 700;
+const ASPECT_RATIO = BASE_WIDTH / BASE_HEIGHT;
+const MOBILE_BREAKPOINT = 768; // px
+
+const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) => {
 	const [numPages, setNumPages] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const pageFlipRef = useRef<any>(null);
+
+	// Detectar si es mobile por ancho de ventana
+	const [isMobile, setIsMobile] = useState<boolean>(() => {
+		if (typeof window === 'undefined') return false;
+		return window.innerWidth <= MOBILE_BREAKPOINT;
+	});
+
+	useEffect(() => {
+		const handleResize = () => {
+			if (typeof window === 'undefined') return;
+			setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
+		};
+
+		window.addEventListener('resize', handleResize);
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	// Calcular proporción automáticamente
+	const computedHeight = height;
+	const computedWidth = width ?? Math.round(computedHeight * ASPECT_RATIO);
 
 	const handleInit = React.useCallback((pageFlip: any) => {
 		pageFlipRef.current = pageFlip;
@@ -250,8 +289,9 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
 				<div className="w-full max-w-[95vw] sm:max-w-[650px] md:max-w-[900px] lg:max-w-[1100px] xl:max-w-[1300px]">
 					<FlipBookInternal
 						pdfUrl={pdfUrl}
-						width={width}
-						height={height}
+						width={computedWidth}
+						height={computedHeight}
+						isMobile={isMobile}
 						onInit={handleInit}
 						onFlip={handleFlip}
 						onLoadSuccess={handleLoadSuccess}
@@ -283,9 +323,6 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
             radial-gradient(circle at top, #e0ebff 0, transparent 55%),
             radial-gradient(circle at bottom, #fefce8 0, #ffffff 45%);
           user-select: none;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
         }
 
         .revista-inner {
@@ -297,113 +334,130 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className = '', width = 600, 
           transform-style: preserve-3d;
         }
 
-        /* --- PÁGINAS --- */
-
+        /* --- PÁGINAS (revista real) --- */
         .page {
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background-color: #ffffff;
-          border-radius: 0;
+
+          /* Shadow base (modo escritorio / tablet) */
           box-shadow:
-            0 10px 28px rgba(15, 23, 42, 0.22),
-            0 4px 12px rgba(15, 23, 42, 0.16);
+            0 15px 25px rgba(0,0,0,0.18),
+            0 8px 15px rgba(0,0,0,0.12),
+            0 3px 6px rgba(0,0,0,0.10);
+
+          border-radius: 0;
         }
 
-        /* Portada / contraportada: bordes completos redondeados */
         .page-cover {
-          border-radius: 14px;
-          border: 1px solid rgba(15, 23, 42, 0.08);
+          border-radius: 0;
+          border: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Páginas interiores: sólo bordes EXTERNOS redondeados, unión recta */
-        .page-inner.stf__item.--left {
-          border-radius: 14px 0 0 14px;
+        .page-inner {
+          border-radius: 0;
         }
 
-        .page-inner.stf__item.--right {
-          border-radius: 0 14px 14px 0;
+        /* Doble página: unión recta */
+        .stf__item.--left .page-inner,
+        .stf__item.--right .page-inner {
+          border-radius: 0;
         }
 
-        /* Single page (cuando PageFlip muestra solo una página) centrada y con radio completo */
+        /* Una sola página centrada */
         .stf__item.--simple {
           margin-left: auto;
           margin-right: auto;
-          border-radius: 14px;
+        }
+        .stf__item.--simple .page {
+          border-radius: 0;
         }
 
-        /* Wrapper del libro */
-        .stf__wrapper {
-          margin: 0 auto;
-          border-radius: 16px;
-          box-shadow:
-            0 20px 55px rgba(15, 23, 42, 0.30),
-            0 12px 30px rgba(15, 23, 42, 0.22);
-        }
-
-        .stf__block {
-          box-shadow:
-            0 2px 8px rgba(15, 23, 42, 0.14),
-            0 1px 4px rgba(15, 23, 42, 0.10);
-        }
-
+        /* Wrapper del libro sin sombras extra */
+        .stf__wrapper,
+        .stf__block,
         .stf__item {
-          background: #ffffff;
+          background: transparent;
+          box-shadow: none;
         }
 
-        /* Sombras del volteo controladas por PageFlip, sólo ajustamos el gradiente */
+        /* Sombras del volteo (solo gradientes) */
         .stf__hardPageShadow {
           background: linear-gradient(
             to right,
-            rgba(0, 0, 0, 0.35) 0%,
-            rgba(0, 0, 0, 0.12) 40%,
-            rgba(0, 0, 0, 0) 100%
+            rgba(0,0,0,0.35) 0%,
+            rgba(0,0,0,0.12) 40%,
+            rgba(0,0,0,0) 100%
           );
         }
 
         .stf__softPageShadow {
           background: linear-gradient(
             to right,
-            rgba(15, 23, 42, 0.18) 0%,
-            rgba(15, 23, 42, 0.06) 40%,
-            rgba(15, 23, 42, 0) 100%
+            rgba(0,0,0,0.18) 0%,
+            rgba(0,0,0,0.06) 40%,
+            rgba(0,0,0,0) 100%
           );
         }
 
-        .stf__hardInnerShadow {
-          background: linear-gradient(
-            to left,
-            rgba(0, 0, 0, 0.22) 0%,
-            rgba(0, 0, 0, 0.06) 40%,
-            rgba(0, 0, 0, 0) 100%
-          );
-        }
-
-        .stf__pageCorner {
-          background: radial-gradient(circle at 0 0,
-            rgba(255, 255, 255, 0.98) 0%,
-            rgba(148, 163, 184, 0.28) 40%,
-            rgba(148, 163, 184, 0) 100%
-          );
-        }
-
-        /* Sin animaciones ni transform en botones */
         .shadow-panel {
           box-shadow:
-            0 8px 24px rgba(15, 23, 42, 0.18),
-            0 3px 10px rgba(15, 23, 42, 0.10);
+            0 8px 22px rgba(0,0,0,0.22),
+            0 3px 10px rgba(0,0,0,0.12);
         }
 
+        /* =======================
+           ESTILOS ESPECÍFICOS MOBILE
+           ======================= */
         @media (max-width: 768px) {
+          /* Fondo más neutro y menos recargado */
           .revista-container {
-            padding: 2rem 0.75rem 2.5rem;
+            padding: 1.5rem 0.75rem 2rem;
+            background: linear-gradient(to bottom, #f9fafb 0, #ffffff 60%, #f3f4f6 100%);
           }
 
-          .stf__wrapper {
+          /* Controles de navegación en columna, centrados */
+          .revista-container > .mb-6 {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+          }
+
+          .revista-container > .mb-6 button,
+          .revista-container > .mb-6 .shadow-panel {
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+          }
+
+          /* Flipbook ocupa el ancho sin trucos de transform, para evitar movimientos raros */
+          .revista-inner {
+            perspective: 1200px;
+          }
+
+          .revista-container .flipbook-container {
+            max-width: 100%;
+          }
+
+          /* Página más suave en mobile, sin animaciones extra ni transforms */
+          .page {
             box-shadow:
-              0 18px 48px rgba(15, 23, 42, 0.28),
-              0 10px 26px rgba(15, 23, 42, 0.20);
+              0 12px 22px rgba(15, 23, 42, 0.18),
+              0 6px 12px rgba(15, 23, 42, 0.14);
+          }
+
+          /* Sombras del volteo un pelín más suaves */
+          .stf__hardPageShadow,
+          .stf__softPageShadow {
+            opacity: 0.9;
+          }
+
+          /* Barra de progreso ligeramente más cercana y centrada visualmente */
+          .mx-auto.mt-6.w-full.max-w-xl {
+            margin-top: 1.25rem;
           }
         }
       `}</style>

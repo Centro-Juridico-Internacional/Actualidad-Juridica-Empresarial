@@ -8,6 +8,8 @@ import InformationOfInterest from '@/components/sections/home/InformationOfInter
 import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
 import Revista from '@/components/features/revista/Revista';
+// Importar estilos responsive de la revista SOLO para esta página
+import '@/styles/revista-responsive.css';
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
@@ -15,11 +17,11 @@ import Revista from '@/components/features/revista/Revista';
 	<InformationOfInterest />
 	<ContainerInterviewMagazine />
 	<Podcast />
+
 	<Revista
 		client:only="react"
 		pdfUrl="/revistas/revista.pdf"
-		width={600}
-		height={770}
+		height={700}
 		className="revista-flipbook"
 	/>
 </Layout>
