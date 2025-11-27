@@ -13,7 +13,7 @@ const query: string | null = Astro.url.searchParams.get('q');
 const currentPage: number = parseInt(Astro.url.searchParams.get('page') || '1');
 
 // Initialize results structure
-let results: { products: any[]; pagination: any } = {
+let results: { products: any[]; pagination?: any } = {
 	products: [],
 	pagination: undefined
 };
