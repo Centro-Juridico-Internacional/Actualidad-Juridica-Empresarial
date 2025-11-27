@@ -34,7 +34,7 @@ const { products, pagination } = results;
 const totalResults: number = pagination?.total ?? 0;
 ---
 
-<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'}>
+<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'} booleanLayout={false}>
 	<main class="container-main py-12">
 		<!-- Search Header -->
 		<div class="mb-8">
