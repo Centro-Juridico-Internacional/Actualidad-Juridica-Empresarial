@@ -1,31 +1,11 @@
-/**
- * Representa un elemento hijo de un bloque de texto
- */
-interface BlockChild {
-	/** Texto del elemento */
-	text?: string;
-	/** Propiedades adicionales del elemento */
-	[key: string]: unknown;
-}
-
-/**
- * Representa un bloque de contenido
- */
-interface Block {
-	/** Tipo de bloque (ej: 'paragraph', 'heading', etc.) */
-	type: string;
-	/** Elementos hijos del bloque */
-	children?: BlockChild[];
-	/** Propiedades adicionales del bloque */
-	[key: string]: unknown;
-}
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
 
 /**
  * Resultado de la operación de truncado
  */
 interface TruncateResult {
 	/** Bloques truncados */
-	blocks: Block[];
+	blocks: BlocksContent;
 	/** Indica si se truncó el contenido */
 	truncated: boolean;
 }
@@ -36,16 +16,18 @@ interface TruncateResult {
  * @param maxWords - Número máximo de palabras permitidas
  * @returns Objeto con los bloques truncados y un indicador de si se truncó
  */
-export function truncateBlocks(blocks: Block[], maxWords: number): TruncateResult {
+export function truncateBlocks(blocks: BlocksContent, maxWords: number): TruncateResult {
 	let contadorPalabras = 0;
-	const bloquesTruncados: Block[] = [];
+	// @ts-ignore - We know BlocksContent is an array
+	const bloquesTruncados: any[] = [];
 	let seTrunco = false;
 
+	// @ts-ignore - We know BlocksContent is iterable
 	for (const bloque of blocks) {
 		if (bloque.type === 'paragraph' && bloque.children && Array.isArray(bloque.children)) {
-			const hijosNuevos: BlockChild[] = [];
+			const hijosNuevos: any[] = [];
 			for (const hijo of bloque.children) {
-				const palabras = (hijo.text || '').split(/\s+/).filter(Boolean);
+				const palabras = ((hijo as any).text || '').split(/\s+/).filter(Boolean);
 				if (contadorPalabras + palabras.length <= maxWords) {
 					hijosNuevos.push(hijo);
 					contadorPalabras += palabras.length;
