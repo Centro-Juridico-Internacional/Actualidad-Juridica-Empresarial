@@ -171,18 +171,29 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	if (bgOverlay) {
 		return (
 			<div className="relative h-full w-full overflow-hidden rounded-2xl">
-				<a href={`/noticia/${product.slug}`} className="absolute top-0 left-0 size-full">
-					<img
-						src={product.image}
-						alt={product.titulo}
-						className="absolute inset-0 h-full w-full object-cover object-center"
-						draggable={false}
-						loading={eagerImage ? 'eager' : 'lazy'}
-						decoding="async"
-					/>
-					<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
-					<div className="relative z-10 h-full">{content}</div>
-				</a>
+				{/* Imagen de fondo */}
+				<img
+					src={product.image}
+					alt={product.titulo}
+					className="absolute inset-0 h-full w-full object-cover object-center"
+					draggable={false}
+					loading={eagerImage ? 'eager' : 'lazy'}
+					decoding="async"
+				/>
+				<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
+
+				{/* Enlace principal que cubre toda la tarjeta (pero debajo del contenido interactivo) */}
+				<a
+					href={`/noticia/${product.slug}`}
+					className="absolute inset-0 z-0"
+					aria-label={`Leer más sobre ${product.titulo}`}
+				/>
+
+				{/* Contenido con z-index superior para que sus enlaces funcionen */}
+				<div className="pointer-events-none relative z-10 h-full">
+					{/* Hacemos que los hijos sean interactivos de nuevo */}
+					<div className="pointer-events-auto h-full">{content}</div>
+				</div>
 			</div>
 		);
 	}

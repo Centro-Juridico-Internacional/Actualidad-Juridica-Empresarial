@@ -7,13 +7,13 @@ import ContainerInterviewMagazine from '@/components/sections/home/ContainerInte
 import InformationOfInterest from '@/components/sections/home/InformationOfInterest.astro';
 import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
+import Revista from '@/components/features/revista/Revista';
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
-	<!-- <LoaderWrapper client:load> -->
 	<News />
 	<InformationOfInterest />
 	<ContainerInterviewMagazine />
 	<Podcast />
-	<!-- </LoaderWrapper> -->
+	<Revista pdfUrl="/revistas/revista.pdf" client:only="react" />
 </Layout>
