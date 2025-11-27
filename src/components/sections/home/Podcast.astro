@@ -1,11 +1,16 @@
 ---
+// React components (features)
 import CarouselInterview from '@/components/features/carousel/InterviewCarousel';
 import Carousel from '@/components/features/carousel/Carousel';
 
+// Internal API imports
 import { getPautas } from '@/lib/api/pautas';
 import { getInterviewsUrl } from '@/lib/api/interviews';
+
+// Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
+// Fetch data for podcasts and interviews
 const pautas = await getPautas();
 const interviews = await getInterviewsUrl();
 ---

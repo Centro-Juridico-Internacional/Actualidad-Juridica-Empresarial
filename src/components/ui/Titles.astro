@@ -1,9 +1,11 @@
 ---
-// Props
+// Props interface
 interface Props {
 	text: string;
 }
-const { text } = Astro.props;
+
+// Destructure props with explicit typing
+const { text }: Props = Astro.props;
 ---
 
 <div class="relative my-12 text-center">

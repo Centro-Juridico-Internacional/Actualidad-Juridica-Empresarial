@@ -1,20 +1,23 @@
 ---
+// React components (features)
 import NewsComponent from '@/components/features/news/NewsComponent';
+
+// Internal API imports
 import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
+
+// Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
-const { products } = await getNews({ categoryId: '' });
+// Fetch news articles for featured section
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
 ---
 
 <section id="InformationOfInterestSection" class="container-main py-16">
-	<h1 class="mb-8 text-center text-4xl font-bold tracking-tight text-gray-900">
-		<span class="relative">
-			<Titles text="Información de interés" />
-			<span
-				class="absolute bottom-[-8px] left-0 h-1 w-full scale-x-0 transform bg-green-600 transition-transform duration-300 group-hover:scale-x-100"
-				style="transform-origin: center;"></span>
-		</span>
-	</h1>
+	<!-- Section title -->
+	<Titles text="Información de interés" />
+
+	<!-- Featured news grid -->
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 		<div
 			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"

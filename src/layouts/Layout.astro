@@ -1,22 +1,27 @@
 ---
-// IMPORT STYLES
+// Styles
 import '@/styles/global.css';
 import '@fontsource-variable/noto-sans-jp';
-// ASTRO VIEW TRANSITIONS
+
+// External imports - Astro
 import { ClientRouter } from 'astro:transitions';
-// VERCEL
+
+// External imports - Vercel
 import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
-// SECTIONS
+
+// Astro components (layouts)
 import Header from '@/layouts/Header.astro';
 import Footer from '@/layouts/Footer.astro';
 
-// Props Astro
+// Props interface
 interface Props {
 	title: string;
 	booleanLayout: boolean;
 }
-const { title, booleanLayout } = Astro.props;
+
+// Destructure props with explicit typing
+const { title, booleanLayout }: Props = Astro.props;
 ---
 
 <!doctype html>

@@ -1,12 +1,16 @@
 ---
+// Props interface
 interface Props {
 	booleanBanner: boolean;
 }
 
-const { booleanBanner } = Astro.props;
-
+// Internal API imports
 import { getBanner } from '@/lib/api/banner';
 
+// Destructure props with explicit typing
+const { booleanBanner }: Props = Astro.props;
+
+// Fetch banner data
 const banner = await getBanner();
 ---
 

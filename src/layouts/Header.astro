@@ -1,14 +1,26 @@
 ---
+// Astro components (layouts)
 import BannerHeader from './BannerHeader.astro';
+
+// React components (features)
 import SearchBar from '@/components/features/search/SearchBar';
 
+// Props interface
 interface Props {
 	booleanHeader: boolean;
 }
 
-const { booleanHeader } = Astro.props;
+// Header section item interface
+interface HeaderSection {
+	nombre: string;
+	url: string;
+}
 
-const dataHeaderSections = [
+// Destructure props with explicit typing
+const { booleanHeader }: Props = Astro.props;
+
+// Navigation sections data
+const dataHeaderSections: HeaderSection[] = [
 	{ nombre: 'Laboral', url: '/categorias/laboral' },
 	{ nombre: 'Comercial', url: '/categorias/comercial' },
 	{ nombre: 'Civil', url: '/categorias/civil' },

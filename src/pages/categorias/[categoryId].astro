@@ -1,13 +1,20 @@
 ---
-// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\categorias\[categoryId].astro
-import Layout from '@/layouts/Layout.astro';
+// Internal API imports
 import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
+
+// Astro components (layouts)
+import Layout from '@/layouts/Layout.astro';
+
+// Astro components (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
 
-const { categoryId } = Astro.params;
+// Get category ID from route params
+const { categoryId } = Astro.params as { categoryId: string };
 if (!categoryId) throw Astro.redirect('/404');
 
-const { products } = await getNews({ categoryId });
+// Fetch news articles for this category
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId });
 ---
 
 <Layout title={categoryId} booleanLayout={true}>

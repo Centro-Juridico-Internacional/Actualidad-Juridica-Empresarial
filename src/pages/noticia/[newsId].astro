@@ -1,23 +1,33 @@
 ---
-// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\pages\noticia\[newsId].astro
-import Layout from '@/layouts/Layout.astro';
-import { getNews } from '@/lib/api/news';
+// External imports
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import YouTubeLite from '@/components/features/media/YouTubeLite';
+
+// Internal API imports
+import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
+
+// Astro components (layouts)
+import Layout from '@/layouts/Layout.astro';
+
+// Astro components (UI)
 import LatestNews from '@/components/ui/LatestNews.astro';
 
-const { newsId } = Astro.params;
+// React components (features)
+import YouTubeLite from '@/components/features/media/YouTubeLite';
+
+// Get news ID from route params
+const { newsId } = Astro.params as { newsId: string };
 if (!newsId) throw Astro.redirect('/404');
 
-// Recupera todas las noticias
-const { products } = await getNews({ categoryId: '' });
+// Fetch all news articles
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
 
-// Busca la noticia específica por el slug
-const product = products.find((item: any) => item.slug === newsId);
+// Find the specific news article by slug
+const product: NewsArticle | undefined = products.find((item: NewsArticle) => item.slug === newsId);
 if (!product) throw Astro.redirect('/404');
 
-// Genera el slug del autor
-const autorSlug = product.autorName
+// Generate author slug for navigation
+const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 ---

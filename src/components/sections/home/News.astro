@@ -1,26 +1,29 @@
 ---
+// React components (features)
 import CarouselNews from '@/components/features/carousel/NewsCarousel';
 import NewsComponent from '@/components/features/news/NewsComponent';
-import { getNews } from '@/lib/api/news';
 
-const { products } = await getNews({ categoryId: '' });
+// Internal API imports
+import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
+
+// Fetch all news articles
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
 ---
 
 <section id="newsSectionContainer" class="container-main mt-8">
-	<!-- 👇 Grid padre: 5 columnas desde md y filas automáticas de ~240px -->
-	<!-- Ajusta 220/240/260 según el alto que quieras -->
+	<!-- Grid layout: 5 columns on md+ with auto rows of ~240px -->
 	<div class="grid gap-6 md:auto-rows-[240px] md:grid-cols-5">
-		<!-- 🟢 Carrusel principal: 3 columnas y 2 filas del grid padre -->
+		<!-- Main carousel: 3 columns and 2 rows -->
 		<div
 			class="group relative col-span-5 h-full overflow-hidden rounded-2xl md:col-span-3 md:row-span-2"
 		>
 			<div id="mainCarouselDynamic" class="relative h-full w-full">
-				{/* @ts-ignore */}
 				<CarouselNews products={products} client:visible />
 			</div>
 		</div>
 
-		<!-- 🟢 Card 1 (MISMA GRID, NO anidado) -->
+		<!-- Featured Card 1 -->
 		<div class="col-span-5 h-full rounded-2xl md:col-span-2">
 			<div
 				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
@@ -45,7 +48,7 @@ const { products } = await getNews({ categoryId: '' });
 			</div>
 		</div>
 
-		<!-- 🟢 Card 2 (MISMA GRID, NO anidado) -->
+		<!-- Featured Card 2 -->
 		<div class="col-span-5 h-full rounded-2xl md:col-span-2">
 			<div
 				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"

@@ -1,5 +1,13 @@
 ---
-const SOCIALMEDIA = [
+// Social media item interface
+interface SocialMediaItem {
+	name: string;
+	url: string;
+	icon: string;
+}
+
+// Social media links data
+const SOCIALMEDIA: SocialMediaItem[] = [
 	{
 		name: 'Linkedin',
 		url: 'https://www.linkedin.com/company/centro-juridico-internacional-s-a-s-/',

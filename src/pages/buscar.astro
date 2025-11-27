@@ -1,15 +1,25 @@
 ---
-// @ts-nocheck
-import Layout from '@/layouts/Layout.astro';
-import NewsComponent from '@/components/features/news/NewsComponent';
+// Internal API imports
 import { searchNews } from '@/lib/api/search';
 
-const query = Astro.url.searchParams.get('q');
-const currentPage = parseInt(Astro.url.searchParams.get('page') || '1');
+// Astro components (layouts)
+import Layout from '@/layouts/Layout.astro';
 
-let results = { products: [], pagination: undefined };
-let hasSearched = false;
+// React components (features)
+import NewsComponent from '@/components/features/news/NewsComponent';
 
+// Get search query and pagination from URL params
+const query: string | null = Astro.url.searchParams.get('q');
+const currentPage: number = parseInt(Astro.url.searchParams.get('page') || '1');
+
+// Initialize results structure
+let results: { products: any[]; pagination: any } = {
+	products: [],
+	pagination: undefined
+};
+let hasSearched: boolean = false;
+
+// Perform search if query exists
 if (query && query.trim()) {
 	hasSearched = true;
 	try {
@@ -19,8 +29,9 @@ if (query && query.trim()) {
 	}
 }
 
+// Extract results and pagination
 const { products, pagination } = results;
-const totalResults = pagination?.total ?? 0;
+const totalResults: number = pagination?.total ?? 0;
 ---
 
 <Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'}>

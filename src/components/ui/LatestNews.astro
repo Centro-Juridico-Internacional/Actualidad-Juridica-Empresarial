@@ -1,12 +1,24 @@
 ---
-// filepath: c:\Users\USUARIO PC\Desktop\ACTUALIDAD\frontend\src\components\home\LatestNews.astro
+// Internal API imports
 import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
 
-const { products } = await getNews({ categoryId: '' });
-const { currentSlug = null, layout = 'vertical' } = Astro.props; // Recibe el slug actual como prop
+// Props interface
+interface Props {
+	currentSlug?: string | null;
+	layout?: 'vertical' | 'horizontal';
+}
 
-// Filtra las noticias para excluir la noticia actual
-const latestNews = products.filter((news: any) => news.slug !== currentSlug).slice(0, 3); // Últimas 3 noticias
+// Destructure props with defaults
+const { currentSlug = null, layout = 'vertical' }: Props = Astro.props;
+
+// Fetch all news articles
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
+
+// Filter news to exclude current article and get latest 3
+const latestNews: NewsArticle[] = products
+	.filter((news: NewsArticle) => news.slug !== currentSlug)
+	.slice(0, 3);
 ---
 
 <div

@@ -1,14 +1,30 @@
 ---
+// External imports
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import YouTubeLite from '@/components/features/media/YouTubeLite';
+
+// Internal utilities
 import { truncateBlocks } from '@/utils/truncateBlocks';
+import type { NewsArticle } from '@/lib/api/news';
 
-const { product, truncateWords = 30 } = Astro.props;
+// React components
+import YouTubeLite from '@/components/features/media/YouTubeLite';
 
-const autorSlug = product.autorName
+// Props interface
+interface Props {
+	product: NewsArticle;
+	truncateWords?: number;
+	className?: string;
+}
+
+// Destructure props with defaults
+const { product, truncateWords = 30, className = '' }: Props = Astro.props;
+
+// Generate author slug for link
+const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
+// Truncate content blocks to specified word count
 const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 ---
 
