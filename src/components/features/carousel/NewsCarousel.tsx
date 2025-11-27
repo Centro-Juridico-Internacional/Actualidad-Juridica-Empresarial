@@ -1,16 +1,10 @@
 import React from 'react';
 import SimpleCarouselLite from './SimpleCarouselLite';
 import NewsComponent from '@/components/features/news/NewsComponent';
-
-interface NewsItem {
-	slug: string;
-	image: string;
-	titulo: string;
-	[key: string]: any;
-}
+import type { NewsArticle } from '@/lib/api/news';
 
 interface NewsCarouselProps {
-	products: NewsItem[];
+	products: NewsArticle[];
 }
 
 const carouselStyle = {
@@ -38,7 +32,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
 			{topNews.map((item) => (
 				<div key={item.slug} className="relative h-full overflow-hidden rounded-2xl">
 					<img
-						src={item.image}
+						src={item.image || ''}
 						alt={item.titulo}
 						className="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
 						loading="eager"
