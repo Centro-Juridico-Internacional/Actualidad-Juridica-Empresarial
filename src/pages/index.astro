@@ -15,5 +15,11 @@ import Revista from '@/components/features/revista/Revista';
 	<InformationOfInterest />
 	<ContainerInterviewMagazine />
 	<Podcast />
-	<Revista pdfUrl="/revistas/revista.pdf" client:only="react" />
+	<Revista
+		client:only="react"
+		pdfUrl="/revistas/revista.pdf"
+		width={700}
+		height={900}
+		className="revista-flipbook"
+	/>
 </Layout>
