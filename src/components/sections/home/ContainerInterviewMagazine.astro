@@ -13,6 +13,15 @@ import Titles from '@/components/ui/Titles.astro';
 // Fetch data for interviews and promotional content
 const pautas = await getPautas();
 const interviews = await getInterviewsUrl();
+
+// Transform pautas to CarouselImage format (add id field and filter nulls)
+const pautasForCarousel = pautas
+	.filter((pauta) => pauta.image !== null)
+	.map((pauta, index) => ({
+		id: `pauta-${index}`,
+		title: pauta.title,
+		image: pauta.image!
+	}));
 ---
 
 <Titles text="Entrevista y pautas del mes" />
@@ -48,7 +57,7 @@ const interviews = await getInterviewsUrl();
 					width="w-full"
 					autoplaySpeed={5000}
 					dotDuration={true}
-					data={pautas}
+					data={pautasForCarousel}
 					client:visible
 				/>
 			</div>

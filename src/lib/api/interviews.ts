@@ -3,7 +3,7 @@ import { query } from '../strapi';
 /**
  * Representa una entrevista
  */
-interface Interview {
+export interface Interview {
 	/** URL de la entrevista */
 	url: string | null;
 	/** Título de la entrevista */
