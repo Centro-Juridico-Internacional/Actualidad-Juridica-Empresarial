@@ -32,12 +32,12 @@ const dataHeaderSections: HeaderSection[] = [
 ---
 
 <BannerHeader booleanBanner={booleanHeader} />
-<header class="sticky top-0 z-50 w-full bg-white shadow-sm" transition:name="header">
+<header class="sticky top-0 z-50 w-full bg-green-700 shadow-sm" transition:name="header">
 	<div class="container-main">
 		<div class="flex h-24 items-center justify-between">
 			<a href="/" class="flex items-center">
 				<img
-					src="/header/logo.png"
+					src="/header/logo.svg"
 					alt="Centro Jurídico Internacional"
 					class="h-16 w-auto"
 					loading="eager"
@@ -49,7 +49,7 @@ const dataHeaderSections: HeaderSection[] = [
 			<div class="hidden items-center gap-4 md:flex">
 				<SearchBar client:load placeholder="Buscar artículos..." />
 
-				<a href="/contacto" class="btn btn-primary"> Contactar </a>
+				<a href="/contacto" class="btn btn-primary text-gray-50"> Contactar </a>
 			</div>
 		</div>
 
@@ -60,9 +60,9 @@ const dataHeaderSections: HeaderSection[] = [
 						<li class="flex-1">
 							<a
 								href={section.url}
-								class="hover:text-primary flex items-center justify-center py-3 text-sm font-medium text-gray-700 transition-colors"
+								class="hover:text-primary flex items-center justify-center py-3 text-sm font-medium text-gray-50 transition-colors"
 							>
-								{section.nombre}
+								<span class="text-header-section">{section.nombre}</span>
 							</a>
 						</li>
 					))
@@ -70,4 +70,26 @@ const dataHeaderSections: HeaderSection[] = [
 			</ul>
 		</nav>
 	</div>
+	<style>
+		.text-header-section {
+			position: relative;
+		}
+
+		.text-header-section::after {
+			content: '';
+			position: absolute;
+			bottom: 0px;
+			left: 0;
+			width: 100%;
+			height: 2px;
+			background-color: rgba(255, 255, 255, 0.9);
+			transform: scaleX(0);
+			transition: transform 0.3s ease-in-out;
+			transform-origin: center;
+		}
+
+		.text-header-section:hover::after {
+			transform: scaleX(1);
+		}
+	</style>
 </header>
