@@ -67,7 +67,7 @@ const FlipBookInternal = React.memo(
 								// En mobile: una sola página; en desktop: doble página
 								usePortrait: isMobile,
 
-								flippingTime: 900,
+								flippingTime: 650,
 								maxShadowOpacity: 0.6,
 								drawShadow: true,
 								showPageCorners: true,
