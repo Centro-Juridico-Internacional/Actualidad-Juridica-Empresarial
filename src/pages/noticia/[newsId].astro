@@ -3,7 +3,7 @@
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 
 // Internal API imports
-import { getNews } from '@/lib/api/news';
+import { getNewsBySlug } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
 // Astro components (layouts)
@@ -19,11 +19,8 @@ import YouTubeLite from '@/components/features/media/YouTubeLite';
 const { newsId } = Astro.params as { newsId: string };
 if (!newsId) throw Astro.redirect('/404');
 
-// Fetch all news articles
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
-
-// Find the specific news article by slug
-const product: NewsArticle | undefined = products.find((item: NewsArticle) => item.slug === newsId);
+// Fetch specific news article by slug (optimized)
+const product: NewsArticle | null = await getNewsBySlug(newsId);
 if (!product) throw Astro.redirect('/404');
 
 // Generate author slug for navigation

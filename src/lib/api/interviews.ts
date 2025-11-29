@@ -30,7 +30,8 @@ interface StrapiInterviewItem {
 export async function getInterviewsUrl(): Promise<Interview[]> {
 	try {
 		const respuesta = (await query(
-			'entrevistas-urls?fields[0]=UrlEntrevista&fields[1]=Titulo&sort=updatedAt:asc'
+			'entrevistas-urls?fields[0]=UrlEntrevista&fields[1]=Titulo&sort=updatedAt:asc',
+			{ revalidate: 3600 } // 1 hora - datos estáticos
 		)) as { data: StrapiInterviewItem[] };
 
 		return respuesta.data.map((item: StrapiInterviewItem) => {

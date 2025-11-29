@@ -3,12 +3,17 @@
 import CarouselNews from '@/components/features/carousel/NewsCarousel';
 import NewsComponent from '@/components/features/news/NewsComponent';
 
-// Internal API imports
-import { getNews } from '@/lib/api/news';
+// Types
 import type { NewsArticle } from '@/lib/api/news';
 
-// Fetch all news articles
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
+// Props interface
+interface Props {
+	/** Array of news articles to display */
+	products: NewsArticle[];
+}
+
+// Destructure props
+const { products }: Props = Astro.props;
 ---
 
 <section id="newsSectionContainer" class="container-main mt-8">

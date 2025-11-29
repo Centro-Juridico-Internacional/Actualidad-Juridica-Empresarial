@@ -24,20 +24,32 @@ function withHost(url?: string | null): string | null {
 }
 
 /**
- * Realiza una consulta a la API de Strapi
+ * Opciones de configuración para las consultas a la API
+ */
+interface QueryOptions {
+	/** Tiempo de revalidación del caché en segundos */
+	revalidate?: number;
+}
+
+/**
+ * Realiza una consulta a la API de Strapi con caché configurable
  * @param path - Ruta de la API (sin incluir /api/)
+ * @param options - Opciones de configuración (tiempo de revalidación)
  * @returns Promesa con los datos de la respuesta en formato JSON
  * @throws Error si la respuesta no es exitosa
  */
-export async function query(path: string): Promise<unknown> {
+export async function query(path: string, options?: QueryOptions): Promise<unknown> {
 	try {
 		const res = await fetch(`${STRAPI_HOST}/api/${path}`, {
 			headers: {
 				Authorization: `Bearer ${STRAPI_TOKEN}`
 			},
-			// @vercel/edge compatible
-			cache: 'no-store'
-		});
+			// Habilitar caché HTTP con revalidación configurable
+			cache: 'force-cache',
+			next: {
+				revalidate: options?.revalidate ?? 900 // Por defecto 15 minutos
+			}
+		} as RequestInit & { next?: { revalidate?: number } });
 
 		if (!res.ok) {
 			throw new Error(`Error en la respuesta de la API: ${res.status} ${res.statusText}`);

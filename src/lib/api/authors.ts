@@ -48,7 +48,8 @@ interface StrapiAuthorItem {
 export async function getAuthors(): Promise<Author[]> {
 	try {
 		const respuesta = (await query(
-			'authors?fields[0]=name&fields[1]=role&populate[avatar][fields][0]=url'
+			'autors?populate[avatar][fields][0]=url&sort=createdAt:desc',
+			{ revalidate: 3600 } // 1 hora - datos estáticos
 		)) as { data: StrapiAuthorItem[] };
 
 		return respuesta.data.map((item: StrapiAuthorItem) => {

@@ -2,15 +2,20 @@
 // React components (features)
 import NewsComponent from '@/components/features/news/NewsComponent';
 
-// Internal API imports
-import { getNews } from '@/lib/api/news';
+// Types
 import type { NewsArticle } from '@/lib/api/news';
 
 // Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
-// Fetch news articles for featured section
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
+// Props interface
+interface Props {
+	/** Array of news articles to display */
+	products: NewsArticle[];
+}
+
+// Destructure props
+const { products }: Props = Astro.props;
 ---
 
 <section id="InformationOfInterestSection" class="container-main py-16">

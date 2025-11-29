@@ -1,6 +1,6 @@
 ---
 // Internal API imports
-import { getNews } from '@/lib/api/news';
+import { getLatestNews } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
 // Props interface
@@ -12,13 +12,8 @@ interface Props {
 // Destructure props with defaults
 const { currentSlug = null, layout = 'vertical' }: Props = Astro.props;
 
-// Fetch all news articles
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
-
-// Filter news to exclude current article and get latest 3
-const latestNews: NewsArticle[] = products
-	.filter((news: NewsArticle) => news.slug !== currentSlug)
-	.slice(0, 3);
+// Fetch latest 4 news (optimized) excluding current article
+const latestNews: NewsArticle[] = await getLatestNews(4, currentSlug ?? undefined);
 ---
 
 <div

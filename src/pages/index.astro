@@ -8,15 +8,27 @@ import InformationOfInterest from '@/components/sections/home/InformationOfInter
 import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
 import Revista from '@/components/features/revista/Revista';
+
+// Internal API imports
+import { getNews } from '@/lib/api/news';
+import type { NewsArticle } from '@/lib/api/news';
+import { getPautas } from '@/lib/api/pautas';
+import { getInterviewsUrl } from '@/lib/api/interviews';
+
 // Importar estilos responsive de la revista SOLO para esta página
 import '@/styles/revista-responsive.css';
+
+// Fetch all data once at page level to avoid redundant API calls
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
+const pautas = await getPautas();
+const interviews = await getInterviewsUrl();
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
-	<News />
-	<InformationOfInterest />
-	<ContainerInterviewMagazine />
-	<Podcast />
+	<News products={products} />
+	<InformationOfInterest products={products} />
+	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
+	<Podcast pautas={pautas} interviews={interviews} />
 
 	<Revista
 		client:only="react"

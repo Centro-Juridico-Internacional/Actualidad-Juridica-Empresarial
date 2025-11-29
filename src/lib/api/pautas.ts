@@ -46,7 +46,8 @@ interface StrapiPautaItem {
 export async function getPautas(): Promise<Pauta[]> {
 	try {
 		const respuesta = (await query(
-			'imagenes-pautas?fields[0]=Titulo&populate[Imagen][fields][0]=url'
+			'imagenes-pautas?fields[0]=Titulo&populate[Imagen][fields][0]=url',
+			{ revalidate: 3600 } // 1 hora - datos estáticos
 		)) as { data: StrapiPautaItem[] };
 
 		return respuesta.data.map((item: StrapiPautaItem) => {

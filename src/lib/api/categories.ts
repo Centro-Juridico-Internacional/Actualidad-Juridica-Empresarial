@@ -53,7 +53,9 @@ export async function getCategories(): Promise<Category[]> {
 	try {
 		const consultaCategories =
 			'categories?fields[0]=name&fields[1]=slug&fields[2]=description&populate[imagen][fields][0]=url';
-		const respuesta = (await query(consultaCategories)) as { data: StrapiCategoryItem[] };
+		const respuesta = (await query(consultaCategories, { revalidate: 3600 })) as {
+			data: StrapiCategoryItem[];
+		}; // 1 hora - datos estáticos
 
 		return respuesta.data.map((item: StrapiCategoryItem) => {
 			const atributos = item.attributes ?? item;
