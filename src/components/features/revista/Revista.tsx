@@ -57,7 +57,7 @@ const FlipBookInternal = React.memo(
 							const pageFlip = new PageFlip(bookRef.current as HTMLElement, {
 								width,
 								height,
-								size: 'fixed',
+								size: 'fixed' as any,
 								minWidth: 300,
 								maxWidth: 1000,
 								minHeight: 400,
@@ -253,6 +253,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 						min="1"
 						max={numPages}
 						value={currentPage}
+						aria-label={`Página ${currentPage}`}
 						onChange={handlePageInputChange}
 						className="w-16 rounded-full border border-gray-300 px-2 py-1 text-center text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
 						disabled={loading}
