@@ -27,9 +27,13 @@ export default defineConfig({
       VitePWA({
         registerType: 'autoUpdate',
         workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,pdf}'],
+          // Excluir PDFs del precaching (son muy grandes, 6.19 MB)
+          globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          // Aumentar el límite de tamaño para otros archivos a 10 MB
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
           runtimeCaching: [
             {
+              // Los PDFs se cachean en runtime, no en precache
               urlPattern: /\.pdf$/,
               handler: 'CacheFirst',
               options: {
