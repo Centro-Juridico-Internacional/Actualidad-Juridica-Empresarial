@@ -75,7 +75,7 @@ interface StrapiAutor {
 	data?: {
 		attributes?: {
 			name?: string;
-			role?: string;
+			cargo?: string;
 			avatar?: {
 				data?: {
 					attributes?: {
@@ -87,7 +87,7 @@ interface StrapiAutor {
 		};
 	};
 	name?: string;
-	role?: string;
+	cargo?: string;
 	avatar?: {
 		data?: {
 			attributes?: {
@@ -209,7 +209,7 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		autorAvatar: autorAvatarRelativo
 			? `${STRAPI_HOST}${autorAvatarRelativo}?token=${STRAPI_TOKEN}`
 			: null,
-		autorRol: autor?.role ?? null,
+		autorRol: autor?.cargo ?? null,
 		categorias
 	};
 }
@@ -228,7 +228,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=role` +
+			`&populate[autor][fields][1]=cargo` +
 			`&populate[categorias][fields][0]=name` +
 			`&sort=updatedAt:desc`;
 
@@ -257,7 +257,7 @@ export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=role` +
+			`&populate[autor][fields][1]=cargo` +
 			`&populate[categorias][fields][0]=name`;
 
 		const respuesta = (await query(consultaNoticia, { revalidate: 900 })) as StrapiNewsResponse;
@@ -291,7 +291,7 @@ export async function getLatestNews(
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=role` +
+			`&populate[autor][fields][1]=cargo` +
 			`&populate[categorias][fields][0]=name` +
 			`&sort=updatedAt:desc`;
 

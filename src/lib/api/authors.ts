@@ -6,8 +6,8 @@ import { query, withHost } from '../strapi';
 interface Author {
 	/** Nombre del autor */
 	name: string;
-	/** Rol del autor */
-	role: string | null;
+	/** Cargo del autor */
+	cargo: string | null;
 	/** URL del avatar del autor */
 	avatar: string | null;
 }
@@ -18,7 +18,7 @@ interface Author {
 interface StrapiAuthorItem {
 	attributes?: {
 		name?: string;
-		role?: string;
+		cargo?: string;
 		avatar?: {
 			data?: {
 				attributes?: {
@@ -29,7 +29,7 @@ interface StrapiAuthorItem {
 		};
 	};
 	name?: string;
-	role?: string;
+	cargo?: string;
 	avatar?: {
 		data?: {
 			attributes?: {
@@ -48,20 +48,20 @@ interface StrapiAuthorItem {
 export async function getAuthors(): Promise<Author[]> {
 	try {
 		const respuesta = (await query(
-			'autors?populate[avatar][fields][0]=url&sort=createdAt:desc',
+			'authors?populate[avatar][fields][0]=url&sort=createdAt:desc',
 			{ revalidate: 3600 } // 1 hora - datos estáticos
 		)) as { data: StrapiAuthorItem[] };
 
 		return respuesta.data.map((item: StrapiAuthorItem) => {
 			const atributos = item.attributes ?? item;
 			const nombre = atributos.name ?? '';
-			const rol = atributos.role ?? null;
+			const cargoAutor = atributos.cargo ?? null;
 			const avatarRelativo =
 				atributos?.avatar?.data?.attributes?.url ?? atributos?.avatar?.url ?? null;
 
 			return {
 				name: nombre,
-				role: rol,
+				cargo: cargoAutor,
 				avatar: withHost(avatarRelativo)
 			};
 		});

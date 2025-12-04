@@ -33,7 +33,7 @@ interface StrapiAutor {
 	data?: {
 		attributes?: {
 			name?: string;
-			role?: string;
+			cargo?: string;
 			avatar?: {
 				data?: {
 					attributes?: {
@@ -45,7 +45,7 @@ interface StrapiAutor {
 		};
 	};
 	name?: string;
-	role?: string;
+	cargo?: string;
 	avatar?: {
 		data?: {
 			attributes?: {
@@ -204,7 +204,7 @@ export async function searchNews({
 		const fields = [
 			'[titulo][$containsi]',
 			'[autor][name][$containsi]',
-			'[autor][role][$containsi]',
+			'[autor][cargo][$containsi]',
 			'[categorias][name][$containsi]'
 		];
 
@@ -225,7 +225,7 @@ export async function searchNews({
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=role` +
+			`&populate[autor][fields][1]=cargo` +
 			`&populate[categorias][fields][0]=name` +
 			`&sort=updatedAt:desc` +
 			`&pagination[page]=${page}` +
