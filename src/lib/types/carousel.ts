@@ -8,6 +8,8 @@ export type CarouselImage = {
 	title: string;
 	/** URL de la imagen */
 	image: string;
+	/** URL de destino al hacer click (opcional) */
+	url?: string;
 };
 
 /**

@@ -17,6 +17,7 @@ import { getInterviewsUrl } from '@/lib/api/interviews';
 
 // Importar estilos responsive de la revista SOLO para esta página
 import '@/styles/revista-responsive.css';
+import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
 const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
@@ -29,7 +30,7 @@ const interviews = await getInterviewsUrl();
 	<InformationOfInterest products={products} />
 	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
 	<Podcast pautas={pautas} interviews={interviews} />
-
+	<UpcomingEvents />
 	<Revista
 		client:only="react"
 		pdfUrl="/revistas/revista.pdf"

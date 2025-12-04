@@ -25,19 +25,34 @@ const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, 
 				style={carouselStyle}
 			>
 				{DATA.map((item) => {
+					const imageContent = (
+						<img
+							src={item.image}
+							alt={`${item.title} imagen`}
+							className={`flex h-full w-full items-center justify-center bg-green-600 object-cover`}
+							loading="lazy"
+							decoding="async"
+						/>
+					);
+
 					return (
 						<div
 							key={item.title}
 							id={item.title}
 							className="overflow-hidden rounded-2xl border-4 border-green-950"
 						>
-							<img
-								src={item.image}
-								alt={`${item.title} imagen`}
-								className={`flex h-full w-full items-center justify-center bg-green-600 object-cover`}
-								loading="lazy"
-								decoding="async"
-							/>
+							{item.url ? (
+								<a
+									href={item.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="block h-full w-full"
+								>
+									{imageContent}
+								</a>
+							) : (
+								imageContent
+							)}
 						</div>
 					);
 				})}

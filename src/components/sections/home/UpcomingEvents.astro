@@ -1,0 +1,48 @@
+---
+import Carousel from '@/components/features/carousel/Carousel';
+import { getEventBanners } from '@/lib/api/eventBanners';
+import type { CarouselImage } from '@/lib/types/carousel';
+
+// Obtener los banners de eventos desde Strapi
+const eventBanners = await getEventBanners();
+
+// Transformar los banners al formato requerido por el carousel
+const carouselData: CarouselImage[] = eventBanners.map((banner) => ({
+	id: banner.slug,
+	title: banner.title,
+	image: banner.image ?? '',
+	url: banner.urlEvento
+}));
+---
+
+<section class="upcoming-events-section bg-gradient-to-b from-gray-50 to-white py-12">
+	<div class="container mx-auto px-4">
+		<h2 class="mb-8 text-center text-4xl font-bold text-gray-800">Próximos Eventos</h2>
+
+		{
+			carouselData.length > 0 ? (
+				<div class="mx-auto max-w-6xl">
+					<Carousel
+						width="w-full"
+						dotDuration={true}
+						autoplaySpeed={5000}
+						data={carouselData}
+						client:visible
+					/>
+				</div>
+			) : (
+				<div class="text-center">
+					<p class="mb-2 text-lg font-semibold text-red-600">
+						⚠️ No hay eventos próximos en este momento
+					</p>
+				</div>
+			)
+		}
+	</div>
+</section>
+
+<style>
+	.upcoming-events-section {
+		min-height: 400px;
+	}
+</style>
