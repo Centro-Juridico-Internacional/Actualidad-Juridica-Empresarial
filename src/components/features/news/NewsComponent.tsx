@@ -10,6 +10,7 @@ interface NewsComponentProps {
 	showContent?: boolean;
 	eagerImage?: boolean;
 	variant?: 'default' | 'compact'; // opcional, se autoajusta si no lo pasas
+	titleSize?: 'small' | 'default' | 'large'; // Nuevo: tamaño del título
 }
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
@@ -19,7 +20,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	className = '',
 	showContent = true,
 	eagerImage = false,
-	variant // puede venir vacío
+	variant, // puede venir vacío
+	titleSize = 'default' // valor por defecto para retrocompatibilidad
 }) => {
 	if (!product) return null;
 
@@ -49,6 +51,19 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 
 	// Si se pasa manualmente, tiene prioridad sobre la detección automática
 	const isCompact = variant === 'compact' || (!variant && isCompactAuto);
+
+	// Determinar las clases de tamaño del título basado en titleSize prop
+	const getTitleSizeClasses = () => {
+		if (titleSize === 'small') {
+			// Títulos pequeños para secciones compactas
+			return isCompact ? 'text-sm sm:text-base' : 'text-base md:text-lg';
+		} else if (titleSize === 'large') {
+			// Títulos grandes para destacados
+			return isCompact ? 'text-lg sm:text-xl' : 'text-2xl md:text-4xl';
+		}
+		// Default: mantener el comportamiento original
+		return isCompact ? 'text-base sm:text-lg' : 'text-xl md:text-3xl';
+	};
 
 	// ---------- CONTENIDO ----------
 	const content = (
@@ -83,7 +98,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					<h2
 						className={`leading-snug font-bold tracking-tight ${
 							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
-						} ${isCompact ? 'text-base sm:text-lg' : 'text-xl md:text-3xl'}`}
+						} ${getTitleSizeClasses()}`}
 					>
 						{product.titulo}
 					</h2>

@@ -5,6 +5,7 @@ import Layout from '@/layouts/Layout.astro';
 // Astro components (sections)
 import ContainerInterviewMagazine from '@/components/sections/home/ContainerInterviewMagazine.astro';
 import InformationOfInterest from '@/components/sections/home/InformationOfInterest.astro';
+import MoreNews from '@/components/sections/home/MoreNews.astro';
 import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
 import Revista from '@/components/features/revista/Revista';
@@ -28,6 +29,7 @@ const interviews = await getInterviewsUrl();
 <Layout title="Inicio" booleanLayout={false}>
 	<News products={products} />
 	<InformationOfInterest products={products} />
+	<MoreNews products={products} />
 	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
 	<Podcast pautas={pautas} interviews={interviews} />
 	<UpcomingEvents />
