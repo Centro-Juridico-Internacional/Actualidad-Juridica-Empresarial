@@ -1,18 +1,17 @@
-export const prerender = false; // Este endpoint debe ser dinámico (SSR)
+export const prerender = false;
 
 import type { APIRoute } from 'astro';
 
+const ISR_SECRET = process.env.ISR_SECRET ?? import.meta.env.ISR_SECRET;
+const BYPASS_TOKEN = process.env.VERCEL_ISR_BYPASS_TOKEN ?? import.meta.env.VERCEL_ISR_BYPASS_TOKEN;
+
 /**
- * Endpoint para recibir Webhooks de Strapi y ejecutar invalidación de caché en Vercel.
- * Se espera un payload de Strapi v5.
+ * Endpoint que recibe el Webhook de Strapi y marca rutas para
+ * revalidación en Vercel ISR (granular por modelo / slug).
  */
 export const POST: APIRoute = async ({ request }) => {
-	const ISR_SECRET = process.env.ISR_SECRET ?? import.meta.env.ISR_SECRET;
-	const VERCEL_TOKEN = process.env.VERCEL_TOKEN ?? import.meta.env.VERCEL_TOKEN;
-	const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID ?? import.meta.env.VERCEL_PROJECT_ID;
-
-	// 1. Validar Token de Seguridad
-	const authHeader = request.headers.get('Authorization');
+	// 1. Validar token de Strapi
+	const authHeader = request.headers.get('authorization');
 	if (!ISR_SECRET || authHeader !== `Bearer ${ISR_SECRET}`) {
 		return new Response(JSON.stringify({ error: 'Unauthorized' }), {
 			status: 401,
@@ -20,102 +19,167 @@ export const POST: APIRoute = async ({ request }) => {
 		});
 	}
 
-	// 2. Verificar configuración de Vercel
-	if (!VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
-		console.error('Faltan variables de entorno VERCEL_TOKEN o VERCEL_PROJECT_ID');
+	if (!BYPASS_TOKEN) {
+		console.error('Falta VERCEL_ISR_BYPASS_TOKEN en variables de entorno');
 		return new Response(JSON.stringify({ error: 'Server misconfiguration' }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' }
 		});
 	}
 
-	try {
-		const payload = await request.json();
-		const { model, entry, event } = payload;
+	// 2. Leer payload
+	const payload = await request.json().catch(() => null);
+	if (!payload) {
+		return new Response(JSON.stringify({ error: 'Invalid JSON payload' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
 
-		// console.log(`[Webhook] Evento: ${event}, Modelo: ${model}, ID: ${entry?.id}`);
+	const { model, entry } = payload as {
+		model?: string;
+		entry?: any;
+	};
 
-		// 3. Determinar Tags a invalidar
-		// Mapeamos los modelos de Strapi a Cache-Tags del frontend
-		const tagsToInvalidate: string[] = [];
+	const pathsToRevalidate: string[] = [];
 
-		// Tag global para ciertos cambios (opcional)
-		// tagsToInvalidate.push('all');
+	// 3. Mapear modelo de Strapi -> rutas a revalidar
+	switch (model) {
+		case 'news':
+		case 'noticia': {
+			pathsToRevalidate.push('/'); // home
+			pathsToRevalidate.push('/categorias'); // listado de categorías
 
-		switch (model) {
-			case 'news': // Nombre del modelo en Strapi (singular o plural según configuración, strapi v5 suele usar singular en 'model')
-			case 'noticia':
-				tagsToInvalidate.push('news'); // Invalida listados de noticias
-				tagsToInvalidate.push('home'); // Invalida el home (que muestra últimas noticias)
-				if (entry?.slug) {
-					tagsToInvalidate.push(`news-${entry.slug}`); // Invalida la noticia específica
-				}
-				break;
-
-			case 'banner':
-				tagsToInvalidate.push('banner');
-				tagsToInvalidate.push('home'); // Banner suele estar en home
-				break;
-
-			case 'author':
-			case 'autor':
-				tagsToInvalidate.push('author');
-				if (entry?.slug) {
-					tagsToInvalidate.push(`author-${entry.slug}`);
-				}
-				break;
-
-			default:
-				// Por defecto, asumimos que puede afectar al home o es contenido genérico
-				console.warn(
-					`[Webhook] Modelo no reconocido explícitamente: ${model}, invalidando 'home' por precaución.`
-				);
-				tagsToInvalidate.push('home');
-		}
-
-		if (tagsToInvalidate.length === 0) {
-			return new Response(JSON.stringify({ message: 'Nothing to invalidate' }), {
-				status: 200
-			});
-		}
-
-		// 4. Llamar a Vercel Invalidation API
-		// https://vercel.com/docs/edge-network/caching#revalidating
-		const vercelResponse = await fetch(
-			`https://api.vercel.com/v1/projects/${VERCEL_PROJECT_ID}/invalidation`,
-			{
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${VERCEL_TOKEN}`,
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					tags: tagsToInvalidate
-				})
+			// noticia individual
+			if (entry?.slug) {
+				pathsToRevalidate.push(`/noticia/${entry.slug}`);
 			}
-		);
 
-		if (!vercelResponse.ok) {
-			const errorText = await vercelResponse.text();
-			console.error(`[Vercel Purge Error] ${vercelResponse.status}: ${errorText}`);
-			throw new Error(`Error invalidando caché en Vercel: ${errorText}`);
+			// categorías de la noticia
+			const categorias = entry?.categorias ?? entry?.categories ?? entry?.category ?? [];
+			const catArray = Array.isArray(categorias) ? categorias : (categorias?.data ?? []);
+
+			for (const cat of catArray) {
+				const slug = cat?.slug ?? cat?.attributes?.slug ?? cat?.attributes?.name ?? cat?.name;
+				if (slug && typeof slug === 'string') {
+					pathsToRevalidate.push(`/categorias/${slug}`);
+				}
+			}
+
+			// páginas de autor
+			const autor = entry?.autor ?? entry?.author ?? entry?.authorRef ?? entry?.autorRef;
+			const autorName = autor?.name ?? autor?.Nombre ?? autor?.titulo;
+			if (autorName && typeof autorName === 'string') {
+				const authorSlug = autorName.toLowerCase().replace(/\s+/g, '_');
+				pathsToRevalidate.push('/autores');
+				pathsToRevalidate.push(`/autores/${authorSlug}`);
+			}
+			break;
 		}
 
-		const vercelResult = await vercelResponse.json();
+		case 'banner': {
+			pathsToRevalidate.push('/');
+			break;
+		}
 
-		return new Response(
-			JSON.stringify({
-				message: 'Cache invalidation triggered',
-				tags: tagsToInvalidate,
-				vercelId: vercelResult.id
-			}),
-			{ status: 200, headers: { 'Content-Type': 'application/json' } }
-		);
-	} catch (error) {
-		console.error('[Webhook Error]', error);
-		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+		case 'author':
+		case 'autor': {
+			pathsToRevalidate.push('/autores');
+			if (entry?.name || entry?.Nombre) {
+				const name = (entry.name ?? entry.Nombre) as string;
+				const slug = name.toLowerCase().replace(/\s+/g, '_');
+				pathsToRevalidate.push(`/autores/${slug}`);
+			}
+			pathsToRevalidate.push('/');
+			break;
+		}
+
+		case 'categories':
+		case 'category': {
+			pathsToRevalidate.push('/categorias');
+			if (entry?.slug) {
+				pathsToRevalidate.push(`/categorias/${entry.slug}`);
+			}
+			pathsToRevalidate.push('/');
+			break;
+		}
+
+		case 'entrevistas-urls':
+		case 'imagenes-pautas':
+		case 'event-banner':
+		case 'banners-eventos': {
+			pathsToRevalidate.push('/');
+			break;
+		}
+
+		default: {
+			console.warn(`[Webhook] Modelo no mapeado explícitamente: ${model}, revalidando home.`);
+			pathsToRevalidate.push('/');
+		}
+	}
+
+	const uniquePaths = Array.from(new Set(pathsToRevalidate));
+
+	// 4. Revalidar rutas haciendo HEAD con x-prerender-revalidate
+	const host = request.headers.get('host');
+	const proto = request.headers.get('x-forwarded-proto') ?? 'https';
+
+	if (!host) {
+		console.error('No se pudo determinar el host desde la request');
+		return new Response(JSON.stringify({ error: 'Missing host header' }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' }
 		});
 	}
+
+	const results: Record<string, string | null> = {};
+
+	for (const path of uniquePaths) {
+		const url = `${proto}://${host}${path}`;
+
+		try {
+			const res = await fetch(url, {
+				method: 'HEAD',
+				headers: {
+					'x-prerender-revalidate': BYPASS_TOKEN as string
+				}
+			});
+
+			const cacheStatus = res.headers.get('x-vercel-cache');
+			results[path] = cacheStatus;
+
+			console.log(
+				`[ISR] Revalidate ${path} -> status ${res.status}, x-vercel-cache=${cacheStatus}`
+			);
+		} catch (err) {
+			console.error(`[ISR] Error revalidando ${path}:`, err);
+			results[path] = null;
+		}
+	}
+
+	return new Response(
+		JSON.stringify({
+			ok: true,
+			model,
+			entryId: entry?.id ?? null,
+			revalidated: uniquePaths,
+			cache: results
+		}),
+		{
+			status: 200,
+			headers: { 'Content-Type': 'application/json' }
+		}
+	);
 };
+
+export async function GET() {
+	return new Response(
+		JSON.stringify({
+			message: 'Use POST desde Strapi para revalidar rutas.'
+		}),
+		{
+			status: 405,
+			headers: { 'Content-Type': 'application/json' }
+		}
+	);
+}

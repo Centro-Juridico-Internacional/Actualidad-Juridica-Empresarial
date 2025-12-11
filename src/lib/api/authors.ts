@@ -4,17 +4,11 @@ import { query, withHost } from '../strapi';
  * Representa un autor de contenido
  */
 interface Author {
-	/** Nombre del autor */
 	name: string;
-	/** Cargo del autor */
 	cargo: string | null;
-	/** URL del avatar del autor */
 	avatar: string | null;
 }
 
-/**
- * Representa un item de autor retornado por Strapi
- */
 interface StrapiAuthorItem {
 	attributes?: {
 		name?: string;
@@ -41,15 +35,13 @@ interface StrapiAuthorItem {
 }
 
 /**
- * Obtiene la lista de autores desde Strapi
- * @returns Promesa con el array de autores
- * @throws Error si la consulta a la API falla
+ * Obtiene la lista de autores desde Strapi.
+ * Los datos se cachean en Vercel ISR a nivel de página, no aquí.
  */
 export async function getAuthors(): Promise<Author[]> {
 	try {
 		const respuesta = (await query(
-			'authors?populate[avatar][fields][0]=url&sort=createdAt:desc',
-			{ revalidate: 3600 } // 1 hora - datos estáticos
+			'authors?populate[avatar][fields][0]=url&sort=createdAt:desc'
 		)) as { data: StrapiAuthorItem[] };
 
 		return respuesta.data.map((item: StrapiAuthorItem) => {

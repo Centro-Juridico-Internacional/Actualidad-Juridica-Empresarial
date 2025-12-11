@@ -1,20 +1,11 @@
 import { query, withHost } from '../strapi';
 
-/**
- * Representa la información del banner principal
- */
 interface Banner {
-	/** Nombre del banner */
 	nombre: string;
-	/** Slug del banner */
 	slug: string;
-	/** URL de la imagen del banner */
 	banner: string | null;
 }
 
-/**
- * Representa la respuesta de Strapi para el banner (single type)
- */
 interface StrapiBannerResponse {
 	data?: {
 		attributes?: {
@@ -43,18 +34,15 @@ interface StrapiBannerResponse {
 }
 
 /**
- * Obtiene la información del banner principal desde Strapi
- * @returns Promesa con los datos del banner
- * @throws Error si la consulta a la API falla
+ * Banner principal del home.
+ * Cacheado por ISR en la página que lo use.
  */
 export async function getBanner(): Promise<Banner> {
 	try {
 		const respuesta = (await query(
-			'banner?populate[imagen][fields][0]=url',
-			{ revalidate: 86400 } // 24 horas - cambia muy raramente
+			'banner?populate[imagen][fields][0]=url'
 		)) as StrapiBannerResponse;
 
-		// Strapi single type: res.data.attributes contiene los campos
 		const atributos = respuesta.data?.attributes ?? respuesta.data ?? {};
 		const nombre = atributos?.nombre ?? '';
 		const slug = atributos?.slug ?? '';

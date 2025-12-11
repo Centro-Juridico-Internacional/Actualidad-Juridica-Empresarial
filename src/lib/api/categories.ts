@@ -1,22 +1,12 @@
 import { query, withHost } from '../strapi';
 
-/**
- * Representa una categoría de contenido
- */
 interface Category {
-	/** Nombre de la categoría */
 	name: string;
-	/** Slug de la categoría (para URLs) */
 	slug: string;
-	/** Descripción de la categoría */
 	description: string;
-	/** URL de la imagen de la categoría */
 	image: string | null;
 }
 
-/**
- * Representa un item de categoría retornado por Strapi
- */
 interface StrapiCategoryItem {
 	attributes?: {
 		name?: string;
@@ -39,23 +29,22 @@ interface StrapiCategoryItem {
 			attributes?: {
 				url?: string;
 			};
+			url?: string;
 		};
-		url?: string;
 	};
 }
 
 /**
- * Obtiene la lista de categorías desde Strapi
- * @returns Promesa con el array de categorías
- * @throws Error si la consulta a la API falla
+ * Lista de categorías. Cache ISR por página (categorías, home, etc.).
  */
 export async function getCategories(): Promise<Category[]> {
 	try {
 		const consultaCategories =
 			'categories?fields[0]=name&fields[1]=slug&fields[2]=description&populate[imagen][fields][0]=url';
-		const respuesta = (await query(consultaCategories, { revalidate: 3600 })) as {
+
+		const respuesta = (await query(consultaCategories)) as {
 			data: StrapiCategoryItem[];
-		}; // 1 hora - datos estáticos
+		};
 
 		return respuesta.data.map((item: StrapiCategoryItem) => {
 			const atributos = item.attributes ?? item;

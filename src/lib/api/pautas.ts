@@ -1,18 +1,10 @@
 import { query, withHost } from '../strapi';
 
-/**
- * Representa una pauta publicitaria
- */
 interface Pauta {
-	/** Título de la pauta */
 	title: string;
-	/** URL de la imagen de la pauta */
 	image: string | null;
 }
 
-/**
- * Representa un item de pauta retornado por Strapi
- */
 interface StrapiPautaItem {
 	attributes?: {
 		Titulo?: string;
@@ -39,15 +31,13 @@ interface StrapiPautaItem {
 }
 
 /**
- * Obtiene la lista de pautas publicitarias desde Strapi
- * @returns Promesa con el array de pautas
- * @throws Error si la consulta a la API falla
+ * Pautas publicitarias.
+ * Cacheadas a nivel de página (home, etc.) por ISR.
  */
 export async function getPautas(): Promise<Pauta[]> {
 	try {
 		const respuesta = (await query(
-			'imagenes-pautas?fields[0]=Titulo&populate[Imagen][fields][0]=url',
-			{ revalidate: 3600 } // 1 hora - datos estáticos
+			'imagenes-pautas?fields[0]=Titulo&populate[Imagen][fields][0]=url'
 		)) as { data: StrapiPautaItem[] };
 
 		return respuesta.data.map((item: StrapiPautaItem) => {

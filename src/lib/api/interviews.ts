@@ -1,18 +1,10 @@
 import { query } from '../strapi';
 
-/**
- * Representa una entrevista
- */
 export interface Interview {
-	/** URL de la entrevista */
 	url: string | null;
-	/** Título de la entrevista */
 	title: string | null;
 }
 
-/**
- * Representa un item de entrevista retornado por Strapi
- */
 interface StrapiInterviewItem {
 	attributes?: {
 		UrlEntrevista?: string;
@@ -23,15 +15,13 @@ interface StrapiInterviewItem {
 }
 
 /**
- * Obtiene las URLs de las entrevistas desde Strapi
- * @returns Promesa con el array de entrevistas
- * @throws Error si la consulta a la API falla
+ * URLs de entrevistas (embeds, etc.).
+ * Cache ISR en las páginas que las usen.
  */
 export async function getInterviewsUrl(): Promise<Interview[]> {
 	try {
 		const respuesta = (await query(
-			'entrevistas-urls?fields[0]=UrlEntrevista&fields[1]=Titulo&sort=updatedAt:asc',
-			{ revalidate: 3600 } // 1 hora - datos estáticos
+			'entrevistas-urls?fields[0]=UrlEntrevista&fields[1]=Titulo&sort=updatedAt:asc'
 		)) as { data: StrapiInterviewItem[] };
 
 		return respuesta.data.map((item: StrapiInterviewItem) => {

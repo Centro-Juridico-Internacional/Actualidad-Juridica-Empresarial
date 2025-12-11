@@ -6,8 +6,6 @@ const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_
 
 /**
  * Verifica si una URL es absoluta (comienza con http:// o https://)
- * @param url - URL a verificar
- * @returns true si la URL es absoluta, false en caso contrario
  */
 function isAbsoluteUrl(url?: string | null): boolean {
 	return !!url && /^https?:\/\//i.test(url);
@@ -15,8 +13,6 @@ function isAbsoluteUrl(url?: string | null): boolean {
 
 /**
  * Convierte una URL relativa en absoluta agregando el host de Strapi
- * @param url - URL relativa o absoluta
- * @returns URL absoluta o null si no se proporciona URL
  */
 function withHost(url?: string | null): string | null {
 	if (!url) return null;
@@ -24,27 +20,14 @@ function withHost(url?: string | null): string | null {
 }
 
 /**
- * Opciones de configuración para las consultas a la API
- */
-interface QueryOptions {
-	/**
-	 * @deprecated El caché ahora se maneja vía Vercel ISR (Cache-Control headers).
-	 * Esta opción se mantiene por compatibilidad pero no tiene efecto interno.
-	 */
-	revalidate?: number;
-}
-
-/**
- * Realiza una consulta a la API de Strapi.
- * Nota: El caché ya no se maneja en memoria aquí.
- * La estrategia es "On-Demand ISR". Las páginas deben establecer sus propios headers Cache-Control.
+ * Consulta básica a la API de Strapi.
  *
- * @param path - Ruta de la API (sin incluir /api/)
- * @param options - Opciones de configuración
- * @returns Promesa con los datos de la respuesta en formato JSON
- * @throws Error si la respuesta no es exitosa
+ * ⚠️ IMPORTANTE:
+ * - Siempre hace `cache: 'no-store'` → los datos vienen frescos del backend.
+ * - El cache real lo maneja Vercel ISR a nivel de página (HTML cacheado en Edge).
+ * - Por eso aquí NO usamos timers ni `revalidate` ni caché en memoria.
  */
-export async function query(path: string, options?: QueryOptions): Promise<unknown> {
+export async function query(path: string): Promise<any> {
 	const url = `${STRAPI_HOST}/api/${path}`;
 
 	const headers: HeadersInit = {
@@ -53,8 +36,6 @@ export async function query(path: string, options?: QueryOptions): Promise<unkno
 	};
 
 	try {
-		// Realizamos fetch sin caché interno ('no-store') asegurnado datos frescos del backend.
-		// El caché real ocurrirá en la capa Edge de Vercel (CDN) gracias a los headers de las páginas.
 		const res = await fetch(url, {
 			headers,
 			cache: 'no-store'
@@ -64,8 +45,7 @@ export async function query(path: string, options?: QueryOptions): Promise<unkno
 			throw new Error(`Error en la respuesta de la API: ${res.status} ${res.statusText}`);
 		}
 
-		const data = await res.json();
-		return data;
+		return await res.json();
 	} catch (error) {
 		console.error('Error al consultar la API de Strapi:', error);
 		throw error;
