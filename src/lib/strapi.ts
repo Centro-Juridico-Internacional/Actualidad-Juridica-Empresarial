@@ -27,24 +27,18 @@ function withHost(url?: string | null): string | null {
  * Opciones de configuración para las consultas a la API
  */
 interface QueryOptions {
-	/** Tiempo de revalidación del caché en segundos */
+	/**
+	 * @deprecated El caché ahora se maneja vía Vercel ISR (Cache-Control headers).
+	 * Esta opción se mantiene por compatibilidad pero no tiene efecto interno.
+	 */
 	revalidate?: number;
 }
 
 /**
- * Entrada de caché para almacenar ETag y datos
- */
-interface CacheEntry {
-	etag: string;
-	data: unknown;
-	timestamp: number;
-}
-
-/** Caché global en memoria (persiste mientras el proceso esté vivo) */
-const apiCache = new Map<string, CacheEntry>();
-
-/**
- * Realiza una consulta a la API de Strapi con caché inteligente (ETags)
+ * Realiza una consulta a la API de Strapi.
+ * Nota: El caché ya no se maneja en memoria aquí.
+ * La estrategia es "On-Demand ISR". Las páginas deben establecer sus propios headers Cache-Control.
+ *
  * @param path - Ruta de la API (sin incluir /api/)
  * @param options - Opciones de configuración
  * @returns Promesa con los datos de la respuesta en formato JSON
@@ -54,50 +48,23 @@ export async function query(path: string, options?: QueryOptions): Promise<unkno
 	const url = `${STRAPI_HOST}/api/${path}`;
 
 	const headers: HeadersInit = {
-		Authorization: `Bearer ${STRAPI_TOKEN}`
+		Authorization: `Bearer ${STRAPI_TOKEN}`,
+		'Content-Type': 'application/json'
 	};
 
-	// 1. Verificar si tenemos una versión en caché para enviar el ETag
-	const cached = apiCache.get(url);
-	if (cached?.etag) {
-		headers['If-None-Match'] = cached.etag;
-	}
-
 	try {
+		// Realizamos fetch sin caché interno ('no-store') asegurnado datos frescos del backend.
+		// El caché real ocurrirá en la capa Edge de Vercel (CDN) gracias a los headers de las páginas.
 		const res = await fetch(url, {
 			headers,
-			// Usamos 'no-store' para forzar la petición de red y validar el ETag con el servidor
-			cache: 'no-store',
-			// Mantenemos next.revalidate como fallback o cero para priorizar la validación
-			next: {
-				revalidate: 0 // Siempre validamos cambios
-			}
-		} as RequestInit & { next?: { revalidate?: number } });
-
-		// 2. Manejar 304 Not Modified (Sin cambios)
-		if (res.status === 304 && cached) {
-			// console.log(`[Cache] HIT (304) para: ${path}`);
-			return cached.data;
-		}
+			cache: 'no-store'
+		});
 
 		if (!res.ok) {
 			throw new Error(`Error en la respuesta de la API: ${res.status} ${res.statusText}`);
 		}
 
-		// 3. Procesar respuesta nueva (200 OK)
 		const data = await res.json();
-
-		// 4. Guardar en caché si hay ETag nuevo
-		const newEtag = res.headers.get('ETag');
-		if (newEtag) {
-			// console.log(`[Cache] UPDATE (200) para: ${path} ETag: ${newEtag}`);
-			apiCache.set(url, {
-				etag: newEtag,
-				data,
-				timestamp: Date.now()
-			});
-		}
-
 		return data;
 	} catch (error) {
 		console.error('Error al consultar la API de Strapi:', error);

@@ -18,7 +18,7 @@ const { products }: { products: NewsArticle[] } = await getNews({ categoryId: ''
 
 // Filter articles by author slug
 const authorNews: NewsArticle[] = products.filter((item: NewsArticle) => {
-	const slug: string = item.autorName.toLowerCase().replace(/\s+/g, '_');
+	const slug: string = (item.autorName || '').toLowerCase().replace(/\s+/g, '_');
 	return slug === autoresId;
 });
 
@@ -34,6 +34,12 @@ const capitalizeWords = (str: string): string => {
 
 // Generate readable author name from slug
 const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
+
+// Configuración de Caché
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=31536000, must-revalidate');
+Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=31536000, must-revalidate');
+// Si cambia algo del autor o una noticia, podríamos invalidar 'author'
+Astro.response.headers.set('Cache-Tag', `author, author-${autoresId}`);
 ---
 
 <Layout title={`Noticias de ${authorName}`} booleanLayout={true}>
