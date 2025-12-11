@@ -7,9 +7,9 @@ import type { APIRoute } from 'astro';
  * Se espera un payload de Strapi v5.
  */
 export const POST: APIRoute = async ({ request }) => {
-	const ISR_SECRET = import.meta.env.ISR_SECRET || process.env.ISR_SECRET;
-	const VERCEL_TOKEN = import.meta.env.VERCEL_TOKEN || process.env.VERCEL_TOKEN;
-	const VERCEL_PROJECT_ID = import.meta.env.VERCEL_PROJECT_ID || process.env.VERCEL_PROJECT_ID;
+	const ISR_SECRET = process.env.ISR_SECRET ?? import.meta.env.ISR_SECRET;
+	const VERCEL_TOKEN = process.env.VERCEL_TOKEN ?? import.meta.env.VERCEL_TOKEN;
+	const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID ?? import.meta.env.VERCEL_PROJECT_ID;
 
 	// 1. Validar Token de Seguridad
 	const authHeader = request.headers.get('Authorization');
