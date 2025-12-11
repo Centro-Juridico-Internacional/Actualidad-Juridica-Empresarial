@@ -51,7 +51,7 @@ export async function getBanner(): Promise<Banner> {
 	try {
 		const respuesta = (await query(
 			'banner?populate[imagen][fields][0]=url',
-			{ revalidate: 10 } // 24 horas - cambia muy raramente
+			{ revalidate: 86400 } // 24 horas - cambia muy raramente
 		)) as StrapiBannerResponse;
 
 		// Strapi single type: res.data.attributes contiene los campos
