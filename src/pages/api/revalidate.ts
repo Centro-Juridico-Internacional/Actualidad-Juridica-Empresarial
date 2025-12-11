@@ -107,7 +107,9 @@ export const POST: APIRoute = async ({ request }) => {
 		case 'entrevistas-urls':
 		case 'imagenes-pautas':
 		case 'event-banner':
-		case 'banners-eventos': {
+		case 'banners-eventos':
+		case 'banners-evento': {
+			// entrevistas, pautas, eventos: solo home
 			pathsToRevalidate.push('/');
 			break;
 		}
