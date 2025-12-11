@@ -28,10 +28,7 @@ const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
-// Configuración de Caché
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Cache-Tag', `news, news-${newsId}`);
+// ISR maneja el cache automáticamente en modo hybrid
 ---
 
 <Layout title={product.titulo} booleanLayout={true}>

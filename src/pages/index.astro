@@ -25,12 +25,7 @@ const { products }: { products: NewsArticle[] } = await getNews({ categoryId: ''
 const pautas = await getPautas();
 const interviews = await getInterviewsUrl();
 
-// Configuración de Caché (ISR On-Demand)
-// 1 año de caché en Edge (s-maxage). Se invalidará vía Webhook usando los Tags.
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-// Tags para invalidación granular: 'home' (general), 'news' (si cambia una noticia), 'banner', 'author'
-Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Cache-Tag', 'home, news, banner, author');
+// ISR maneja el cache automáticamente en modo hybrid
 ---
 
 <Layout title="Inicio" booleanLayout={false}>

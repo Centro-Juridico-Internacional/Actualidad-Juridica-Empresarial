@@ -68,7 +68,7 @@ const { title, booleanLayout }: Props = Astro.props;
 			property="og:description"
 			content="Abogados expertos en derecho y recaudo de cartera. Proteja su empresa legalmente. Consultas jurídicas para empresas y particulares en Colombia."
 		/>
-		<meta property="og:image" content=`header/logoMainCJI.svg` />
+		<meta property="og:image" content="/header/logo.svg" />
 		<meta property="og:url" content="https://centrojuridicointernacional.co/" />
 		<meta property="og:site_name" content="Centro Jurídico Internacional" />
 
@@ -82,7 +82,7 @@ const { title, booleanLayout }: Props = Astro.props;
 			name="twitter:description"
 			content="Firma legal especializada en protección jurídica empresarial y recuperación de cartera en Colombia."
 		/>
-		<meta name="twitter:image" content=`header/logoMainCJI.svg` />
+		<meta name="twitter:image" content="/header/logo.svg" />
 
 		<!-- Canonical -->
 		<link rel="canonical" href="https://centrojuridicointernacional.co/" />
@@ -90,15 +90,8 @@ const { title, booleanLayout }: Props = Astro.props;
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-		<!-- Preload crítico -->
-		<link
-			rel="preload"
-			href="/fonts/noto-sans-jp-variable.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-		<link rel="preload" href="/header/logoMainCJI.svg" as="image" />
+		<!-- Preload crítico: logo del header -->
+		<link rel="preload" href="/header/logo.svg" as="image" />
 
 		<!-- Cache control -->
 		<meta http-equiv="Cache-Control" content="max-age=31536000, immutable" />

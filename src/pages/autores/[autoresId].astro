@@ -35,11 +35,7 @@ const capitalizeWords = (str: string): string => {
 // Generate readable author name from slug
 const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
 
-// Configuración de Caché
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-// Si cambia algo del autor o una noticia, podríamos invalidar 'author'
-Astro.response.headers.set('Cache-Tag', `author, author-${autoresId}`);
+// ISR maneja el cache automáticamente en modo hybrid
 ---
 
 <Layout title={`Noticias de ${authorName}`} booleanLayout={true}>

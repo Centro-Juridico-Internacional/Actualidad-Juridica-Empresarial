@@ -16,10 +16,7 @@ if (!categoryId) throw Astro.redirect('/404');
 // Fetch news articles for this category
 const { products }: { products: NewsArticle[] } = await getNews({ categoryId });
 
-// Configuración de Caché
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=31536000, must-revalidate');
-Astro.response.headers.set('Cache-Tag', `news, category-${categoryId}`);
+// ISR maneja el cache automáticamente en modo hybrid
 ---
 
 <Layout title={categoryId} booleanLayout={true}>

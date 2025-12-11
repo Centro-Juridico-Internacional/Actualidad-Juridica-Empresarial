@@ -7,12 +7,13 @@ import compress from "astro-compress";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
-  output: "server",
+  output: "server", // SSR con ISR (Vercel cachea las páginas)
 
-  // @ts-expect-error - Vercel ISR config is valid but missing in Astro types
+  // ISR config para Vercel - permite revalidación bajo demanda
+  // @ts-expect-error - Vercel ISR config
   isr: {
     bypassToken: process.env.VERCEL_ISR_BYPASS_TOKEN ?? "",
-    exclude: [/^\/api\/.+/, /^\/buscar/],
+    exclude: [/^\/api\//, /^\/buscar/], // Excluir API y búsqueda del ISR
   },
 
 
