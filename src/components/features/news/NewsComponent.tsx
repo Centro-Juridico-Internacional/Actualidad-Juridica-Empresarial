@@ -11,6 +11,7 @@ interface NewsComponentProps {
 	eagerImage?: boolean;
 	variant?: 'default' | 'compact'; // opcional, se autoajusta si no lo pasas
 	titleSize?: 'small' | 'default' | 'large'; // Nuevo: tamaño del título
+	highlightQuery?: string; // Nuevo: término a resaltar
 }
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
@@ -21,9 +22,30 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	showContent = true,
 	eagerImage = false,
 	variant, // puede venir vacío
-	titleSize = 'default' // valor por defecto para retrocompatibilidad
+	titleSize = 'default', // valor por defecto para retrocompatibilidad
+	highlightQuery = ''
 }) => {
 	if (!product) return null;
+
+	// Función helper para resaltar texto
+	const getHighlightedText = (text: string, highlight: string) => {
+		if (!highlight.trim()) return text;
+
+		const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+		return (
+			<span>
+				{parts.map((part, i) =>
+					part.toLowerCase() === highlight.toLowerCase() ? (
+						<mark key={i} className="rounded-sm bg-yellow-200 px-0.5 text-gray-900">
+							{part}
+						</mark>
+					) : (
+						part
+					)
+				)}
+			</span>
+		);
+	};
 
 	const { blocks, truncated } = product.contenido
 		? truncateBlocks(product.contenido, truncateWords)
@@ -100,7 +122,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
 						} ${getTitleSizeClasses()}`}
 					>
-						{product.titulo}
+						{getHighlightedText(product.titulo, highlightQuery)}
 					</h2>
 				</a>
 

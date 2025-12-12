@@ -14,6 +14,8 @@ interface SearchParams {
 	page?: number;
 	/** Cantidad de resultados por página */
 	pageSize?: number;
+	/** Filtro opcional por categoría (slug) */
+	categoryId?: string;
 }
 
 /**
@@ -137,11 +139,16 @@ interface StrapiSearchResponse {
 export async function searchNews({
 	query: searchQuery,
 	page = 1,
-	pageSize = 20
+	pageSize = 20,
+	categoryId
 }: SearchParams): Promise<SearchResult> {
 	try {
 		if (!searchQuery || searchQuery.trim() === '') {
-			return { products: [], pagination: undefined };
+			// If no search query, but a categoryId is provided, we should still search within that category.
+			// If neither is provided, return empty.
+			if (!categoryId) {
+				return { products: [], pagination: undefined };
+			}
 		}
 
 		// 1. Limpieza básica: quitar caracteres extraños pero dejar letras, números y espacios
@@ -219,7 +226,7 @@ export async function searchNews({
 		});
 
 		// Construir query completa
-		const searchQueryString =
+		let searchQueryString =
 			`news?` +
 			filtersString +
 			`&populate[imagenes][fields][0]=url` +
@@ -230,6 +237,11 @@ export async function searchNews({
 			`&sort=updatedAt:desc` +
 			`&pagination[page]=${page}` +
 			`&pagination[pageSize]=${pageSize}`;
+
+		// Agregar filtro de categoría si existe
+		if (categoryId && categoryId.trim()) {
+			searchQueryString += `&filters[categorias][slug][$eq]=${encodeURIComponent(categoryId.trim())}`;
+		}
 
 		const respuesta = (await query(searchQueryString)) as StrapiSearchResponse;
 
