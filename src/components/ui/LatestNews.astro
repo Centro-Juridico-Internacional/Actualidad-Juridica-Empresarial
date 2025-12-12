@@ -35,7 +35,7 @@ const latestNews: NewsArticle[] = await getLatestNews(4, currentSlug ?? undefine
 
 				<div class="flex flex-1 flex-col">
 					<a
-						href={`/categorias/${news.categorias[0]}`}
+						href={`/categorias/${news.categorias[0]?.toLowerCase()}`}
 						class="mb-1 inline-block items-center text-xs font-medium text-green-600 transition-colors first-letter:uppercase hover:text-green-700"
 					>
 						{news.categorias[0]?.trim()}

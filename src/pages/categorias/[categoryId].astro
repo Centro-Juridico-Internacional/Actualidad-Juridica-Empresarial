@@ -9,12 +9,15 @@ import Layout from '@/layouts/Layout.astro';
 // Astro components (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
 
-// Get category ID from route params
+// Get category ID from route params and normalize to lowercase
 const { categoryId } = Astro.params as { categoryId: string };
 if (!categoryId) throw Astro.redirect('/404');
 
+// Normalize to lowercase for case-insensitive matching
+const normalizedCategoryId = categoryId.toLowerCase().trim();
+
 // Fetch news articles for this category
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId });
+const { products }: { products: NewsArticle[] } = await getNews({ categoryId: normalizedCategoryId });
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---

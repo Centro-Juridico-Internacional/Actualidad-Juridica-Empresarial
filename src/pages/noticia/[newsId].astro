@@ -50,7 +50,7 @@ const autorSlug: string = product.autorName
 						{
 							product.categorias.map((cat: string) => (
 								<a
-									href={`/categorias/${cat}`}
+									href={`/categorias/${cat.toLowerCase()}`}
 									class="rounded-full bg-green-500/90 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-green-600"
 								>
 									{cat.charAt(0).toUpperCase() + cat.slice(1)}

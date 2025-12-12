@@ -151,7 +151,9 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 
 	const categorias: string[] = categoriasArray
 		.map((categoria: StrapiCategoria) => categoria.attributes?.name ?? categoria?.name)
-		.filter((name): name is string => typeof name === 'string' && name.length > 0);
+		.filter(
+			(name: string | undefined): name is string => typeof name === 'string' && name.length > 0
+		);
 
 	const fechaPublicada = atributos?.publishedAt ?? atributos?.updatedAt ?? atributos?.createdAt;
 	const fechaPublicacion = fechaPublicada ? new Date(fechaPublicada) : new Date();
@@ -182,9 +184,12 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
  */
 export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult> {
 	try {
+		// Normalize categoryId to lowercase to ensure case-insensitive matching
+		const normalizedCategoryId = categoryId ? categoryId.toLowerCase().trim() : '';
+
 		const consultaNoticias =
 			`news?` +
-			`filters[categorias][slug][$contains]=${encodeURIComponent(categoryId ?? '')}` +
+			`filters[categorias][slug][$contains]=${encodeURIComponent(normalizedCategoryId)}` +
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
