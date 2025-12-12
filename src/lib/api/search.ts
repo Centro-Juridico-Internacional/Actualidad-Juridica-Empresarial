@@ -1,4 +1,4 @@
-import { query } from '../strapi';
+import { query, withHost } from '../strapi';
 import type { NewsArticle, Pagination } from './news';
 
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
@@ -262,16 +262,17 @@ export async function searchNews({
 
 			return {
 				titulo: atributos?.titulo ?? '',
-				contenido: atributos?.contenido,
+				contenido: (atributos?.contenido ?? []) as any[],
 				slug: atributos?.slug ?? '',
-				image: imagenRelativa ? `${STRAPI_HOST}${imagenRelativa}?token=${STRAPI_TOKEN}` : null,
+				image: imagenRelativa ? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}` : null,
 				dia: fechaPublicacion.toLocaleDateString(),
 				hora: fechaPublicacion.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
 				UrlYoutube: atributos?.UrlYoutube ?? null,
 				autorName: autor?.name ?? null,
 				autorAvatar: autorAvatarRelativo
-					? `${STRAPI_HOST}${autorAvatarRelativo}?token=${STRAPI_TOKEN}`
+					? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
 					: null,
+				autorRol: autor?.cargo ?? null,
 				categorias
 			};
 		});

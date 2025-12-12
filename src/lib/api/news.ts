@@ -162,7 +162,7 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		titulo: atributos?.titulo ?? '',
 		contenido: atributos?.contenido ?? [],
 		slug: atributos?.slug ?? '',
-		image: imagenRelativa ? `${STRAPI_HOST}${imagenRelativa}?token=${STRAPI_TOKEN}` : null,
+		image: imagenRelativa ? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}` : null,
 		dia: fechaPublicacion.toLocaleDateString(),
 		hora: fechaPublicacion.toLocaleTimeString([], {
 			hour: '2-digit',
@@ -171,7 +171,7 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		UrlYoutube: atributos?.UrlYoutube ?? null,
 		autorName: autor?.name ?? null,
 		autorAvatar: autorAvatarRelativo
-			? `${STRAPI_HOST}${autorAvatarRelativo}?token=${STRAPI_TOKEN}`
+			? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
 			: null,
 		autorRol: autor?.cargo ?? null,
 		categorias
