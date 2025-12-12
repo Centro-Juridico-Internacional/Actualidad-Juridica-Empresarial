@@ -4,6 +4,7 @@ import BannerHeader from './BannerHeader.astro';
 
 // React components (features)
 import SearchBar from '@/components/features/search/SearchBar';
+import ThemeToggle from '@/components/features/ui/ThemeToggle';
 
 // Props interface
 interface Props {
@@ -48,7 +49,7 @@ const dataHeaderSections: HeaderSection[] = [
 
 			<div class="hidden items-center gap-4 md:flex">
 				<SearchBar client:load placeholder="Buscar artículos..." />
-
+				<ThemeToggle client:load />
 				<a href="/contacto" class="btn btn-primary text-gray-50"> Contactar </a>
 			</div>
 		</div>

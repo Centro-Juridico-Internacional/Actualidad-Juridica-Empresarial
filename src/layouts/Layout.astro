@@ -13,6 +13,7 @@ import SpeedInsights from '@vercel/speed-insights/astro';
 // Astro components (layouts)
 import Header from '@/layouts/Header.astro';
 import Footer from '@/layouts/Footer.astro';
+import ScrollToTop from '@/components/features/ui/ScrollToTop.tsx';
 
 // Props interface
 interface Props {
@@ -22,6 +23,9 @@ interface Props {
 
 // Destructure props with explicit typing
 const { title, booleanLayout }: Props = Astro.props;
+
+// Get dynamic URL for metadata and print
+const { origin, href } = Astro.url;
 ---
 
 <!doctype html>
@@ -69,7 +73,7 @@ const { title, booleanLayout }: Props = Astro.props;
 			content="Abogados expertos en derecho y recaudo de cartera. Proteja su empresa legalmente. Consultas jurídicas para empresas y particulares en Colombia."
 		/>
 		<meta property="og:image" content="/header/logo.svg" />
-		<meta property="og:url" content="https://centrojuridicointernacional.co/" />
+		<meta property="og:url" content={href} />
 		<meta property="og:site_name" content="Centro Jurídico Internacional" />
 
 		<!-- Twitter Card -->
@@ -85,7 +89,7 @@ const { title, booleanLayout }: Props = Astro.props;
 		<meta name="twitter:image" content="/header/logo.svg" />
 
 		<!-- Canonical -->
-		<link rel="canonical" href="https://centrojuridicointernacional.co/" />
+		<link rel="canonical" href={href} />
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -119,8 +123,17 @@ const { title, booleanLayout }: Props = Astro.props;
 			</div>
 		</main>
 
+		<!-- Scroll To Top (Root Level for Z-Index) -->
+		<ScrollToTop client:idle />
+
 		<!-- Footer con transición suave -->
 		<Footer />
+
+		<!-- Elemento invisible en pantalla, visible solo al imprimir (fixed footer) -->
+		<div class="print-footer-container hidden">
+			<p>© Centro Jurídico Internacional - Documento Confidencial y Protegido por Derechos de Autor.</p>
+			<p>Generado desde: {origin}</p>
+		</div>
 	</body><style>
 		main {
 			width: 100%;

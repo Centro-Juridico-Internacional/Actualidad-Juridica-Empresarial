@@ -138,6 +138,63 @@ body {
 	padding: 0;
 }
 
+@media print {
+	/* Ocultar elementos de navegación y UI no imprimibles */
+	header,
+	footer,
+	aside,
+	button,
+	.no-print,
+	[role='banner'],
+	[role='contentinfo'] {
+		display: none !important;
+	}
+
+	/* Asegurar fondo blanco y texto negro para ahorro de tinta y legibilidad */
+	body {
+		background-color: white !important;
+		color: black !important;
+		font-size: 12pt;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	/* Ajustar contenedor principal */
+	.container-main {
+		max-width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	/* Footer repetitivo en cada página */
+	.print-footer-container {
+		display: block !important;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background-color: white;
+		border-top: 1px solid #ddd;
+		padding-top: 10px;
+		text-align: center;
+		color: #666;
+		font-size: 9pt;
+		z-index: 9999;
+	}
+
+	/* Espacio en el body para prevenir solapamiento con footer */
+	body {
+		padding-bottom: 2cm;
+	}
+
+	/* Mostrar enlaces expandidos (opcional, buena práctica legal) */
+	a[href^='http']::after {
+		content: ' (' attr(href) ')';
+		font-size: 0.8em;
+		color: #666;
+	}
+}
+
 .carousel-dot[aria-selected='true'] {
 	background-color: white;
 }

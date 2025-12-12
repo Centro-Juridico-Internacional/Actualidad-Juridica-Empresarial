@@ -240,18 +240,27 @@ export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
  */
 export async function getLatestNews(
 	limit: number = 4,
-	excludeSlug?: string
+	excludeSlug?: string,
+	categorySlugs?: string[]
 ): Promise<NewsArticle[]> {
 	try {
-		let consultaNoticias =
-			`news?` +
-			`pagination[limit]=${limit + (excludeSlug ? 1 : 0)}` +
+		let consultaNoticias = `news?` + `sort=updatedAt:desc` + `&pagination[limit]=${limit + 1}`; // Request one extra just in case we filter one out
+
+		// Filter by Categories if provided (matches ANY of the categories)
+		if (categorySlugs && categorySlugs.length > 0) {
+			categorySlugs.forEach((slug, index) => {
+				// Utilizando OR implicitamente al filtrar por el mismo campo con indices, o usamos $in si la version de Strapi lo soporta directo
+				// Para mayor compatibilidad construimos: filters[categorias][slug][$in][0]=slug1&filters[categorias][slug][$in][1]=slug2
+				consultaNoticias += `&filters[categorias][slug][$in][${index}]=${encodeURIComponent(slug)}`;
+			});
+		}
+
+		consultaNoticias +=
 			`&populate[imagenes][fields][0]=url` +
 			`&populate[autor][populate][avatar][fields][0]=url` +
 			`&populate[autor][fields][0]=name` +
 			`&populate[autor][fields][1]=cargo` +
-			`&populate[categorias][fields][0]=name` +
-			`&sort=updatedAt:desc`;
+			`&populate[categorias][fields][0]=name`;
 
 		const respuesta = (await query(consultaNoticias)) as StrapiNewsResponse;
 

@@ -7,13 +7,20 @@ import type { NewsArticle } from '@/lib/api/news';
 interface Props {
 	currentSlug?: string | null;
 	layout?: 'vertical' | 'horizontal';
+	categorySlugs?: string[];
+	limit?: number;
 }
 
 // Destructure props with defaults
-const { currentSlug = null, layout = 'vertical' }: Props = Astro.props;
+const {
+	currentSlug = null,
+	layout = 'vertical',
+	categorySlugs,
+	limit = 4
+}: Props = Astro.props;
 
-// Fetch latest 4 news (optimized) excluding current article
-const latestNews: NewsArticle[] = await getLatestNews(4, currentSlug ?? undefined);
+// Fetch latest news (optimized) excluding current article, optionally filtered by categories
+const latestNews: NewsArticle[] = await getLatestNews(limit, currentSlug ?? undefined, categorySlugs);
 ---
 
 <div

@@ -48,6 +48,7 @@ const autorSlug: string = product.autorName
 	: '#';
 
 // Generate Schema.org JSON-LD
+const { origin } = Astro.url;
 const schema = {
 	'@context': 'https://schema.org',
 	'@type': 'NewsArticle',
@@ -59,7 +60,7 @@ const schema = {
 		{
 			'@type': 'Person',
 			name: product.autorName || 'Centro Jurídico Internacional',
-			url: `https://centrojuridicointernacional.co${autorSlug}`
+			url: `${origin}${autorSlug}`
 		}
 	],
 	publisher: {
@@ -67,7 +68,7 @@ const schema = {
 		name: 'Centro Jurídico Internacional',
 		logo: {
 			'@type': 'ImageObject',
-			url: 'https://centrojuridicointernacional.co/header/logo.svg'
+			url: `${origin}/header/logo.svg`
 		}
 	}
 };
@@ -141,11 +142,13 @@ const schema = {
 							</div>
 						</a>
 
-						<SocialShare 
-							client:visible 
-							url={`https://centrojuridicointernacional.co/noticia/${newsId}`} 
-							title={product.titulo} 
-						/>
+						<div class="no-print">
+							<SocialShare 
+								client:visible 
+								url={`${origin}/noticia/${newsId}`} 
+								title={product.titulo} 
+							/>
+						</div>
 					</div>
 
 					<!-- Contenido -->
@@ -168,8 +171,15 @@ const schema = {
 				<!-- Sidebar -->
 				<aside class="space-y-6 lg:sticky lg:top-8">
 					<div class="rounded-2xl bg-white p-6 shadow-md">
-						<h2 class="mb-6 text-xl font-bold text-gray-900">Últimas noticias</h2>
-						<LatestNews layout="vertical" currentSlug={newsId} />
+						<h2 class="mb-6 text-xl font-bold text-gray-900">
+							{product.categorias.length > 0 ? "Noticias relacionadas" : "Últimas noticias"}
+						</h2>
+						<LatestNews 
+							layout="vertical" 
+							currentSlug={newsId} 
+							categorySlugs={product.categorias.map(c => c.toLowerCase())}
+							limit={4} 
+						/>
 					</div>
 				</aside>
 			</div>
