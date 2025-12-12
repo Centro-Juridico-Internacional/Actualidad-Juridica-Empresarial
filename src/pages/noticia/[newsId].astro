@@ -10,11 +10,12 @@ import type { NewsArticle } from '@/lib/api/news';
 import Layout from '@/layouts/Layout.astro';
 
 // Astro components (UI)
-import LatestNews from '@/components/ui/LatestNews.astro';
+import SmartRelatedNews from '@/components/ui/SmartRelatedNews.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // React components (features)
 import YouTubeLite from '@/components/features/media/YouTubeLite';
+import ArticleAudioPlayer from '@/components/features/media/ArticleAudioPlayer';
 
 import SocialShare from '@/components/features/social/SocialShare';
 import ReadingProgressBar from '@/components/features/ui/ReadingProgressBar';
@@ -40,7 +41,21 @@ const countWords = (blocks: any[]) => {
 	return text.split(/\s+/).length;
 };
 
+// Extract plain text for Audio Player
+const getPlainText = (blocks: any[]) => {
+	let text = '';
+	blocks?.forEach((block) => {
+		if (block.type === 'paragraph' || block.type === 'heading') {
+			block.children?.forEach((child: any) => {
+				if (child.type === 'text') text += child.text + ' ';
+			});
+		}
+	});
+	return text.trim();
+};
+
 const words = countWords(product.contenido);
+const plainText = getPlainText(product.contenido);
 const readingTime = Math.ceil(words / 200); // 200 words per minute average
 
 // Generate author slug for navigation
@@ -153,6 +168,10 @@ const schema = {
 						</div>
 					</div>
 
+					<div class="mb-6 flex justify-end">
+						<ArticleAudioPlayer client:load title={product.titulo} content={plainText} />
+					</div>
+
 					<!-- Contenido -->
 					<div
 						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none rounded-2xl bg-gray-50 px-6 py-6"
@@ -176,9 +195,9 @@ const schema = {
 						<h2 class="mb-6 text-xl font-bold text-gray-900">
 							{product.categorias.length > 0 ? "Noticias relacionadas" : "Últimas noticias"}
 						</h2>
-						<LatestNews 
-							layout="vertical" 
+						<SmartRelatedNews 
 							currentSlug={newsId} 
+                            currentTitle={product.titulo}
 							categorySlugs={product.categorias.map(c => c.toLowerCase())}
 							limit={4} 
 						/>
