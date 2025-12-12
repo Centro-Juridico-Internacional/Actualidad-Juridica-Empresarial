@@ -15,6 +15,9 @@ import LatestNews from '@/components/ui/LatestNews.astro';
 // React components (features)
 import YouTubeLite from '@/components/features/media/YouTubeLite';
 
+import SocialShare from '@/components/features/social/SocialShare';
+import ReadingProgressBar from '@/components/features/ui/ReadingProgressBar';
+
 // Get news ID from route params
 const { newsId } = Astro.params as { newsId: string };
 if (!newsId) throw Astro.redirect('/404');
@@ -22,6 +25,22 @@ if (!newsId) throw Astro.redirect('/404');
 // Fetch specific news article by slug (optimized)
 const product: NewsArticle | null = await getNewsBySlug(newsId);
 if (!product) throw Astro.redirect('/404');
+
+// Calculate Reading Time
+const countWords = (blocks: any[]) => {
+	let text = '';
+	blocks?.forEach((block) => {
+		if (block.type === 'paragraph' || block.type === 'heading') {
+			block.children?.forEach((child: any) => {
+				if (child.type === 'text') text += child.text + ' ';
+			});
+		}
+	});
+	return text.split(/\s+/).length;
+};
+
+const words = countWords(product.contenido);
+const readingTime = Math.ceil(words / 200); // 200 words per minute average
 
 // Generate author slug for navigation
 const autorSlug: string = product.autorName
@@ -58,7 +77,9 @@ const schema = {
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title={product.titulo} booleanLayout={true}>
-	<article class="animate-fadeIn">
+	<ReadingProgressBar client:load targetId="news-article-content" />
+
+	<article id="news-article-content" class="animate-fadeIn">
 		<!-- Hero Section -->
 		<div class="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
 			<img
@@ -83,6 +104,9 @@ const schema = {
 								</a>
 							))
 						}
+						<span class="rounded-full bg-black/40 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+							⏱️ {readingTime} min lectura
+						</span>
 					</div>
 					<h1
 						class="text-xl leading-tight font-bold break-words text-white md:text-2xl lg:text-3xl xl:text-4xl"
@@ -99,7 +123,7 @@ const schema = {
 				<!-- Artículo -->
 				<div class="lg:col-span-2">
 					<!-- Meta información -->
-					<div class="mb-8 flex items-center gap-6 border-b border-gray-100 pb-6">
+					<div class="mb-8 flex flex-col justify-between gap-6 border-b border-gray-100 pb-6 sm:flex-row sm:items-center">
 						<a href={autorSlug} class="group flex items-center gap-3">
 							<img
 								src={product.autorAvatar}
@@ -116,6 +140,12 @@ const schema = {
 								</p>
 							</div>
 						</a>
+
+						<SocialShare 
+							client:visible 
+							url={`https://centrojuridicointernacional.co/noticia/${newsId}`} 
+							title={product.titulo} 
+						/>
 					</div>
 
 					<!-- Contenido -->
