@@ -8,6 +8,7 @@ import Layout from '@/layouts/Layout.astro';
 
 // Astro components (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Get category ID from route params and normalize to lowercase
 const { categoryId } = Astro.params as { categoryId: string };
@@ -22,7 +23,7 @@ const { products }: { products: NewsArticle[] } = await getNews({ categoryId: no
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
-<Layout title={categoryId} booleanLayout={true}>
+<Layout title={categoryId} booleanLayout={true} breadcrumbTitle={categoryId.replace(/_/g, ' ')}>
 	<div class="animate-fadeIn">
 		<!-- Header de categoría con animación -->
 		<!-- Header de categoría con animación -->
@@ -50,6 +51,7 @@ const { products }: { products: NewsArticle[] } = await getNews({ categoryId: no
 
 		<!-- Grid de noticias con animación -->
 		<section class="container-main py-12">
+			<Breadcrumb title={categoryId.replace(/_/g, ' ')} className="mb-8" />
 			<div class="grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{
 					products.map((product: any, index: number) => (

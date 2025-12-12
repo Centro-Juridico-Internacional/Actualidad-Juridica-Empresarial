@@ -50,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				onKeyDown={handleKeyDown}
 				placeholder={placeholder}
 				autoFocus={autoFocus}
-				className="focus:ring-primary/20 w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm focus:bg-white focus:ring-2 focus:outline-none"
+				className="focus:ring-primary/20 w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:outline-none dark:bg-gray-100 dark:text-black"
 				aria-label="Buscar noticias"
 			/>
 			<button

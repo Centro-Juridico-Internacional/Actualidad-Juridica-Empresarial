@@ -14,15 +14,17 @@ import SpeedInsights from '@vercel/speed-insights/astro';
 import Header from '@/layouts/Header.astro';
 import Footer from '@/layouts/Footer.astro';
 import ScrollToTop from '@/components/features/ui/ScrollToTop.tsx';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Props interface
 interface Props {
 	title: string;
 	booleanLayout: boolean;
+ 	breadcrumbTitle?: string;
 }
 
 // Destructure props with explicit typing
-const { title, booleanLayout }: Props = Astro.props;
+const { title, booleanLayout, breadcrumbTitle }: Props = Astro.props;
 
 // Get dynamic URL for metadata and print
 const { origin, href } = Astro.url;

@@ -8,6 +8,7 @@ import Layout from '@/layouts/Layout.astro';
 
 // Astro components (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Get author ID from route params
 const { autoresId } = Astro.params as { autoresId: string };
@@ -38,7 +39,7 @@ const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
-<Layout title={`Noticias de ${authorName}`} booleanLayout={true}>
+<Layout title={`Noticias de ${authorName}`} booleanLayout={true} breadcrumbTitle={`Noticias de ${authorName}`}>
 	<div class="min-h-screen bg-gradient-to-b from-green-50/50 to-white">
 		<section class="container-main py-16">
 			<div class="relative mb-12 text-center">
@@ -54,6 +55,8 @@ const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
 					Descubre los últimos artículos y análisis de nuestro experto colaborador
 				</p>
 			</div>
+			
+			<Breadcrumb title={`Noticias de ${authorName}`} className="mb-6 mt-8" />
 
 			<div class="grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{

@@ -11,6 +11,7 @@ import Layout from '@/layouts/Layout.astro';
 
 // Astro components (UI)
 import LatestNews from '@/components/ui/LatestNews.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // React components (features)
 import YouTubeLite from '@/components/features/media/YouTubeLite';
@@ -77,7 +78,7 @@ const schema = {
 ---
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-<Layout title={product.titulo} booleanLayout={true}>
+<Layout title={product.titulo} booleanLayout={true} breadcrumbTitle={product.titulo}>
 	<ReadingProgressBar client:load targetId="news-article-content" />
 
 	<article id="news-article-content" class="animate-fadeIn">
@@ -120,6 +121,7 @@ const schema = {
 
 		<!-- Contenido Principal -->
 		<div class="container-main py-12">
+			<Breadcrumb title={product.titulo} className="mb-8" />
 			<div class="grid gap-8 lg:grid-cols-[1fr_1fr_0.7fr]">
 				<!-- Artículo -->
 				<div class="lg:col-span-2">

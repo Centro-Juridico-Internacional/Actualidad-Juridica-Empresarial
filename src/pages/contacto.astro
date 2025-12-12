@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import ContactForm from '@/components/features/form/ContactForm';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Datos de las sedes (extraídos del footer para consistencia)
 const sedes = [
@@ -50,7 +51,7 @@ const sedes = [
 ];
 ---
 
-<Layout title="Contacto" booleanLayout={true}>
+<Layout title="Contacto" booleanLayout={true} breadcrumbTitle="Contacto">
 	<section class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900">
 		<div class="absolute inset-0 opacity-20">
             <!-- Pattern de fondo opcional -->
@@ -74,6 +75,7 @@ const sedes = [
 	</section>
 
 	<div class="container-main py-16">
+		<Breadcrumb title="Contacto" className="mb-8" />
 		<div class="grid gap-12 lg:grid-cols-2">
 			<!-- Formulario de Contacto -->
 			<div class="order-2 lg:order-1">

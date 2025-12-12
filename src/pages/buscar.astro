@@ -5,6 +5,7 @@ import { getCategories } from '@/lib/api/categories';
 
 // Astro components (layouts)
 import Layout from '@/layouts/Layout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // React components (features)
 import NewsComponent from '@/components/features/news/NewsComponent';
@@ -44,7 +45,7 @@ if ((query && query.trim()) || categoryFilter) {
 const totalResults: number = pagination?.total ?? 0;
 ---
 
-<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'} booleanLayout={false}>
+<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'} booleanLayout={false} breadcrumbTitle="Búsqueda">
     <!-- Hero Section -->
     <section class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900 mb-8">
         <div class="absolute inset-0 opacity-20">
@@ -70,7 +71,7 @@ const totalResults: number = pagination?.total ?? 0;
                         name="q" 
                         value={query}
                         placeholder="¿Qué estás buscando hoy?"
-                        class="w-full rounded-full border-0 py-4 pl-6 pr-14 text-gray-900 shadow-xl ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-500"
+                        class="w-full rounded-full border-0 py-4 pl-6 pr-14 text-gray-900 shadow-xl ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-500 bg-gray-50"
                     />
                     <button type="submit" class="absolute right-2 rounded-full bg-green-600 p-2 text-white hover:bg-green-700 transition">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -84,6 +85,7 @@ const totalResults: number = pagination?.total ?? 0;
     </section>
 
 	<main class="container-main pb-12">
+		<Breadcrumb title="Búsqueda" className="pt-8 mb-6" />
 		<!-- Filtros de Búsqueda -->
         <div class="mb-8 flex flex-wrap items-center gap-2 border-b border-gray-100 pb-4">
             <span class="text-sm font-medium text-gray-500 mr-2">Filtrar por:</span>

@@ -4,6 +4,7 @@ import { getAuthors } from '@/lib/api/authors';
 
 // Astro components (layouts)
 import Layout from '@/layouts/Layout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Fetch all authors
 const authors = await getAuthors();
@@ -25,6 +26,8 @@ const authors = await getAuthors();
 					Conoce a los expertos que hacen posible nuestro contenido de calidad
 				</p>
 			</div>
+			
+			<Breadcrumb title="Nuestros Autores" className="mb-0" />
 
 			<div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{
