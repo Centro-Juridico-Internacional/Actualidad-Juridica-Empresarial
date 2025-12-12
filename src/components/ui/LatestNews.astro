@@ -21,31 +21,38 @@ const latestNews: NewsArticle[] = await getLatestNews(4, currentSlug ?? undefine
 >
 	{
 		latestNews.map((news: any) => (
-			<div class="group relative flex w-full items-start gap-4 border-b border-gray-100 pb-6 transition-colors hover:border-green-200">
-				<div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
+			<div class="group relative flex w-full items-start gap-3 border-b border-gray-100 pb-4 transition-colors hover:border-green-200 sm:gap-4 sm:pb-6">
+				{/* Imagen responsive con aspect ratio fijo */}
+				<div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-24">
 					<img
 						src={news.image}
 						alt={news.titulo}
-						class="h-full w-full object-cover transition-transform duration-300"
+						class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 						loading="lazy"
 						decoding="async"
 					/>
 					<div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 				</div>
 
-				<div class="flex flex-1 flex-col">
+				{/* Contenido con truncamiento inteligente */}
+				<div class="flex min-w-0 flex-1 flex-col gap-1">
+					{/* Categoría */}
 					<a
 						href={`/categorias/${news.categorias[0]?.toLowerCase()}`}
-						class="mb-1 inline-block items-center text-xs font-medium text-green-600 transition-colors first-letter:uppercase hover:text-green-700"
+						class="inline-block w-fit text-xs font-medium text-green-600 transition-colors first-letter:uppercase hover:text-green-700"
 					>
 						{news.categorias[0]?.trim()}
 					</a>
 
-					<h3 class="mb-2 leading-tight font-semibold text-gray-900 decoration-green-500 decoration-2 group-hover:underline">
-						<a href={`/noticia/${news.slug}`}>{news.titulo}</a>
+					{/* Título con truncamiento a 2 líneas */}
+					<h3 class="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 decoration-green-500 decoration-2 group-hover:underline sm:text-base">
+						<a href={`/noticia/${news.slug}`} class="hover:text-green-700">
+							{news.titulo}
+						</a>
 					</h3>
 
-					<span class="mt-auto text-xs text-gray-500">{news.dia}</span>
+					{/* Fecha */}
+					<time class="mt-1 text-xs text-gray-500">{news.dia}</time>
 				</div>
 			</div>
 		))

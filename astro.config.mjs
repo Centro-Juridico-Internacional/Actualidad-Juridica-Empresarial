@@ -16,6 +16,16 @@ export default defineConfig({
     exclude: [/^\/api\//, /^\/buscar/], // Excluir API y búsqueda del ISR
   },
 
+  // Habilitar prefetch para navegación rápida
+  prefetch: true,
+
+  image: {
+    domains: [
+      "grounded-positivity-3e23e06907.strapiapp.com",
+      "grounded-positivity-3e23e06907.media.strapiapp.com"
+    ],
+    remotePatterns: [{ protocol: "https", hostname: "**.strapiapp.com" }],
+  },
 
   build: {
     inlineStylesheets: "auto",

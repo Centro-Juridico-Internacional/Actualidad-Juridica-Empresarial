@@ -21,9 +21,14 @@ import '@/styles/revista-responsive.css';
 import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
-const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
-const pautas = await getPautas();
-const interviews = await getInterviewsUrl();
+// Fetch all data in parallel to reduce load time
+const [newsData, pautas, interviews] = await Promise.all([
+	getNews({ categoryId: '' }),
+	getPautas(),
+	getInterviewsUrl()
+]);
+
+const { products } = newsData;
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
