@@ -28,8 +28,34 @@ const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
+// Generate Schema.org JSON-LD
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'NewsArticle',
+	headline: product.titulo,
+	image: [product.image],
+	datePublished: new Date().toISOString(), // Idealmente usar product.publishedAt si existe
+	dateModified: new Date().toISOString(),
+	author: [
+		{
+			'@type': 'Person',
+			name: product.autorName || 'Centro Jurídico Internacional',
+			url: `https://centrojuridicointernacional.co${autorSlug}`
+		}
+	],
+	publisher: {
+		'@type': 'Organization',
+		name: 'Centro Jurídico Internacional',
+		logo: {
+			'@type': 'ImageObject',
+			url: 'https://centrojuridicointernacional.co/header/logo.svg'
+		}
+	}
+};
+
 // ISR maneja el cache automáticamente en modo hybrid
 ---
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title={product.titulo} booleanLayout={true}>
 	<article class="animate-fadeIn">
