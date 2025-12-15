@@ -1,0 +1,76 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import HorasExtrasCalculator from '@/components/features/tools/HorasExtrasCalculator.tsx';
+
+const { href } = Astro.url;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Calculadora de Horas Extras y Recargos",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "All",
+  "url": href,
+  "description": "Calculadora oficial colombiana para horas extra, recargos nocturnos, dominicales y festivos.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Centro Jurídico Internacional"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "COP"
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<Layout title="Horas Extras y Recargos" booleanLayout={true} breadcrumbTitle="Herramientas">
+    
+    <!-- Hero -->
+    <section class="relative flex h-[25vh] min-h-[220px] items-center justify-center bg-blue-700 overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <svg class="h-full w-full" viewBox="0 0 800 800">
+                <defs>
+                    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1" fill="white" />
+                    </pattern>
+                </defs>
+                <rect width="800" height="800" fill="url(#dotPattern)" />
+            </svg>
+        </div>
+
+        <div class="container-main relative z-10 text-center">
+            <h1 class="text-4xl font-bold text-white mb-3">
+                Calculadora de Horas Extras
+            </h1>
+            <p class="text-blue-100 text-lg">
+                Obtén el valor exacto de tus horas extra y recargos según la ley colombiana.
+            </p>
+        </div>
+    </section>
+
+    <section class="container-main py-12">
+        <Breadcrumb title="Herramientas" className="mb-8" />
+
+        <div class="flex flex-col items-center">
+            <HorasExtrasCalculator client:load />
+
+            <div class="mt-12 max-w-3xl prose prose-blue bg-gray-50 p-8 rounded-2xl text-gray-600">
+                <h3>¿Cómo funciona esta calculadora?</h3>
+                <p>Incluye los porcentajes establecidos en la legislación laboral:</p>
+                <ul>
+                    <li>Extra diurna: +25%</li>
+                    <li>Extra nocturna: +75%</li>
+                    <li>Nocturno ordinario: +35%</li>
+                    <li>Dominical o festivo diurno: +75%</li>
+                    <li>Dominical o festivo nocturno: +110%</li>
+                </ul>
+                <p>Los cálculos se basan en el salario mensual dividido entre 240 horas legales.</p>
+            </div>
+        </div>
+    </section>
+
+</Layout>

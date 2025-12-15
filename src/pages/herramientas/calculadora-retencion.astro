@@ -1,0 +1,76 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+import RetencionCalculator from "@/components/features/tools/RetencionCalculator.tsx";
+
+const { href } = Astro.url;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Calculadora de Retención en la Fuente",
+  "operatingSystem": "All",
+  "applicationCategory": "FinanceApplication",
+  "url": href,
+  "description":
+    "Calculadora oficial de retención en la fuente por salarios en Colombia. UVT, deducciones, renta exenta y tabla progresiva.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Centro Jurídico Internacional"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "COP"
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<Layout title="Retención en la Fuente" booleanLayout={true} breadcrumbTitle="Herramientas">
+    
+    <!-- Hero -->
+    <section class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-purple-700">
+        <div class="absolute inset-0 opacity-20">
+            <svg class="h-full w-full">
+                <defs>
+                    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1" fill="white" />
+                    </pattern>
+                </defs>
+                <rect width="800" height="800" fill="url(#dotPattern)" />
+            </svg>
+        </div>
+
+        <div class="container-main relative z-10 text-center">
+            <h1 class="text-4xl font-bold text-white mb-3">
+                Calculadora de Retención en la Fuente
+            </h1>
+            <p class="text-purple-200 text-lg max-w-2xl mx-auto">
+                Calcula la retención mensual aplicando UVT, deducciones y tabla progresiva oficial.
+            </p>
+        </div>
+    </section>
+
+    <section class="container-main py-12">
+        <Breadcrumb title="Herramientas" className="mb-8" />
+
+        <div class="flex flex-col items-center">
+            <RetencionCalculator client:load />
+
+            <div class="mt-12 prose prose-purple p-8 bg-gray-50 rounded-2xl max-w-3xl text-gray-600">
+                <h3>¿Cómo funciona esta herramienta?</h3>
+                <p>Implementa el Procedimiento 1 de retención para trabajadores dependientes:</p>
+                <ul>
+                    <li>Límite legal del 25% renta exenta</li>
+                    <li>Deducciones: salud, pensión, dependientes, intereses vivienda</li>
+                    <li>Conversión a UVT y tabla progresiva</li>
+                    <li>UVT actual oficial</li>
+                </ul>
+                <p>Es una estimación aproximada acorde con normativa vigente DIAN.</p>
+            </div>
+        </div>
+    </section>
+
+</Layout>

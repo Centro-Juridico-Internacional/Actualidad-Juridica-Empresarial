@@ -1,208 +1,295 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+
+// Valores oficiales
+const SALARIO_MINIMO_2025 = 1423500;
+const AUXILIO_TRANSPORTE_2025 = 200000;
+
+// Tooltip mejorado (pastel + animación fade/scale)
+const Tooltip = React.memo(({ text }: { text: string }) => (
+	<span className="group relative ml-1 cursor-pointer rounded-full bg-green-100 px-[6px] py-[1px] text-xs font-bold text-green-700 transition select-none hover:bg-green-200">
+		?
+		<span className="absolute top-5 left-0 z-50 hidden w-64 scale-95 rounded-lg border border-green-200 bg-white/95 p-3 text-xs text-gray-700 opacity-0 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:block group-hover:scale-100 group-hover:opacity-100">
+			{text}
+		</span>
+	</span>
+));
 
 interface CalculationResult {
+	dias: number;
 	cesantias: number;
-	interesesCesantias: number;
-	prima: number;
+	intereses: number;
+	prima1: number;
+	prima2: number;
 	vacaciones: number;
 	total: number;
-	diasTrabajados: number;
+	pension: number;
+	salud: number;
+	fondoSolidaridad: number;
 }
 
-const LaborCalculator: React.FC = () => {
+const LaborCalculator = () => {
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
 	const [salary, setSalary] = useState('');
-	const [transportHelp, setTransportHelp] = useState(true);
+	const [useMinSalary, setUseMinSalary] = useState(false);
+	const [useAuxilio, setUseAuxilio] = useState(true);
+	const [primaPagada, setPrimaPagada] = useState(false);
+
 	const [result, setResult] = useState<CalculationResult | null>(null);
 
-	const AUXILIO_TRANSPORTE_2024 = 162000;
-	const SALARIO_MINIMO_2024 = 1300000;
+	// Cálculo oficial 30/360
+	const commercialDays = useCallback((start: Date, end: Date) => {
+		return (
+			end.getDate() -
+			start.getDate() +
+			(end.getMonth() - start.getMonth()) * 30 +
+			(end.getFullYear() - start.getFullYear()) * 360 +
+			1
+		);
+	}, []);
 
-	const calculateDays = (start: Date, end: Date) => {
-		// Cálculo aproximado de días (360 días año comercial para laboral)
-		// Se suma 1 para incluir el día final
-		const diffTime = Math.abs(end.getTime() - start.getTime());
-		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-		return diffDays;
-	};
+	const commercialDaysInRange = useCallback(
+		(start: Date, end: Date, r1: Date, r2: Date) => {
+			const realStart = start > r1 ? start : r1;
+			const realEnd = end < r2 ? end : r2;
 
-	const handleCalculate = (e: React.FormEvent) => {
+			if (realEnd < realStart) return 0;
+
+			return commercialDays(realStart, realEnd);
+		},
+		[commercialDays]
+	);
+
+	const calculate = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!startDate || !endDate || !salary) return;
 
 		const start = new Date(startDate);
 		const end = new Date(endDate);
 
 		if (end < start) {
-			alert('La fecha final no puede ser anterior a la inicial');
+			alert('La fecha final no puede ser antes de la inicial.');
 			return;
 		}
 
-		const dias = calculateDays(start, end);
-		const salarioBase = Number(salary);
+		const salarioBase = useMinSalary ? SALARIO_MINIMO_2025 : Number(salary);
+		const auxilio =
+			useAuxilio && salarioBase <= SALARIO_MINIMO_2025 * 2 ? AUXILIO_TRANSPORTE_2025 : 0;
 
-		// Base de liquidación: Salario + Aux. Transporte (si aplica)
-		// Para Cesantías y Prima se incluye Aux. Transporte si gana < 2 SMMLV
-		// Para Vacaciones NO se incluye Aux. Transporte
+		const dias = commercialDays(start, end);
 
-		const incluyeAuxilio = transportHelp && salarioBase <= SALARIO_MINIMO_2024 * 2;
-		const valorAuxilio = incluyeAuxilio ? AUXILIO_TRANSPORTE_2024 : 0;
+		const year = start.getFullYear();
+		const sem1Start = new Date(year, 0, 1);
+		const sem1End = new Date(year, 5, 30);
+		const sem2Start = new Date(year, 6, 1);
+		const sem2End = new Date(year, 11, 31);
 
-		const basePrestaciones = salarioBase + valorAuxilio;
-		const baseVacaciones = salarioBase;
+		const dias1 = commercialDaysInRange(start, end, sem1Start, sem1End);
+		const dias2 = commercialDaysInRange(start, end, sem2Start, sem2End);
 
-		// Fórmulas
-		// Cesantías: (Salario * Días) / 360
-		const cesantias = (basePrestaciones * dias) / 360;
+		const basePrest = salarioBase + auxilio;
 
-		// Intereses: (Cesantías * Días * 0.12) / 360
-		const intereses = (cesantias * dias * 0.12) / 360;
+		const cesantias = (basePrest * dias) / 360;
+		const intereses = (cesantias * 0.12 * dias) / 360;
+		const prima1 = (basePrest * dias1) / 360;
+		const prima2 = (basePrest * dias2) / 360;
 
-		// Prima: (Salario * Días) / 360 (Semestral, aquí simplificado al total del periodo para el ejemplo general)
-		const prima = (basePrestaciones * dias) / 360;
+		const primaTotal = prima1 + prima2 - (primaPagada ? prima1 : 0);
 
-		// Vacaciones: (Salario * Días) / 720
-		const vacaciones = (baseVacaciones * dias) / 720;
+		const vacaciones = (salarioBase * dias) / 720;
+		const total = cesantias + intereses + primaTotal + vacaciones;
+
+		const pension = salarioBase * 0.04;
+		const salud = salarioBase * 0.04;
+		const fondoSolidaridad = salarioBase >= SALARIO_MINIMO_2025 * 4 ? salarioBase * 0.01 : 0;
 
 		setResult({
+			dias,
 			cesantias,
-			interesesCesantias: intereses,
-			prima,
+			intereses,
+			prima1,
+			prima2,
 			vacaciones,
-			total: cesantias + intereses + prima + vacaciones,
-			diasTrabajados: dias
+			total,
+			pension,
+			salud,
+			fondoSolidaridad
 		});
 	};
 
-	const formatCurrency = (val: number) => {
-		return new Intl.NumberFormat('es-CO', {
+	const money = (v: number) =>
+		new Intl.NumberFormat('es-CO', {
 			style: 'currency',
 			currency: 'COP',
 			maximumFractionDigits: 0
-		}).format(val);
-	};
+		}).format(v);
 
 	return (
-		<div className="mx-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl">
-			<div className="bg-green-700 p-6 text-center text-white">
-				<h2 className="text-2xl font-bold">Calculadora de Liquidación Laboral</h2>
-				<p className="mt-1 opacity-90">Estimación basada en normativa vigente Colombia 2024</p>
-			</div>
+		<div className="mx-auto w-full max-w-3xl rounded-2xl border border-gray-100 bg-white p-10 shadow-lg shadow-green-100/50 transition-all duration-500">
+			<h2 className="mb-6 text-3xl font-extrabold tracking-tight text-green-700">
+				Calculadora de Liquidación Laboral
+			</h2>
 
-			<div className="p-8">
-				<form onSubmit={handleCalculate} className="space-y-6">
-					<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-						<div>
-							<label className="mb-2 block text-sm font-medium text-gray-700">Fecha Inicio</label>
-							<input
-								type="date"
-								value={startDate}
-								onChange={(e) => setStartDate(e.target.value)}
-								className="bg-opacity-50 w-full rounded-lg border-gray-300 bg-gray-50 p-3 shadow-sm focus:border-green-500 focus:ring-green-500"
-								required
-							/>
-						</div>
-						<div>
-							<label className="mb-2 block text-sm font-medium text-gray-700">Fecha Fin</label>
-							<input
-								type="date"
-								value={endDate}
-								onChange={(e) => setEndDate(e.target.value)}
-								className="bg-opacity-50 w-full rounded-lg border-gray-300 bg-gray-50 p-3 shadow-sm focus:border-green-500 focus:ring-green-500"
-								required
-							/>
-						</div>
+			<form className="space-y-6" onSubmit={calculate}>
+				{/* Fechas */}
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+					<div>
+						<label className="font-medium text-gray-700">Fecha Inicio</label>
+						<input
+							type="date"
+							required
+							value={startDate}
+							onChange={(e) => setStartDate(e.target.value)}
+							className="w-full rounded-xl border bg-gray-50 p-3 transition hover:border-green-300 focus:ring-2 focus:ring-green-300"
+						/>
 					</div>
 
 					<div>
-						<label className="mb-2 block text-sm font-medium text-gray-700">
-							Salario Mensual Base
-						</label>
-						<div className="relative rounded-md shadow-sm">
-							<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-								<span className="text-gray-500 sm:text-sm">$</span>
-							</div>
-							<input
-								type="number"
-								value={salary}
-								onChange={(e) => setSalary(e.target.value)}
-								className="bg-opacity-50 block w-full rounded-lg border-gray-300 bg-gray-50 p-3 pl-8 focus:border-green-500 focus:ring-green-500"
-								placeholder="1300000"
-								required
-							/>
-						</div>
-					</div>
-
-					<div className="flex items-center">
+						<label className="font-medium text-gray-700">Fecha Fin</label>
 						<input
-							id="transport"
-							type="checkbox"
-							checked={transportHelp}
-							onChange={(e) => setTransportHelp(e.target.checked)}
-							className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+							type="date"
+							required
+							value={endDate}
+							onChange={(e) => setEndDate(e.target.value)}
+							className="w-full rounded-xl border bg-gray-50 p-3 transition hover:border-green-300 focus:ring-2 focus:ring-green-300"
 						/>
-						<label htmlFor="transport" className="ml-3 text-sm text-gray-700">
-							¿Incluir Auxilio de Transporte?{' '}
-							<span className="text-xs text-gray-500">(Si aplica por ley)</span>
+					</div>
+				</div>
+
+				{/* Salario */}
+				<div className="space-y-2">
+					<div className="flex items-center justify-between">
+						<label className="font-medium text-gray-700">Salario Mensual Base</label>
+
+						<label className="flex items-center gap-2 text-sm">
+							<input
+								type="checkbox"
+								checked={useMinSalary}
+								onChange={(e) => {
+									setUseMinSalary(e.target.checked);
+									if (e.target.checked) setSalary(String(SALARIO_MINIMO_2025));
+								}}
+							/>
+							Usar SMMLV 2025
 						</label>
 					</div>
 
-					<button
-						type="submit"
-						className="flex w-full justify-center rounded-xl border border-transparent bg-green-600 px-4 py-4 text-lg font-bold text-white shadow-sm transition-colors hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none"
-					>
-						Calcular Liquidación
-					</button>
-				</form>
+					<input
+						type="number"
+						disabled={useMinSalary}
+						placeholder="Ej: 2.000.000"
+						value={salary}
+						onChange={(e) => setSalary(e.target.value)}
+						className="w-full rounded-xl border bg-gray-50 p-3 transition hover:border-green-300 focus:ring-2 focus:ring-green-300 disabled:bg-gray-200"
+					/>
+				</div>
 
-				{result && (
-					<div className="animate-fadeIn mt-10 rounded-xl border border-green-100 bg-green-50 p-6">
-						<h3 className="mb-4 border-b border-green-200 pb-2 text-lg font-bold text-green-900">
-							Resultados Estimados
-						</h3>
+				{/* Auxilio */}
+				<label className="flex items-start gap-3 text-sm text-gray-700">
+					<input
+						type="checkbox"
+						checked={useAuxilio}
+						onChange={(e) => setUseAuxilio(e.target.checked)}
+					/>
+					Incluir Auxilio de Transporte ({money(AUXILIO_TRANSPORTE_2025)})
+				</label>
 
-						<div className="space-y-3">
-							<div className="flex items-center justify-between text-sm">
-								<span className="text-gray-600">Días trabajados:</span>
-								<span className="font-semibold text-gray-900">{result.diasTrabajados} días</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-gray-700">Cesantías:</span>
-								<span className="font-medium text-gray-900">
-									{formatCurrency(result.cesantias)}
-								</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-gray-700">Intereses Cesantías:</span>
-								<span className="font-medium text-gray-900">
-									{formatCurrency(result.interesesCesantias)}
-								</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-gray-700">Prima de Servicios:</span>
-								<span className="font-medium text-gray-900">{formatCurrency(result.prima)}</span>
-							</div>
-							<div className="flex items-center justify-between">
-								<span className="text-gray-700">Vacaciones:</span>
-								<span className="font-medium text-gray-900">
-									{formatCurrency(result.vacaciones)}
-								</span>
-							</div>
+				{/* Prima Pagada */}
+				<label className="flex items-start gap-3 text-sm text-gray-700">
+					<input
+						type="checkbox"
+						checked={primaPagada}
+						onChange={(e) => setPrimaPagada(e.target.checked)}
+					/>
+					¿Ya se pagó la prima del primer semestre?
+				</label>
 
-							<div className="mt-4 flex items-center justify-between border-t-2 border-green-200 pt-4 text-lg font-bold md:text-xl">
-								<span className="text-green-800">Total Liquidación:</span>
-								<span className="text-green-700">{formatCurrency(result.total)}</span>
-							</div>
+				<button className="w-full rounded-xl bg-green-600 py-3 font-bold text-white shadow-md transition-all hover:bg-green-700 active:scale-[0.98]">
+					Calcular
+				</button>
+			</form>
+
+			{/* Resultados */}
+			{result && (
+				<div className="mt-10 animate-[fadeIn_0.5s_ease] rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-6 shadow-inner">
+					<h3 className="mb-4 text-xl font-bold text-green-900">Resultados</h3>
+
+					<div className="space-y-3 text-sm">
+						<div className="flex justify-between">
+							<span>
+								Días trabajados{' '}
+								<Tooltip text="Tiempo calculado usando el método oficial del Ministerio: cada mes cuenta como 30 días." />
+							</span>
+							<strong>{result.dias}</strong>
 						</div>
 
-						<div className="mt-4 text-center text-xs text-gray-500">
-							* Este cálculo es informativo y no constituye una liquidación oficial ni asesoría
-							legal vinculante.
+						<div className="flex justify-between">
+							<span>
+								Cesantías{' '}
+								<Tooltip text="Un ahorro obligatorio que la empresa te debe por tu tiempo de trabajo." />
+							</span>
+							<strong>{money(result.cesantias)}</strong>
+						</div>
+
+						<div className="flex justify-between">
+							<span>
+								Intereses{' '}
+								<Tooltip text="Un extra del 12% anual sobre tus cesantías, proporcional al tiempo trabajado." />
+							</span>
+							<strong>{money(result.intereses)}</strong>
+						</div>
+
+						<div className="flex justify-between">
+							<span>
+								Prima 1er semestre{' '}
+								<Tooltip text="Pago adicional por tu trabajo entre enero y junio." />
+							</span>
+							<strong>{money(result.prima1)}</strong>
+						</div>
+
+						<div className="flex justify-between">
+							<span>
+								Prima 2º semestre{' '}
+								<Tooltip text="Pago adicional por tu trabajo entre julio y diciembre." />
+							</span>
+							<strong>{money(result.prima2)}</strong>
+						</div>
+
+						<div className="flex justify-between">
+							<span>
+								Vacaciones{' '}
+								<Tooltip text="El valor equivalente al descanso remunerado que ganaste por tu trabajo." />
+							</span>
+							<strong>{money(result.vacaciones)}</strong>
+						</div>
+
+						<hr className="my-5 border-green-300" />
+
+						<div className="flex justify-between text-xl font-bold text-green-700">
+							<span>Total Liquidación</span>
+							<span>{money(result.total)}</span>
+						</div>
+
+						<h4 className="mt-6 text-lg font-bold text-green-800">Aportes a Seguridad Social</h4>
+
+						<div className="mt-2 space-y-2">
+							<div className="flex justify-between">
+								<span>Pensión (4%)</span>
+								<span>{money(result.pension)}</span>
+							</div>
+
+							<div className="flex justify-between">
+								<span>Salud (4%)</span>
+								<span>{money(result.salud)}</span>
+							</div>
+
+							<div className="flex justify-between">
+								<span>Fondo de solidaridad</span>
+								<span>{money(result.fondoSolidaridad)}</span>
+							</div>
 						</div>
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 };

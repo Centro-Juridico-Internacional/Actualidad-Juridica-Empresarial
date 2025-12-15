@@ -1,0 +1,75 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+import IncapacidadCalculator from "@/components/features/tools/IncapacidadCalculator.tsx";
+
+const { href } = Astro.url;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Calculadora de Incapacidad Médica",
+  "operatingSystem": "All",
+  "applicationCategory": "HealthApplication",
+  "url": href,
+  "description":
+    "Calculadora oficial de incapacidad médica en Colombia: enfermedad general, accidente laboral, EPS y ARL.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Centro Jurídico Internacional"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "COP"
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<Layout title="Incapacidad Médica" booleanLayout={true} breadcrumbTitle="Herramientas">
+    
+    <!-- Hero -->
+    <section class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-yellow-600">
+        <div class="absolute inset-0 opacity-25">
+            <svg class="h-full w-full" viewBox="0 0 800 800">
+                <defs>
+                    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1" fill="white" />
+                    </pattern>
+                </defs>
+                <rect width="800" height="800" fill="url(#dotPattern)" />
+            </svg>
+        </div>
+
+        <div class="container-main relative z-10 text-center">
+            <h1 class="text-4xl font-bold text-white mb-3">
+                Calculadora de Incapacidad Médica
+            </h1>
+            <p class="text-yellow-100 text-lg max-w-2xl mx-auto">
+                Conoce cuánto te deben pagar por incapacidad según EPS o ARL, de acuerdo con la normativa colombiana.
+            </p>
+        </div>
+    </section>
+
+    <section class="container-main py-12">
+        <Breadcrumb title="Herramientas" className="mb-8" />
+
+        <div class="flex flex-col items-center">
+            <IncapacidadCalculator client:load />
+
+            <div class="mt-12 prose prose-yellow bg-gray-50 p-8 rounded-2xl text-gray-700 max-w-3xl">
+                <h3>¿Cómo funciona esta herramienta?</h3>
+                <p>Incluye cálculos oficiales para:</p>
+                <ul>
+                    <li><strong>Enfermedad general:</strong> días 1 y 2 paga empresa, desde el 3 paga EPS al 66.67%</li>
+                    <li><strong>Accidente de trabajo:</strong> ARL paga el 100% desde el primer día</li>
+                    <li><strong>Hospitalización:</strong> Se liquida como incapacidad por enfermedad general</li>
+                </ul>
+                <p>Los cálculos son aproximados según la normativa vigente.</p>
+            </div>
+        </div>
+    </section>
+
+</Layout>
