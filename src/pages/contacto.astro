@@ -7,11 +7,11 @@ import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 const sedes = [
 	{
 		ciudad: 'Bogotá (Sede Principal)',
-		direccion: 'Carrera 24 No. 27 a 21',
+		direccion: 'Carrera 24 No. 27a 21',
 		mapUrl: 'https://maps.app.goo.gl/9hVc2UAe7Wyuq7eV9',
 		telefonos: ['601 241 51 00', '601 245 18 44', '601 626 50 41'],
 		celulares: ['312 490 21 43', '300 218 32 46', '311 382 06 19'],
-        email: 'consulta@centrojuridicointernacional.com'
+		email: 'consulta@centrojuridicointernacional.com'
 	},
 	{
 		ciudad: 'Villavicencio',
@@ -41,35 +41,42 @@ const sedes = [
 		telefonos: ['601 863 01 31'],
 		celulares: ['310 518 23 47', '317 513 24 62']
 	},
-    {
-        ciudad: 'Miami - USA',
-        direccion: '1395 Brickel AVE. 8 TH FLOOR MIAMI, FL Acevedo Associates Miami - USA 33131',
-        mapUrl: null,
-        telefonos: [],
-        celulares: []
-    }
+	{
+		ciudad: 'Miami - USA',
+		direccion: '1395 Brickel AVE. 8 TH FLOOR MIAMI, FL Acevedo Associates Miami - USA 33131',
+		mapUrl: null,
+		telefonos: [],
+		celulares: []
+	}
 ];
 ---
 
 <Layout title="Contacto" booleanLayout={true} breadcrumbTitle="Contacto">
-	<section class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900">
+	<section
+		class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
+	>
 		<div class="absolute inset-0 opacity-20">
-            <!-- Pattern de fondo opcional -->
-			<svg class="h-full w-full" width="100%" height="100%" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1" fill="white" />
-                    </pattern>
-                </defs>
-                <rect width="800" height="800" fill="url(#dotPattern)" />
-            </svg>
+			<!-- Pattern de fondo opcional -->
+			<svg
+				class="h-full w-full"
+				width="100%"
+				height="100%"
+				viewBox="0 0 800 800"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<defs>
+					<pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+						<circle cx="2" cy="2" r="1" fill="white"></circle>
+					</pattern>
+				</defs>
+				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
+			</svg>
 		</div>
 		<div class="container-main relative z-10 text-center">
-			<h1 class="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
-				Contáctanos
-			</h1>
+			<h1 class="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">Contáctanos</h1>
 			<p class="mx-auto max-w-2xl text-lg text-green-100">
-				Estamos listos para brindarte la mejor asesoría legal en Colombia y el mundo. Encuentra tu sede más cercana.
+				Estamos listos para brindarte la mejor asesoría legal en Colombia y el mundo. Encuentra tu
+				sede más cercana.
 			</p>
 		</div>
 	</section>
@@ -80,19 +87,20 @@ const sedes = [
 			<!-- Formulario de Contacto -->
 			<div class="order-2 lg:order-1">
 				<ContactForm client:visible />
-                
-                <!-- Mapa Sede Principal -->
-                <div class="mt-8 overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100 h-80 w-full">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.883707262075!2d-74.07726692809618!3d4.61466601449419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9999a80709b5%3A0x63345851412030d3!2sCra.%2024%20%2327-21%2C%20Teusaquillo%2C%20Bogot%C3%A1!5e0!3m2!1ses-419!2sco!4v1715000000000!5m2!1ses-419!2sco" 
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
+
+				<!-- Mapa Sede Principal -->
+				<div class="mt-8 h-80 w-full overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100">
+					<iframe
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6688.201431745188!2d-74.0781559065599!3d4.624691917617014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9981e84dee25%3A0x27796bb9b6bd731d!2sCentro%20Jur%C3%ADdico%20Internacional!5e0!3m2!1ses-419!2sco!4v1765912513369!5m2!1ses-419!2sco"
+						width="100%"
+						height="100%"
+						style="border:0;"
+						allowfullscreen=""
+						loading="lazy"
+						referrerpolicy="no-referrer-when-downgrade"
+					>
+					</iframe>
+				</div>
 			</div>
 
 			<!-- Información de Sedes -->
@@ -103,36 +111,47 @@ const sedes = [
 						<div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-100 transition-shadow hover:shadow-md">
 							<h3 class="mb-2 text-lg font-bold text-green-700">{sede.ciudad}</h3>
 							<p class="mb-3 text-gray-600">
-                                <strong>Dirección:</strong> {sede.direccion} <br/>
-                                {sede.mapUrl && (
-                                    <a href={sede.mapUrl} target="_blank" rel="noopener noreferrer" class="text-xs text-blue-600 hover:underline">
-                                        Ver en mapa →
-                                    </a>
-                                )}
-                            </p>
-                            
+								<strong>Dirección:</strong> {sede.direccion} <br />
+								{sede.mapUrl && (
+									<a
+										href={sede.mapUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="text-xs text-blue-600 hover:underline"
+									>
+										Ver en mapa →
+									</a>
+								)}
+							</p>
+
 							{sede.telefonos.length > 0 && (
 								<div class="mb-2">
 									<strong class="text-sm text-gray-900">Teléfonos:</strong>
 									<div class="flex flex-wrap gap-2 text-sm text-gray-600">
-										{sede.telefonos.map(t => <span>{t}</span>)}
-									</div>
-								</div>
-							)}
-                            
-                            {sede.celulares.length > 0 && (
-								<div>
-									<strong class="text-sm text-gray-900">Celulares:</strong>
-									<div class="flex flex-wrap gap-2 text-sm text-gray-600">
-										{sede.celulares.map(c => <span>{c}</span>)}
+										{sede.telefonos.map((t) => (
+											<span>{t}</span>
+										))}
 									</div>
 								</div>
 							)}
 
-                            {sede.email && (
+							{sede.celulares.length > 0 && (
+								<div>
+									<strong class="text-sm text-gray-900">Celulares:</strong>
+									<div class="flex flex-wrap gap-2 text-sm text-gray-600">
+										{sede.celulares.map((c) => (
+											<span>{c}</span>
+										))}
+									</div>
+								</div>
+							)}
+
+							{sede.email && (
 								<div class="mt-3 border-t border-gray-100 pt-3">
-									<strong class="text-sm text-gray-900">Email:</strong> <br/>
-									<a href={`mailto:${sede.email}`} class="text-sm text-blue-600 hover:underline">{sede.email}</a>
+									<strong class="text-sm text-gray-900">Email:</strong> <br />
+									<a href={`mailto:${sede.email}`} class="text-sm text-blue-600 hover:underline">
+										{sede.email}
+									</a>
 								</div>
 							)}
 						</div>
