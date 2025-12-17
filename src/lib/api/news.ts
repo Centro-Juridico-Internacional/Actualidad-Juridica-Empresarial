@@ -15,6 +15,10 @@ const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_
 const DEFAULT_TIMEZONE = 'America/Bogota';
 const DEFAULT_LOCALE = 'es-CO';
 
+/** Imágenes por defecto */
+const DEFAULT_NEWS_IMAGE = '/news-default.png';
+const DEFAULT_AUTHOR_AVATAR = '/avatar-default.png';
+
 interface GetNewsParams {
 	categoryId: string;
 }
@@ -142,8 +146,16 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 	const imagenRelativa =
 		atributos?.imagenes?.data?.attributes?.url ?? atributos?.imagenes?.url ?? null;
 
+	const imagenFinal = imagenRelativa
+		? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}`
+		: DEFAULT_NEWS_IMAGE;
+
 	const autor = atributos?.autor?.data?.attributes ?? atributos?.autor ?? {};
 	const autorAvatarRelativo = autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
+
+	const autorAvatarFinal = autorAvatarRelativo
+		? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
+		: DEFAULT_AUTHOR_AVATAR;
 
 	const categoriasRaw = atributos?.categorias;
 	const categoriasArray =
@@ -166,7 +178,7 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		titulo: atributos?.titulo ?? '',
 		contenido: atributos?.contenido ?? [],
 		slug: atributos?.slug ?? '',
-		image: imagenRelativa ? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}` : null,
+		image: imagenFinal,
 		dia: fechaPublicacion.toLocaleDateString(DEFAULT_LOCALE, {
 			timeZone: DEFAULT_TIMEZONE,
 			year: 'numeric',
@@ -180,9 +192,7 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		}),
 		UrlYoutube: atributos?.UrlYoutube ?? null,
 		autorName: autor?.name ?? null,
-		autorAvatar: autorAvatarRelativo
-			? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
-			: null,
+		autorAvatar: autorAvatarFinal,
 		autorRol: autor?.cargo ?? null,
 		categorias
 	};

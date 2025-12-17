@@ -46,6 +46,8 @@ export async function getCategories(): Promise<Category[]> {
 			data: StrapiCategoryItem[];
 		};
 
+		const DEFAULT_CATEGORY_IMAGE = '/category-default.png';
+
 		return respuesta.data.map((item: StrapiCategoryItem) => {
 			const atributos = item.attributes ?? item;
 			const nombre = atributos?.name ?? '';
@@ -55,11 +57,13 @@ export async function getCategories(): Promise<Category[]> {
 			const imagenRelativa =
 				atributos?.imagen?.data?.attributes?.url ?? atributos?.imagen?.url ?? null;
 
+			const imagenFinal = imagenRelativa ? withHost(imagenRelativa) : DEFAULT_CATEGORY_IMAGE;
+
 			return {
 				name: nombre,
 				slug,
 				description: descripcion,
-				image: withHost(imagenRelativa)
+				image: imagenFinal
 			};
 		});
 	} catch (error) {

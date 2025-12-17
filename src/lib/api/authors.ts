@@ -44,6 +44,8 @@ export async function getAuthors(): Promise<Author[]> {
 			'authors?populate[avatar][fields][0]=url&sort=createdAt:desc'
 		)) as { data: StrapiAuthorItem[] };
 
+		const DEFAULT_AVATAR = '/avatar-default.png';
+
 		return respuesta.data.map((item: StrapiAuthorItem) => {
 			const atributos = item.attributes ?? item;
 			const nombre = atributos.name ?? '';
@@ -51,10 +53,12 @@ export async function getAuthors(): Promise<Author[]> {
 			const avatarRelativo =
 				atributos?.avatar?.data?.attributes?.url ?? atributos?.avatar?.url ?? null;
 
+			const avatarFinal = avatarRelativo ? withHost(avatarRelativo) : DEFAULT_AVATAR;
+
 			return {
 				name: nombre,
 				cargo: cargoAutor,
-				avatar: withHost(avatarRelativo)
+				avatar: avatarFinal
 			};
 		});
 	} catch (error) {

@@ -4,6 +4,10 @@ import type { NewsArticle, Pagination } from './news';
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
 
+/** Imágenes por defecto */
+const DEFAULT_NEWS_IMAGE = '/news-default.png';
+const DEFAULT_AUTHOR_AVATAR = '/avatar-default.png';
+
 /**
  * Parámetros para la búsqueda de noticias
  */
@@ -155,7 +159,7 @@ export async function searchNews({
 		// También normalizamos espacios múltiples
 		const cleanQuery = searchQuery
 			.trim()
-			.replace(/[^\w\s\u00C0-\u00FF]/g, ' ') // Mantener letras con tildes y caracteres latinos
+			.replace(/[^\w\s\u00C0-\u00FF]/g, ' ')
 			.replace(/\s+/g, ' ');
 
 		const lowerQuery = cleanQuery.toLowerCase();
@@ -177,7 +181,6 @@ export async function searchNews({
 		// 3. Expansión de Sinónimos y Conceptos Relacionados
 		const synonymGroups = [
 			{
-				// Grupo SG-SST
 				triggers: [
 					'sg-sst',
 					'sgsst',
@@ -192,7 +195,6 @@ export async function searchNews({
 			}
 		];
 
-		// Verificar triggers (usando la versión sin tildes para facilitar el match)
 		synonymGroups.forEach((group) => {
 			const match = group.triggers.some((trigger) =>
 				noAccentQuery.includes(removeAccents(trigger))
@@ -204,7 +206,6 @@ export async function searchNews({
 
 		const uniqueVariations = Array.from(variations);
 
-		// Construir filtros dinámicamente
 		let filterIndex = 0;
 		let filtersString = '';
 
@@ -225,7 +226,6 @@ export async function searchNews({
 			});
 		});
 
-		// Construir query completa
 		let searchQueryString =
 			`news?` +
 			filtersString +
@@ -238,25 +238,30 @@ export async function searchNews({
 			`&pagination[page]=${page}` +
 			`&pagination[pageSize]=${pageSize}`;
 
-		// Agregar filtro de categoría si existe
 		if (categoryId && categoryId.trim()) {
 			searchQueryString += `&filters[categorias][slug][$eq]=${encodeURIComponent(categoryId.trim())}`;
 		}
 
 		const respuesta = (await query(searchQueryString)) as StrapiSearchResponse;
 
-		// Transformar los datos de Strapi al formato esperado
 		const noticias = respuesta.data.map((item: StrapiNewsItem) => {
 			const atributos = item.attributes ?? item;
 
 			const imagenRelativa =
 				atributos?.imagenes?.data?.attributes?.url ?? atributos?.imagenes?.url ?? null;
 
+			const imagenFinal = imagenRelativa
+				? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}`
+				: DEFAULT_NEWS_IMAGE;
+
 			const autor = atributos?.autor?.data?.attributes ?? atributos?.autor ?? {};
 			const autorAvatarRelativo =
 				autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
 
-			// Manejar tanto el formato { data: [] } como el formato directo []
+			const autorAvatarFinal = autorAvatarRelativo
+				? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
+				: DEFAULT_AUTHOR_AVATAR;
+
 			const categoriasRaw = atributos?.categorias;
 			const categoriasArray =
 				categoriasRaw && 'data' in categoriasRaw
@@ -276,14 +281,12 @@ export async function searchNews({
 				titulo: atributos?.titulo ?? '',
 				contenido: (atributos?.contenido ?? []) as any[],
 				slug: atributos?.slug ?? '',
-				image: imagenRelativa ? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}` : null,
+				image: imagenFinal,
 				dia: fechaPublicacion.toLocaleDateString(),
 				hora: fechaPublicacion.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
 				UrlYoutube: atributos?.UrlYoutube ?? null,
 				autorName: autor?.name ?? null,
-				autorAvatar: autorAvatarRelativo
-					? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
-					: null,
+				autorAvatar: autorAvatarFinal,
 				autorRol: autor?.cargo ?? null,
 				categorias
 			};
