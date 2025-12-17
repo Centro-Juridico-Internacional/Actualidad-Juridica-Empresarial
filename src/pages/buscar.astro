@@ -27,15 +27,15 @@ let hasSearched: boolean = false;
 if ((query && query.trim()) || categoryFilter) {
 	hasSearched = true;
 	try {
-        // searchNews returns { products: NewsArticle[], pagination: Pagination }
-		const searchResults = await searchNews({ 
-            query: query?.trim() || '', 
-            page: currentPage, 
-            pageSize: 12,
-            categoryId: categoryFilter || undefined
-        });
-        products = searchResults.products;
-        pagination = searchResults.pagination;
+		// searchNews returns { products: NewsArticle[], pagination: Pagination }
+		const searchResults = await searchNews({
+			query: query?.trim() || '',
+			page: currentPage,
+			pageSize: 12,
+			categoryId: categoryFilter || undefined
+		});
+		products = searchResults.products;
+		pagination = searchResults.pagination;
 	} catch (error) {
 		console.error('Error searching news:', error);
 	}
@@ -45,75 +45,94 @@ if ((query && query.trim()) || categoryFilter) {
 const totalResults: number = pagination?.total ?? 0;
 ---
 
-<Layout title={query ? `Buscar: ${query}` : 'Buscar Noticias'} booleanLayout={false} breadcrumbTitle="Búsqueda">
-    <!-- Hero Section -->
-    <section class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900 mb-8">
-        <div class="absolute inset-0 opacity-20">
-            <svg class="h-full w-full" width="100%" height="100%" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1" fill="white" />
-                    </pattern>
-                </defs>
-                <rect width="800" height="800" fill="url(#dotPattern)" />
-            </svg>
-        </div>
-        <div class="container-main relative z-10 text-center">
-            <h1 class="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-                Centro de Búsqueda
-            </h1>
-            
-            {/* Buscador Integrado en Hero */}
-            <form action="/buscar" method="GET" class="mx-auto mt-6 max-w-2xl px-4">
-                <div class="relative flex items-center">
-                    <input 
-                        type="text" 
-                        name="q" 
-                        value={query}
-                        placeholder="¿Qué estás buscando hoy?"
-                        class="w-full rounded-full border-0 py-4 pl-6 pr-14 text-gray-900 shadow-xl ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-500 bg-gray-50"
-                    />
-                    <button type="submit" class="absolute right-2 rounded-full bg-green-600 p-2 text-white hover:bg-green-700 transition">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                    {categoryFilter && <input type="hidden" name="categoria" value={categoryFilter} />}
-                </div>
-            </form>
-        </div>
-    </section>
+<Layout
+	title={query ? `Buscar: ${query}` : 'Buscar Noticias'}
+	booleanLayout={true}
+	breadcrumbTitle="Búsqueda"
+>
+	<!-- Hero Section -->
+	<section
+		class="relative mb-8 flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
+	>
+		<div class="absolute inset-0 opacity-20">
+			<svg
+				class="h-full w-full"
+				width="100%"
+				height="100%"
+				viewBox="0 0 800 800"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<defs>
+					<pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+						<circle cx="2" cy="2" r="1" fill="white"></circle>
+					</pattern>
+				</defs>
+				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
+			</svg>
+		</div>
+		<div class="container-main relative z-10 text-center">
+			<h1 class="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">Centro de Búsqueda</h1>
+
+			{/* Buscador Integrado en Hero */}
+			<form action="/buscar" method="GET" class="mx-auto mt-6 max-w-2xl px-4">
+				<div class="relative flex items-center">
+					<input
+						type="text"
+						name="q"
+						value={query}
+						placeholder="¿Qué estás buscando hoy?"
+						class="w-full rounded-full border-0 bg-gray-50 py-4 pr-14 pl-6 text-gray-900 shadow-xl ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-green-500 focus:ring-inset"
+					/>
+					<button
+						type="submit"
+						class="absolute right-2 rounded-full bg-green-600 p-2 text-white transition hover:bg-green-700"
+					>
+						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+						</svg>
+					</button>
+					{categoryFilter && <input type="hidden" name="categoria" value={categoryFilter} />}
+				</div>
+			</form>
+		</div>
+	</section>
 
 	<main class="container-main pb-12">
-		<Breadcrumb title="Búsqueda" className="pt-8 mb-6" />
+		<Breadcrumb title="Búsqueda" className="mb-6 pt-8" />
 		<!-- Filtros de Búsqueda -->
-        <div class="mb-8 flex flex-wrap items-center gap-2 border-b border-gray-100 pb-4">
-            <span class="text-sm font-medium text-gray-500 mr-2">Filtrar por:</span>
-            <a 
-                href={`/buscar?q=${query || ''}`}
-                class={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-                    !categoryFilter 
-                    ? 'bg-green-100 border-green-200 text-green-800' 
-                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-                }`}
-            >
-                Todos
-            </a>
-            {allCategories.map((cat: any) => (
-                <a 
-                    href={`/buscar?q=${query || ''}&categoria=${cat.slug}`}
-                    class={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-                        categoryFilter === cat.slug
-                        ? 'bg-green-100 border-green-200 text-green-800' 
-                        : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-                    }`}
-                >
-                    {cat.name}
-                </a>
-            ))}
-        </div>
+		<div class="mb-8 flex flex-wrap items-center gap-2 border-b border-gray-100 pb-4">
+			<span class="mr-2 text-sm font-medium text-gray-500">Filtrar por:</span>
+			<a
+				href={`/buscar?q=${query || ''}`}
+				class={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+					!categoryFilter
+						? 'bg-green-100 border-green-200 text-green-800'
+						: 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+				}`}
+			>
+				Todos
+			</a>
+			{
+				allCategories.map((cat: any) => (
+					<a
+						href={`/buscar?q=${query || ''}&categoria=${cat.slug}`}
+						class={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+							categoryFilter === cat.slug
+								? 'border-green-200 bg-green-100 text-green-800'
+								: 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+						}`}
+					>
+						{cat.name}
+					</a>
+				))
+			}
+		</div>
 
-        <!-- Resultados Stats -->
+		<!-- Resultados Stats -->
 		<div class="mb-8">
 			{
 				hasSearched && (
@@ -122,12 +141,31 @@ const totalResults: number = pagination?.total ?? 0;
 							<>
 								Se encontraron <span class="font-semibold text-green-700">{totalResults}</span>{' '}
 								{totalResults === 1 ? 'resultado' : 'resultados'}
-                                {query && <> para <span class="font-semibold">"{query}"</span></>}
-                                {categoryFilter && <> en <span class="font-semibold capitalize">{categoryFilter.replace(/_/g, ' ')}</span></>}
+								{query && (
+									<>
+										{' '}
+										para <span class="font-semibold">"{query}"</span>
+									</>
+								)}
+								{categoryFilter && (
+									<>
+										{' '}
+										en{' '}
+										<span class="font-semibold capitalize">
+											{categoryFilter.replace(/_/g, ' ')}
+										</span>
+									</>
+								)}
 							</>
 						) : (
 							<>
-								No se encontraron resultados{query && <> para <span class="font-semibold">"{query}"</span></>}
+								No se encontraron resultados
+								{query && (
+									<>
+										{' '}
+										para <span class="font-semibold">"{query}"</span>
+									</>
+								)}
 							</>
 						)}
 					</p>
@@ -198,7 +236,7 @@ const totalResults: number = pagination?.total ?? 0;
 										showContent={true}
 										variant="compact"
 										bgOverlay={true}
-                                        highlightQuery={query || ''}
+										highlightQuery={query || ''}
 									/>
 								</div>
 							</div>
