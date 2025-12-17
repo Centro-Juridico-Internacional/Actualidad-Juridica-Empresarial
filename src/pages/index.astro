@@ -20,6 +20,7 @@ import { getPdfs } from '@/lib/api/revista';
 // Importar estilos responsive de la revista SOLO para esta página
 import '@/styles/revista-responsive.css';
 import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
+import Recognitions from '@/components/sections/home/Recognitions.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
 // Fetch all data in parallel to reduce load time
@@ -48,6 +49,7 @@ const { products } = newsData;
 	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
 	<Podcast capsulas={capsulas} />
 	<UpcomingEvents />
+	<Recognitions />
 
 	{
 		pdfs[0]?.pdf && (

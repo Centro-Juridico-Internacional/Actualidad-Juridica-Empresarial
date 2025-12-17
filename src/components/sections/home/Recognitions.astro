@@ -1,0 +1,70 @@
+---
+import Titles from '@/components/ui/Titles.astro';
+
+const data = [
+	{
+		id: 1,
+		title: 'Aparición en Revista Dinero',
+		subtitle: 'Publicación de referencia nacional',
+		badge: 'Publicación Destacada',
+		featured: false,
+		urlImg:
+			'https://accolombianlawyers.com/noticias/wp-content/uploads/2025/09/Mesa-de-trabajo-1_1-768x768.png'
+	},
+	{
+		id: 2,
+		title: 'Top 36 – Ranking Abogados 2025',
+		subtitle: 'Reconocimiento nacional – Semana & Dinero',
+		badge: 'Ranking Nacional',
+		featured: true,
+		urlImg:
+			'https://accolombianlawyers.com/noticias/wp-content/uploads/2025/09/Mesa-de-trabajo-1-copia-2-4-768x767.png'
+	}
+];
+---
+
+<section class="container-main my-24">
+	<Titles text="Reconocimientos" />
+
+	<div class="mt-16 grid grid-cols-1 gap-14 md:grid-cols-2">
+		{
+			data.map((item) => (
+				<article
+					class={[
+						'relative flex flex-col items-center rounded-2xl p-12 transition-all duration-300 hover:-translate-y-2',
+						item.featured
+							? 'border-2 border-yellow-600/70 bg-gradient-to-b from-yellow-50 to-white shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)]'
+							: 'border border-emerald-900/20 bg-white shadow-[0_22px_65px_-30px_rgba(0,0,0,0.3)]'
+					].join(' ')}
+				>
+					{/* Sello / Distinción */}
+					<div
+						class={[
+							'absolute -top-6 right-8 rounded-full px-5 py-2 text-xs font-semibold tracking-widest uppercase shadow-md',
+							item.featured
+								? 'border border-yellow-600 bg-yellow-600 text-white'
+								: 'border border-emerald-800 bg-white text-emerald-800'
+						].join(' ')}
+					>
+						{item.badge}
+					</div>
+
+					{/* Imagen */}
+					<img src={item.urlImg} alt={item.title} class="h-[340px] w-auto object-contain" />
+
+					{/* Separador elegante */}
+					<div class="my-8 h-px w-20 bg-gradient-to-r from-transparent via-yellow-600 to-transparent" />
+
+					{/* Texto */}
+					<div class="text-center">
+						<p class="text-xs tracking-[0.3em] text-emerald-800 uppercase">
+							Reconocimiento Institucional
+						</p>
+						<h3 class="mt-3 text-xl font-semibold text-gray-900">{item.title}</h3>
+						<p class="mt-2 text-sm text-gray-600">{item.subtitle}</p>
+					</div>
+				</article>
+			))
+		}
+	</div>
+</section>
