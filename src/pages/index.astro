@@ -34,12 +34,18 @@ const { products } = newsData;
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
+	<!-- 🔹 Prefetch SOLO del PDF de la revista -->
+	<Fragment slot="head">
+		<link rel="prefetch" href="/revistas/revista.pdf" />
+	</Fragment>
+
 	<News products={products} />
 	<InformationOfInterest products={products} />
 	<MoreNews products={products} />
 	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
 	<Podcast pautas={pautas} interviews={interviews} />
 	<UpcomingEvents />
+
 	<Revista
 		client:only="react"
 		pdfUrl="/revistas/revista.pdf"
