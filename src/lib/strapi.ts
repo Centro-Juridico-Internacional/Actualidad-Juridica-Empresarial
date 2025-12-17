@@ -1,3 +1,5 @@
+import { getFromCache, saveToCache } from './strapiCache';
+
 /** Host del servidor Strapi */
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 
@@ -30,6 +32,12 @@ function withHost(url?: string | null): string | null {
 export async function query(path: string): Promise<any> {
 	const url = `${STRAPI_HOST}/api/${path}`;
 
+	// Cache en memoria SOLO para evitar fetch duplicados
+	const cached = getFromCache<any>(url);
+	if (cached) {
+		return cached;
+	}
+
 	const headers: HeadersInit = {
 		Authorization: `Bearer ${STRAPI_TOKEN}`,
 		'Content-Type': 'application/json'
@@ -45,7 +53,12 @@ export async function query(path: string): Promise<any> {
 			throw new Error(`Error en la respuesta de la API: ${res.status} ${res.statusText}`);
 		}
 
-		return await res.json();
+		const json = await res.json();
+
+		// TTL corto: NO compite con ISR
+		saveToCache(url, json, 60_000); // 1 minuto
+
+		return json;
 	} catch (error) {
 		console.error('Error al consultar la API de Strapi:', error);
 		throw error;
