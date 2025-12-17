@@ -52,14 +52,13 @@
             ]
         },
         {
-            "source": "/(.*).(png|jpg|jpeg|svg|webp|ico|gif|avif|tiff|bmp|mp4|webm|avi|mov|mkv|mp3|wav|ogg|m4a|pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv|json|xml|zip|rar)",
+            "source": "/(.*)\\.(png|jpg|jpeg|webp|svg|ico|gif|avif|mp4|webm|mp3|pdf)",
             "headers": [
                 {
                     "key": "Cache-Control",
-                    "value": "public, max-age=0, must-revalidate"
+                    "value": "public, max-age=31536000, immutable"
                 }
             ]
         }
-    ],
-    "rewrites": []
+    ]
 }

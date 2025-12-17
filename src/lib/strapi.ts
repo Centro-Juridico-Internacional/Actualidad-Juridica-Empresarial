@@ -1,10 +1,14 @@
-import { getFromCache, saveToCache } from './strapiCache';
-
 /** Host del servidor Strapi */
 const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
 
 /** Token de autenticación para la API de Strapi */
 const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
+
+/**
+ * Cache en memoria para evitar fetch duplicados en SSR
+ */
+const memoryCache = new Map<string, { data: any; expires: number }>();
+const CACHE_TTL = 60_000; // 1 minuto
 
 /**
  * Verifica si una URL es absoluta (comienza con http:// o https://)
@@ -27,15 +31,14 @@ function withHost(url?: string | null): string | null {
  * ⚠️ IMPORTANTE:
  * - Siempre hace `cache: 'no-store'` → los datos vienen frescos del backend.
  * - El cache real lo maneja Vercel ISR a nivel de página (HTML cacheado en Edge).
- * - Por eso aquí NO usamos timers ni `revalidate` ni caché en memoria.
+ * - El cache en memoria SOLO evita fetch duplicados en el mismo render SSR.
  */
 export async function query(path: string): Promise<any> {
 	const url = `${STRAPI_HOST}/api/${path}`;
 
-	// Cache en memoria SOLO para evitar fetch duplicados
-	const cached = getFromCache<any>(url);
-	if (cached) {
-		return cached;
+	const cached = memoryCache.get(url);
+	if (cached && Date.now() < cached.expires) {
+		return cached.data;
 	}
 
 	const headers: HeadersInit = {
@@ -43,26 +46,16 @@ export async function query(path: string): Promise<any> {
 		'Content-Type': 'application/json'
 	};
 
-	try {
-		const res = await fetch(url, {
-			headers,
-			cache: 'no-store'
-		});
+	const res = await fetch(url, { headers, cache: 'no-store' });
 
-		if (!res.ok) {
-			throw new Error(`Error en la respuesta de la API: ${res.status} ${res.statusText}`);
-		}
-
-		const json = await res.json();
-
-		// TTL corto: NO compite con ISR
-		saveToCache(url, json, 60_000); // 1 minuto
-
-		return json;
-	} catch (error) {
-		console.error('Error al consultar la API de Strapi:', error);
-		throw error;
+	if (!res.ok) {
+		throw new Error(`Error en la respuesta de la API: ${res.status}`);
 	}
+
+	const json = await res.json();
+	memoryCache.set(url, { data: json, expires: Date.now() + CACHE_TTL });
+
+	return json;
 }
 
 export { withHost };

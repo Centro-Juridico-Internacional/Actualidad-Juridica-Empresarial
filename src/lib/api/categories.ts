@@ -1,4 +1,5 @@
 import { query, withHost } from '../strapi';
+import { DEFAULT_CATEGORY_IMAGE } from './_mediaDefaults';
 
 interface Category {
 	name: string;
@@ -7,67 +8,24 @@ interface Category {
 	image: string | null;
 }
 
-interface StrapiCategoryItem {
-	attributes?: {
-		name?: string;
-		slug?: string;
-		description?: string;
-		imagen?: {
-			data?: {
-				attributes?: {
-					url?: string;
-				};
-			};
-			url?: string;
-		};
-	};
-	name?: string;
-	slug?: string;
-	description?: string;
-	imagen?: {
-		data?: {
-			attributes?: {
-				url?: string;
-			};
-			url?: string;
-		};
-	};
-}
-
 /**
  * Lista de categorías. Cache ISR por página (categorías, home, etc.).
  */
 export async function getCategories(): Promise<Category[]> {
-	try {
-		const consultaCategories =
-			'categories?fields[0]=name&fields[1]=slug&fields[2]=description&populate[imagen][fields][0]=url';
+	const res = await query(
+		'categories?fields[0]=name&fields[1]=slug&fields[2]=description&populate[imagen][fields][0]=url'
+	);
 
-		const respuesta = (await query(consultaCategories)) as {
-			data: StrapiCategoryItem[];
+	return res.data.map((item: any) => {
+		const a = item.attributes ?? item;
+
+		const imgRel = a.imagen?.data?.attributes?.url ?? a.imagen?.url ?? null;
+
+		return {
+			name: a.name ?? '',
+			slug: a.slug ?? '',
+			description: a.description ?? '',
+			image: imgRel ? withHost(imgRel) : DEFAULT_CATEGORY_IMAGE
 		};
-
-		const DEFAULT_CATEGORY_IMAGE = '/category-default.png';
-
-		return respuesta.data.map((item: StrapiCategoryItem) => {
-			const atributos = item.attributes ?? item;
-			const nombre = atributos?.name ?? '';
-			const slug = atributos?.slug ?? '';
-			const descripcion = atributos?.description ?? '';
-
-			const imagenRelativa =
-				atributos?.imagen?.data?.attributes?.url ?? atributos?.imagen?.url ?? null;
-
-			const imagenFinal = imagenRelativa ? withHost(imagenRelativa) : DEFAULT_CATEGORY_IMAGE;
-
-			return {
-				name: nombre,
-				slug,
-				description: descripcion,
-				image: imagenFinal
-			};
-		});
-	} catch (error) {
-		console.error('Error al obtener las categorías:', error);
-		throw error;
-	}
+	});
 }

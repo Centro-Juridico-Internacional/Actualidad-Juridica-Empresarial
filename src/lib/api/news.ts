@@ -1,23 +1,14 @@
 import { query, withHost } from '../strapi';
+import { DEFAULT_NEWS_IMAGE, DEFAULT_AUTHOR_AVATAR } from './_mediaDefaults';
 
 /**
  * Type para contenido rich text de Strapi
  */
 type StrapiBlockContent = any[];
 
-/** Host del servidor Strapi */
-const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HOST;
-
-/** Token de autenticación para la API de Strapi */
-const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
-
 /** Zona horaria y locale por defecto (Colombia) */
 const DEFAULT_TIMEZONE = 'America/Bogota';
 const DEFAULT_LOCALE = 'es-CO';
-
-/** Imágenes por defecto */
-const DEFAULT_NEWS_IMAGE = '/news-default.png';
-const DEFAULT_AUTHOR_AVATAR = '/avatar-default.png';
 
 interface GetNewsParams {
 	categoryId: string;
@@ -49,150 +40,49 @@ interface NewsResult {
 	pagination?: Pagination;
 }
 
-interface StrapiAutor {
-	data?: {
-		attributes?: {
-			name?: string;
-			cargo?: string;
-			avatar?: {
-				data?: {
-					attributes?: {
-						url?: string;
-					};
-				};
-				url?: string;
-			};
-		};
-	};
-	name?: string;
-	cargo?: string;
-	avatar?: {
-		data?: {
-			attributes?: {
-				url?: string;
-			};
-		};
-		url?: string;
-	};
-}
-
-interface StrapiCategoria {
-	attributes?: {
-		name?: string;
-	};
-	name?: string;
-}
-
-interface StrapiNewsItem {
-	attributes?: {
-		titulo?: string;
-		contenido?: StrapiBlockContent;
-		slug?: string;
-		imagenes?: {
-			data?: {
-				attributes?: {
-					url?: string;
-				};
-			};
-			url?: string;
-		};
-		autor?: StrapiAutor;
-		categorias?:
-			| {
-					data?: StrapiCategoria[];
-			  }
-			| StrapiCategoria[];
-		UrlYoutube?: string;
-		publishedAt?: string;
-		updatedAt?: string;
-		createdAt?: string;
-	};
-	titulo?: string;
-	contenido?: StrapiBlockContent;
-	slug?: string;
-	imagenes?: {
-		data?: {
-			attributes?: {
-				url?: string;
-			};
-		};
-		url?: string;
-	};
-	autor?: StrapiAutor;
-	categorias?:
-		| {
-				data?: StrapiCategoria[];
-		  }
-		| StrapiCategoria[];
-	UrlYoutube?: string;
-	publishedAt?: string;
-	updatedAt?: string;
-	createdAt?: string;
-}
-
-interface StrapiNewsResponse {
-	data: StrapiNewsItem[];
-	meta?: {
-		pagination?: Pagination;
-	};
-}
-
 /**
  * Transforma un item de Strapi a NewsArticle
  */
-function transformNewsItem(item: StrapiNewsItem): NewsArticle {
-	const atributos = item.attributes ?? item;
+function transformNewsItem(item: any): NewsArticle {
+	const a = item.attributes ?? item;
 
-	const imagenRelativa =
-		atributos?.imagenes?.data?.attributes?.url ?? atributos?.imagenes?.url ?? null;
+	const imageRel = a.imagenes?.data?.attributes?.url ?? a.imagenes?.url ?? null;
 
-	const imagenFinal = imagenRelativa
-		? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}`
-		: DEFAULT_NEWS_IMAGE;
+	const autor = a.autor?.data?.attributes ?? a.autor ?? {};
+	const avatarRel = autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
 
-	const autor = atributos?.autor?.data?.attributes ?? atributos?.autor ?? {};
-	const autorAvatarRelativo = autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
-
-	const autorAvatarFinal = autorAvatarRelativo
-		? `${withHost(autorAvatarRelativo)}?token=${STRAPI_TOKEN}`
-		: DEFAULT_AUTHOR_AVATAR;
-
-	const categoriasRaw = atributos?.categorias;
-	const categoriasArray =
-		categoriasRaw && 'data' in (categoriasRaw as any)
-			? ((categoriasRaw as any).data ?? [])
+	const categoriasRaw = a.categorias;
+	const categoriasArr =
+		categoriasRaw && 'data' in categoriasRaw
+			? (categoriasRaw.data ?? [])
 			: Array.isArray(categoriasRaw)
 				? categoriasRaw
 				: [];
 
-	const categorias: string[] = categoriasArray
-		.map((categoria: StrapiCategoria) => categoria.attributes?.name ?? categoria?.name)
-		.filter(
-			(name: string | undefined): name is string => typeof name === 'string' && name.length > 0
-		);
+	const categorias = categoriasArr.map((c: any) => c.attributes?.name ?? c?.name).filter(Boolean);
 
-	const fechaPublicada = atributos?.publishedAt ?? atributos?.updatedAt ?? atributos?.createdAt;
-	const fechaPublicacion = fechaPublicada ? new Date(fechaPublicada) : new Date();
+	const fecha = a.publishedAt ?? a.updatedAt ?? a.createdAt ?? new Date().toISOString();
+	const date = new Date(fecha);
 
 	return {
-		titulo: atributos?.titulo ?? '',
-		contenido: atributos?.contenido ?? [],
-		slug: atributos?.slug ?? '',
-		image: imagenFinal,
-		dia: fechaPublicacion.toLocaleDateString(DEFAULT_LOCALE, {
+		titulo: a.titulo ?? '',
+		contenido: a.contenido ?? [],
+		slug: a.slug ?? '',
+		image: imageRel ? withHost(imageRel) : DEFAULT_NEWS_IMAGE,
+		dia: date.toLocaleDateString(DEFAULT_LOCALE, {
 			timeZone: DEFAULT_TIMEZONE,
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		}),
-		hora: fechaPublicacion.toLocaleTimeString(DEFAULT_LOCALE, {
+		hora: date.toLocaleTimeString(DEFAULT_LOCALE, {
 			timeZone: DEFAULT_TIMEZONE,
 			hour: '2-digit',
 			minute: '2-digit'
 		}),
-		UrlYoutube: atributos?.UrlYoutube ?? null,
+		UrlYoutube: a.UrlYoutube ?? null,
 		autorName: autor?.name ?? null,
-		autorAvatar: autorAvatarFinal,
+		autorAvatar: avatarRel ? withHost(avatarRel) : DEFAULT_AUTHOR_AVATAR,
 		autorRol: autor?.cargo ?? null,
 		categorias
 	};
@@ -203,96 +93,74 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
  * Cache a nivel de página mediante ISR.
  */
 export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult> {
-	try {
-		// Normalize categoryId to lowercase to ensure case-insensitive matching
-		const normalizedCategoryId = categoryId ? categoryId.toLowerCase().trim() : '';
+	const normalized = categoryId?.toLowerCase().trim();
 
-		const consultaNoticias =
-			`news?` +
-			`filters[categorias][slug][$contains]=${encodeURIComponent(normalizedCategoryId)}` +
-			`&populate[imagenes][fields][0]=url` +
-			`&populate[autor][populate][avatar][fields][0]=url` +
-			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=cargo` +
-			`&populate[categorias][fields][0]=name` +
-			`&sort=updatedAt:desc`;
+	const qs =
+		`news?filters[categorias][slug][$contains]=${encodeURIComponent(normalized)}` +
+		`&populate[imagenes][fields][0]=url` +
+		`&populate[autor][populate][avatar][fields][0]=url` +
+		`&populate[autor][fields][0]=name` +
+		`&populate[autor][fields][1]=cargo` +
+		`&populate[categorias][fields][0]=name` +
+		`&sort=updatedAt:desc`;
 
-		const respuesta = (await query(consultaNoticias)) as StrapiNewsResponse;
+	const res = await query(qs);
 
-		const noticias = respuesta.data.map((item: StrapiNewsItem) => transformNewsItem(item));
-
-		return { products: noticias, pagination: respuesta?.meta?.pagination };
-	} catch (error) {
-		console.error('Error al obtener las noticias:', error);
-		throw error;
-	}
+	return {
+		products: res.data.map(transformNewsItem),
+		pagination: res.meta?.pagination
+	};
 }
 
 /**
  * Noticia individual por slug.
  */
 export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
-	try {
-		const consultaNoticia =
-			`news?` +
-			`filters[slug][$eq]=${encodeURIComponent(slug)}` +
-			`&populate[imagenes][fields][0]=url` +
-			`&populate[autor][populate][avatar][fields][0]=url` +
-			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=cargo` +
-			`&populate[categorias][fields][0]=name`;
+	const qs =
+		`news?filters[slug][$eq]=${encodeURIComponent(slug)}` +
+		`&populate[imagenes][fields][0]=url` +
+		`&populate[autor][populate][avatar][fields][0]=url` +
+		`&populate[autor][fields][0]=name` +
+		`&populate[autor][fields][1]=cargo` +
+		`&populate[categorias][fields][0]=name`;
 
-		const respuesta = (await query(consultaNoticia)) as StrapiNewsResponse;
+	const res = await query(qs);
 
-		if (!respuesta.data || respuesta.data.length === 0) {
-			return null;
-		}
+	if (!res.data?.length) return null;
 
-		return transformNewsItem(respuesta.data[0]);
-	} catch (error) {
-		console.error('Error al obtener la noticia por slug:', error);
-		throw error;
-	}
+	return transformNewsItem(res.data[0]);
 }
 
 /**
  * Últimas noticias (para sidebar, secciones, etc.).
  */
 export async function getLatestNews(
-	limit: number = 4,
+	limit = 4,
 	excludeSlug?: string,
 	categorySlugs?: string[]
 ): Promise<NewsArticle[]> {
-	try {
-		let consultaNoticias = `news?` + `sort=updatedAt:desc` + `&pagination[limit]=${limit + 1}`; // Request one extra just in case we filter one out
+	let qs = `news?sort=updatedAt:desc&pagination[limit]=${limit + 1}`;
 
-		// Filter by Categories if provided (matches ANY of the categories)
-		if (categorySlugs && categorySlugs.length > 0) {
-			categorySlugs.forEach((slug, index) => {
-				// Utilizando OR implicitamente al filtrar por el mismo campo con indices, o usamos $in si la version de Strapi lo soporta directo
-				// Para mayor compatibilidad construimos: filters[categorias][slug][$in][0]=slug1&filters[categorias][slug][$in][1]=slug2
-				consultaNoticias += `&filters[categorias][slug][$in][${index}]=${encodeURIComponent(slug)}`;
-			});
-		}
-
-		consultaNoticias +=
-			`&populate[imagenes][fields][0]=url` +
-			`&populate[autor][populate][avatar][fields][0]=url` +
-			`&populate[autor][fields][0]=name` +
-			`&populate[autor][fields][1]=cargo` +
-			`&populate[categorias][fields][0]=name`;
-
-		const respuesta = (await query(consultaNoticias)) as StrapiNewsResponse;
-
-		let noticias = respuesta.data.map((item: StrapiNewsItem) => transformNewsItem(item));
-
-		if (excludeSlug) {
-			noticias = noticias.filter((noticia) => noticia.slug !== excludeSlug);
-		}
-
-		return noticias.slice(0, limit);
-	} catch (error) {
-		console.error('Error al obtener las últimas noticias:', error);
-		throw error;
+	if (categorySlugs?.length) {
+		categorySlugs.forEach((slug, i) => {
+			qs += `&filters[categorias][slug][$in][${i}]=${encodeURIComponent(slug)}`;
+		});
 	}
+
+	qs +=
+		`&populate[imagenes][fields][0]=url` +
+		`&populate[autor][populate][avatar][fields][0]=url` +
+		`&populate[autor][fields][0]=name` +
+		`&populate[autor][fields][1]=cargo` +
+		`&populate[categorias][fields][0]=name`;
+
+	const res = await query(qs);
+
+	let items = res.data.map(transformNewsItem);
+
+	if (excludeSlug) {
+		items = items.filter((n: NewsArticle) => n.slug !== excludeSlug);
+	}
+
+	return items.slice(0, limit);
 }

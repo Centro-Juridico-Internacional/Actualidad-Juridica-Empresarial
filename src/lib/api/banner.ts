@@ -6,56 +6,19 @@ interface Banner {
 	banner: string | null;
 }
 
-interface StrapiBannerResponse {
-	data?: {
-		attributes?: {
-			nombre?: string;
-			slug?: string;
-			imagen?: {
-				data?: {
-					attributes?: {
-						url?: string;
-					};
-				};
-				url?: string;
-			};
-		};
-		nombre?: string;
-		slug?: string;
-		imagen?: {
-			data?: {
-				attributes?: {
-					url?: string;
-				};
-			};
-			url?: string;
-		};
-	};
-}
-
 /**
  * Banner principal del home.
  * Cacheado por ISR en la página que lo use.
  */
 export async function getBanner(): Promise<Banner> {
-	try {
-		const respuesta = (await query(
-			'banner?populate[imagen][fields][0]=url'
-		)) as StrapiBannerResponse;
+	const res = await query('banner?populate[imagen][fields][0]=url');
 
-		const atributos = respuesta.data?.attributes ?? respuesta.data ?? {};
-		const nombre = atributos?.nombre ?? '';
-		const slug = atributos?.slug ?? '';
-		const imagenRelativa =
-			atributos?.imagen?.data?.attributes?.url ?? atributos?.imagen?.url ?? null;
+	const a = res.data?.attributes ?? res.data ?? {};
+	const imgRel = a.imagen?.data?.attributes?.url ?? a.imagen?.url ?? null;
 
-		return {
-			nombre,
-			slug,
-			banner: withHost(imagenRelativa)
-		};
-	} catch (error) {
-		console.error('Error al obtener el banner:', error);
-		throw error;
-	}
+	return {
+		nombre: a.nombre ?? '',
+		slug: a.slug ?? '',
+		banner: imgRel ? withHost(imgRel) : null
+	};
 }
