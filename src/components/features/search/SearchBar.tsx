@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef, type FormEvent } from 'react';
 
 interface SearchBarProps {
-	/** Placeholder text for the search input */
 	placeholder?: string;
-	/** Additional CSS classes */
 	className?: string;
-	/** Auto focus on mount */
 	autoFocus?: boolean;
 }
 
@@ -17,12 +14,11 @@ interface Suggestion {
 }
 
 /**
- * SearchBar component with Autocomplete/Smart Suggestions
+ * SearchBar component with Autocomplete / Smart Suggestions
  *
- * ⚠️ IMPORTANTE:
- * - NO usamos window.location.href
- * - Dejamos que el submit HTML maneje la navegación
- * - Esto evita bugs con Astro ClientRouter cuando ya estamos en /buscar
+ * ✔ Navegación HTML nativa (sin window.location)
+ * ✔ Compatible con Astro ClientRouter
+ * ✔ UX mejorado: "Ver resultados para {query}"
  */
 const SearchBar: React.FC<SearchBarProps> = ({
 	placeholder = 'Buscar artículos...',
@@ -35,10 +31,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const wrapperRef = useRef<HTMLFormElement>(null);
 
-	// Debounce logic for suggestions
+	// Fetch suggestions with debounce
 	useEffect(() => {
 		const timer = setTimeout(async () => {
-			if (searchQuery.length >= 3) {
+			if (searchQuery.trim().length >= 3) {
 				setIsLoading(true);
 				try {
 					const res = await fetch(`/api/search-suggestions?q=${encodeURIComponent(searchQuery)}`);
@@ -61,31 +57,26 @@ const SearchBar: React.FC<SearchBarProps> = ({
 		return () => clearTimeout(timer);
 	}, [searchQuery]);
 
-	// Click outside to close suggestions
+	// Close dropdown on outside click
 	useEffect(() => {
-		function handleClickOutside(event: MouseEvent) {
+		const handleClickOutside = (event: MouseEvent) => {
 			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
 				setShowSuggestions(false);
 			}
-		}
+		};
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
 	const handleSubmit = (_e: FormEvent<HTMLFormElement>) => {
-		// Dejamos que el navegador haga el submit GET normal
-		setShowSuggestions(false);
-	};
-
-	const handleClear = () => {
-		setSearchQuery('');
-		setSuggestions([]);
 		setShowSuggestions(false);
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Escape') {
-			handleClear();
+			setSearchQuery('');
+			setSuggestions([]);
+			setShowSuggestions(false);
 			(e.target as HTMLInputElement).blur();
 		}
 	};
@@ -107,36 +98,19 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				onFocus={() => searchQuery.length >= 3 && setShowSuggestions(true)}
 				placeholder={placeholder}
 				autoFocus={autoFocus}
-				className="focus:ring-primary/20 w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:outline-none dark:bg-gray-100 dark:text-black"
+				autoComplete="off"
+				className="w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:outline-none"
 				aria-label="Buscar noticias"
 			/>
 
 			<button
 				type="submit"
-				className="hover:text-primary absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors"
-				title="Buscar"
+				className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-green-600"
 				aria-label="Buscar"
 			>
 				{isLoading ? (
-					<svg
-						className="h-5 w-5 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<circle
-							className="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							strokeWidth="4"
-						/>
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						/>
+					<svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
+						<circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
 					</svg>
 				) : (
 					<svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,27 +124,23 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				)}
 			</button>
 
-			{/* Suggestions Dropdown */}
+			{/* Suggestions */}
 			{showSuggestions && suggestions.length > 0 && (
-				<div className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl">
-					<ul className="max-h-80 overflow-y-auto">
+				<div className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-transparent bg-white shadow-xl">
+					<ul className="max-h-72 overflow-y-auto">
 						{suggestions.map((item, index) => (
-							<li key={index} className="border-b border-gray-50 last:border-0">
+							<li key={index} className="border-b last:border-0">
 								<a
 									href={`/noticia/${item.slug}`}
-									className="flex items-center gap-3 p-3 transition-colors hover:bg-green-50"
+									className="flex items-center gap-3 p-3 hover:bg-green-50"
 									onClick={() => setShowSuggestions(false)}
 								>
 									{item.image && (
-										<img
-											src={item.image}
-											alt=""
-											className="h-10 w-10 flex-shrink-0 rounded-md object-cover"
-										/>
+										<img src={item.image} alt="" className="h-10 w-10 rounded-md object-cover" />
 									)}
-									<div className="min-w-0 flex-1">
+									<div className="min-w-0">
 										<h4
-											className="truncate text-sm font-medium text-gray-900"
+											className="truncate text-sm font-medium"
 											dangerouslySetInnerHTML={{
 												__html: item.titulo.replace(
 													new RegExp(`(${searchQuery})`, 'gi'),
@@ -186,12 +156,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
 							</li>
 						))}
 					</ul>
-					<div className="border-t border-gray-100 bg-gray-50 p-2 text-center">
+
+					{/* CTA FINAL */}
+					<div className="cursor-pointer border-t border-green-300 bg-gray-50 p-2 text-center hover:bg-green-50">
 						<button
 							type="submit"
-							className="text-xs font-semibold text-green-700 hover:text-green-800"
+							className="cursor-pointer text-xs font-semibold text-green-700 hover:text-green-800"
 						>
-							Ver todos los resultados
+							Ver todos los resultados para “{searchQuery}”
 						</button>
 					</div>
 				</div>
