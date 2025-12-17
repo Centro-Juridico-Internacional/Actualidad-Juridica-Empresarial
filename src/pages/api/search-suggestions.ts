@@ -3,12 +3,15 @@ import { query, withHost } from '@/lib/strapi';
 import { DEFAULT_NEWS_IMAGE } from '@/lib/api/_mediaDefaults';
 
 /**
- * API ligera para autocomplete / search suggestions
+ * Search suggestions API
  *
- * ⚠️ NO usa searchNews para:
- * - evitar payload pesado
- * - evitar lógica innecesaria
- * - mejorar performance
+ * ✔ Búsqueda inteligente:
+ *   - título
+ *   - autor (name)
+ *   - cargo
+ *   - categoría (name)
+ * ✔ Query ligera
+ * ✔ Ideal para autocomplete
  */
 export const GET: APIRoute = async ({ request }) => {
 	const url = new URL(request.url);
@@ -27,9 +30,14 @@ export const GET: APIRoute = async ({ request }) => {
 			.replace(/\s+/g, ' ')
 			.toLowerCase();
 
+		const filters =
+			`filters[$or][0][titulo][$containsi]=${encodeURIComponent(clean)}` +
+			`&filters[$or][1][autor][name][$containsi]=${encodeURIComponent(clean)}` +
+			`&filters[$or][2][autor][cargo][$containsi]=${encodeURIComponent(clean)}` +
+			`&filters[$or][3][categorias][name][$containsi]=${encodeURIComponent(clean)}`;
+
 		const qs =
-			`news?` +
-			`filters[titulo][$containsi]=${encodeURIComponent(clean)}` +
+			`news?${filters}` +
 			`&fields[0]=titulo` +
 			`&fields[1]=slug` +
 			`&populate[imagenes][fields][0]=url` +
