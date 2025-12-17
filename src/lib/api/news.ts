@@ -11,6 +11,10 @@ const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HO
 /** Token de autenticación para la API de Strapi */
 const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
 
+/** Zona horaria y locale por defecto (Colombia) */
+const DEFAULT_TIMEZONE = 'America/Bogota';
+const DEFAULT_LOCALE = 'es-CO';
+
 interface GetNewsParams {
 	categoryId: string;
 }
@@ -163,8 +167,14 @@ function transformNewsItem(item: StrapiNewsItem): NewsArticle {
 		contenido: atributos?.contenido ?? [],
 		slug: atributos?.slug ?? '',
 		image: imagenRelativa ? `${withHost(imagenRelativa)}?token=${STRAPI_TOKEN}` : null,
-		dia: fechaPublicacion.toLocaleDateString(),
-		hora: fechaPublicacion.toLocaleTimeString([], {
+		dia: fechaPublicacion.toLocaleDateString(DEFAULT_LOCALE, {
+			timeZone: DEFAULT_TIMEZONE,
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		}),
+		hora: fechaPublicacion.toLocaleTimeString(DEFAULT_LOCALE, {
+			timeZone: DEFAULT_TIMEZONE,
 			hour: '2-digit',
 			minute: '2-digit'
 		}),
