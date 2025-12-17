@@ -1,4 +1,5 @@
 import React, { useEffect, useState, memo } from 'react';
+import { getYoutubeVideoId } from '@/utils/getYoutubeVideoId';
 
 interface YouTubeLiteProps {
 	videoid: string;
@@ -23,7 +24,14 @@ function YouTubeLite({ videoid, title }: YouTubeLiteProps) {
 	const [loaded, setLoaded] = useState(false);
 	const [error, setError] = useState(false);
 
+	const resolvedVideoId = videoid.startsWith('http') ? getYoutubeVideoId(videoid) : videoid;
+
 	useEffect(() => {
+		if (!resolvedVideoId) {
+			setError(true);
+			return;
+		}
+
 		import('@justinribeiro/lite-youtube')
 			.then(() => {
 				setLoaded(true);
@@ -38,14 +46,14 @@ function YouTubeLite({ videoid, title }: YouTubeLiteProps) {
 			setLoaded(false);
 			setError(false);
 		};
-	}, []);
+	}, [resolvedVideoId]);
 
 	if (error || !loaded) {
 		return (
 			<div className="flex h-full w-full items-center justify-center bg-gray-100 p-4">
 				<a
 					className="lite-youtube-fallback rounded-lg bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700"
-					href={`https://www.youtube.com/watch?v=${videoid}`}
+					href={`https://www.youtube.com/watch?v=${resolvedVideoId ?? videoid}`}
 					target="_blank"
 					rel="noopener noreferrer"
 					aria-label={`Ver en YouTube: ${title}`}
@@ -60,15 +68,15 @@ function YouTubeLite({ videoid, title }: YouTubeLiteProps) {
 		<div className="flex h-full w-full items-center justify-center">
 			{/* @ts-ignore */}
 			<lite-youtube
-				videoid={videoid}
-				id={videoid}
+				videoid={resolvedVideoId}
+				id={resolvedVideoId}
 				videotitle={title}
 				videoplay="Mirar"
 				posterquality="maxresdefault"
 			>
 				<a
 					className="lite-youtube-fallback"
-					href={`https://www.youtube.com/watch?v=${videoid}`}
+					href={`https://www.youtube.com/watch?v=${resolvedVideoId}`}
 					title={`Ver en YouTube: ${title}`}
 					target="_blank"
 					rel="noopener noreferrer"

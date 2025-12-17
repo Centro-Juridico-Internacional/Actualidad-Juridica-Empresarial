@@ -63,6 +63,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		case 'banner':
 		case 'entrevistas-urls':
+		case 'capsulas-legales-urls':
 		case 'imagenes-pautas':
 		case 'banners-eventos': {
 			pathsToRevalidate.push('/');

@@ -12,9 +12,9 @@ import Revista from '@/components/features/revista/Revista';
 
 // Internal API imports
 import { getNews } from '@/lib/api/news';
-import type { NewsArticle } from '@/lib/api/news';
 import { getPautas } from '@/lib/api/pautas';
 import { getInterviewsUrl } from '@/lib/api/interviews';
+import { getCapsulasUrl } from '@/lib/api/capsulas';
 
 // Importar estilos responsive de la revista SOLO para esta página
 import '@/styles/revista-responsive.css';
@@ -22,10 +22,11 @@ import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
 // Fetch all data in parallel to reduce load time
-const [newsData, pautas, interviews] = await Promise.all([
+const [newsData, pautas, interviews, capsulas] = await Promise.all([
 	getNews({ categoryId: '' }),
 	getPautas(),
-	getInterviewsUrl()
+	getInterviewsUrl(),
+	getCapsulasUrl()
 ]);
 
 const { products } = newsData;
@@ -43,7 +44,7 @@ const { products } = newsData;
 	<InformationOfInterest products={products} />
 	<MoreNews products={products} />
 	<ContainerInterviewMagazine pautas={pautas} interviews={interviews} />
-	<Podcast pautas={pautas} interviews={interviews} />
+	<Podcast capsulas={capsulas} />
 	<UpcomingEvents />
 
 	<Revista
