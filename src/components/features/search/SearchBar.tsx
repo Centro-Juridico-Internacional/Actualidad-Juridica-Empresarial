@@ -18,6 +18,11 @@ interface Suggestion {
 
 /**
  * SearchBar component with Autocomplete/Smart Suggestions
+ *
+ * ⚠️ IMPORTANTE:
+ * - NO usamos window.location.href
+ * - Dejamos que el submit HTML maneje la navegación
+ * - Esto evita bugs con Astro ClientRouter cuando ya estamos en /buscar
  */
 const SearchBar: React.FC<SearchBarProps> = ({
 	placeholder = 'Buscar artículos...',
@@ -30,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const wrapperRef = useRef<HTMLFormElement>(null);
 
-	// Debounce logic
+	// Debounce logic for suggestions
 	useEffect(() => {
 		const timer = setTimeout(async () => {
 			if (searchQuery.length >= 3) {
@@ -56,7 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 		return () => clearTimeout(timer);
 	}, [searchQuery]);
 
-	// Click outside to close
+	// Click outside to close suggestions
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -65,19 +70,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 		}
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [wrapperRef]);
+	}, []);
 
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		handleSubmitQuery(searchQuery);
-	};
-
-	const handleSubmitQuery = (query: string) => {
-		const trimmedQuery = query.trim();
-		if (trimmedQuery) {
-			setShowSuggestions(false);
-			window.location.href = `/buscar?q=${encodeURIComponent(trimmedQuery)}`;
-		}
+	const handleSubmit = (_e: FormEvent<HTMLFormElement>) => {
+		// Dejamos que el navegador haga el submit GET normal
+		setShowSuggestions(false);
 	};
 
 	const handleClear = () => {
@@ -94,9 +91,16 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	};
 
 	return (
-		<form ref={wrapperRef} onSubmit={handleSubmit} className={`relative ${className}`}>
+		<form
+			ref={wrapperRef}
+			action="/buscar"
+			method="GET"
+			onSubmit={handleSubmit}
+			className={`relative ${className}`}
+		>
 			<input
 				type="search"
+				name="q"
 				value={searchQuery}
 				onChange={(e) => setSearchQuery(e.target.value)}
 				onKeyDown={handleKeyDown}
@@ -106,6 +110,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				className="focus:ring-primary/20 w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:outline-none dark:bg-gray-100 dark:text-black"
 				aria-label="Buscar noticias"
 			/>
+
 			<button
 				type="submit"
 				className="hover:text-primary absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors"
@@ -126,12 +131,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
 							r="10"
 							stroke="currentColor"
 							strokeWidth="4"
-						></circle>
+						/>
 						<path
 							className="opacity-75"
 							fill="currentColor"
 							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
+						/>
 					</svg>
 				) : (
 					<svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +145,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 							strokeLinejoin="round"
 							strokeWidth="2"
 							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-						></path>
+						/>
 					</svg>
 				)}
 			</button>
@@ -153,7 +158,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 							<li key={index} className="border-b border-gray-50 last:border-0">
 								<a
 									href={`/noticia/${item.slug}`}
-									className="block flex items-center gap-3 p-3 transition-colors hover:bg-green-50"
+									className="flex items-center gap-3 p-3 transition-colors hover:bg-green-50"
+									onClick={() => setShowSuggestions(false)}
 								>
 									{item.image && (
 										<img
