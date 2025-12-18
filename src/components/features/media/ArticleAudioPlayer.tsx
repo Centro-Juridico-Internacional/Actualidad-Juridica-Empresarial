@@ -5,7 +5,7 @@ interface ArticleAudioPlayerProps {
 	content: string; // Plain text
 }
 
-const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5];
 
 const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content }) => {
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -20,18 +20,49 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 	const charIndexRef = useRef<number>(0);
 	const fullTextRef = useRef<string>('');
 	const menuRef = useRef<HTMLDivElement>(null);
+	const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
 
+	// Initialize and cleanup
 	useEffect(() => {
 		if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 			setSupported(true);
 			fullTextRef.current = `${title}. ${content}`;
-		}
-		// Cleanup
-		return () => {
-			if (window.speechSynthesis) {
-				window.speechSynthesis.cancel();
+
+			// Load voices
+			const loadVoices = () => {
+				voicesRef.current = window.speechSynthesis.getVoices();
+			};
+
+			loadVoices();
+			if (window.speechSynthesis.onvoiceschanged !== undefined) {
+				window.speechSynthesis.onvoiceschanged = loadVoices;
 			}
-		};
+
+			// Global listeners for navigation
+			const handleStopGlobal = () => {
+				if (window.speechSynthesis.speaking) {
+					window.speechSynthesis.cancel();
+					handleReset();
+				}
+			};
+
+			window.addEventListener('pagehide', handleStopGlobal);
+			window.addEventListener('visibilitychange', () => {
+				if (document.visibilityState === 'hidden') {
+					// Optional: could pause instead of stop, but user asked to stop
+					// handleStopGlobal();
+				}
+			});
+
+			// Custom event for Astro ViewTransitions
+			document.addEventListener('astro:before-preparation', handleStopGlobal);
+
+			return () => {
+				window.speechSynthesis.cancel();
+				window.removeEventListener('pagehide', handleStopGlobal);
+				document.removeEventListener('astro:before-preparation', handleStopGlobal);
+			};
+		}
 	}, [title, content]);
 
 	// Close menu on click outside
@@ -45,13 +76,39 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
+	const getBestVoice = () => {
+		const voices = voicesRef.current;
+		if (voices.length === 0) return null;
+
+		// 1. Prioritize Colombian Spanish (es-CO)
+		const colombianVoices = voices.filter((v) => v.lang.includes('es-CO'));
+		if (colombianVoices.length > 0) {
+			const naturalColombian = colombianVoices.find(
+				(v) => v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')
+			);
+			return naturalColombian || colombianVoices[0];
+		}
+
+		// 2. Fallback to Natural/Google/Microsoft Online voices for any Spanish
+		const preferredVoices = voices.filter(
+			(v) =>
+				v.lang.includes('es') &&
+				(v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online'))
+		);
+		if (preferredVoices.length > 0) return preferredVoices[0];
+
+		// 3. Last fallback: any Spanish voice
+		const spanishVoices = voices.filter((v) => v.lang.includes('es'));
+		return spanishVoices.length > 0 ? spanishVoices[0] : null;
+	};
+
 	const speak = (startIndex: number, rate: number) => {
 		if (!supported) return;
 
-		// CRITICAL FIX: Detach previous onend listener to prevent race condition
-		// where cancelling the previous speech triggers a "stop" logic that hides controls.
+		// Ensure everything is clean before starting new speech
 		if (utteranceRef.current) {
 			utteranceRef.current.onend = null;
+			utteranceRef.current.onboundary = null;
 		}
 
 		window.speechSynthesis.cancel();
@@ -62,34 +119,47 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			return;
 		}
 
-		const utterance = new SpeechSynthesisUtterance(textToSpeak);
-		utterance.lang = 'es-ES';
-		utterance.rate = rate;
-
-		utterance.onboundary = (event) => {
-			if (event.name === 'word' || event.name === 'sentence') {
-				charIndexRef.current = startIndex + event.charIndex;
+		// Small timeout to allow the browser engine to fully reset
+		setTimeout(() => {
+			const utterance = new SpeechSynthesisUtterance(textToSpeak);
+			const voice = getBestVoice();
+			if (voice) {
+				utterance.voice = voice;
+				utterance.lang = voice.lang;
+			} else {
+				utterance.lang = 'es-ES';
 			}
-		};
 
-		utterance.onend = () => {
-			// Only reset if we are not manually restarting (state is managed manually during speed change)
-			if (window.speechSynthesis.speaking === false) {
-				handleReset();
-			}
-		};
+			utterance.rate = rate;
+			utterance.pitch = 1.0;
 
-		utterance.onerror = (e) => {
-			console.error('Speech error', e);
-			handleReset();
-		};
+			utterance.onboundary = (event) => {
+				if (event.name === 'word') {
+					charIndexRef.current = startIndex + event.charIndex;
+				}
+			};
 
-		utteranceRef.current = utterance;
-		window.speechSynthesis.speak(utterance);
+			utterance.onend = () => {
+				// Avoid reset if we are just switching speed (indicated by a flag if needed,
+				// but cancel() usually suffices)
+				if (!window.speechSynthesis.speaking) {
+					handleReset();
+				}
+			};
 
-		// Ensure state reflects playing
-		setIsPlaying(true);
-		setIsPaused(false);
+			utterance.onerror = (e) => {
+				if (e.error !== 'interrupted') {
+					console.error('Speech error', e);
+					handleReset();
+				}
+			};
+
+			utteranceRef.current = utterance;
+			window.speechSynthesis.speak(utterance);
+
+			setIsPlaying(true);
+			setIsPaused(false);
+		}, 50);
 	};
 
 	const handleReset = () => {
@@ -119,7 +189,10 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 
 	const handleStop = () => {
 		if (window.speechSynthesis) {
-			if (utteranceRef.current) utteranceRef.current.onend = null;
+			if (utteranceRef.current) {
+				utteranceRef.current.onend = null;
+				utteranceRef.current.onboundary = null;
+			}
 			window.speechSynthesis.cancel();
 		}
 		handleReset();
@@ -127,10 +200,10 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 
 	const handleSpeedChange = (newSpeed: number) => {
 		setSpeed(newSpeed);
-		setShowSpeedMenu(false); // Close menu
+		setShowSpeedMenu(false);
 
-		// Instant apply if playing or paused
 		if (isPlaying || isPaused) {
+			// Restart from current index with new speed
 			speak(charIndexRef.current, newSpeed);
 		}
 	};
