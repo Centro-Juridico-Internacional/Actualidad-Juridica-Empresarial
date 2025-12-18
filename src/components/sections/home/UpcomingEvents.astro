@@ -1,5 +1,6 @@
 ---
 import Carousel from '@/components/features/carousel/Carousel';
+import Titles from '@/components/ui/Titles.astro';
 import { getEventBanners } from '@/lib/api/eventBanners';
 import type { CarouselImage } from '@/lib/types/carousel';
 
@@ -15,9 +16,9 @@ const carouselData: CarouselImage[] = eventBanners.map((banner) => ({
 }));
 ---
 
-<section class="upcoming-events-section bg-gradient-to-b from-gray-50 to-white py-12">
+<section class="upcoming-events-section bg-gradient-to-b from-gray-50 to-white py-24">
 	<div class="container mx-auto px-4">
-		<h2 class="mb-8 text-center text-4xl font-bold text-gray-800">Próximos Eventos</h2>
+		<Titles text="Próximos Eventos" />
 
 		{
 			carouselData.length > 0 ? (
