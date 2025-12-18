@@ -36,106 +36,76 @@ const FlipBookInternal = React.memo(
 		const [localNumPages, setLocalNumPages] = useState<number>(0);
 		const flipInstanceRef = useRef<any>(null);
 
-		// Guardamos callbacks en refs para NO re-inicializar PageFlip por cambios de identidad
-		const onInitRef = useRef(onInit);
-		const onFlipRef = useRef(onFlip);
-		const onLoadSuccessRef = useRef(onLoadSuccess);
-		const onLoadErrorRef = useRef(onLoadError);
-
+		// Usamos refs para los callbacks para evitar reinicializar PageFlip innecesariamente
+		const callbacksRef = useRef({ onInit, onFlip, onLoadSuccess, onLoadError });
 		useEffect(() => {
-			onInitRef.current = onInit;
-		}, [onInit]);
-
-		useEffect(() => {
-			onFlipRef.current = onFlip;
-		}, [onFlip]);
-
-		useEffect(() => {
-			onLoadSuccessRef.current = onLoadSuccess;
-		}, [onLoadSuccess]);
-
-		useEffect(() => {
-			onLoadErrorRef.current = onLoadError;
-		}, [onLoadError]);
+			callbacksRef.current = { onInit, onFlip, onLoadSuccess, onLoadError };
+		}, [onInit, onFlip, onLoadSuccess, onLoadError]);
 
 		const onDocumentLoadSuccess = (data: { numPages: number }) => {
 			setLocalNumPages(data.numPages);
-			onLoadSuccessRef.current(data);
+			callbacksRef.current.onLoadSuccess(data);
 		};
 
-		// Inicializar / reinicializar PageFlip cuando haya páginas o cambie modo (mobile/desktop)
-		// ⚠️ Importante: NO depende de onFlip/onInit (por refs) para evitar recreaciones al cambiar currentPage
+		// Inicializar / reinicializar PageFlip
 		useEffect(() => {
-			if (localNumPages > 0 && bookRef.current) {
-				const timeout = setTimeout(() => {
+			if (localNumPages === 0 || !bookRef.current) return;
+
+			let pageFlip: any = null;
+			const timeout = setTimeout(() => {
+				const pages = bookRef.current?.querySelectorAll('.page');
+				if (pages && pages.length === localNumPages) {
 					try {
-						const pages = bookRef.current?.querySelectorAll('.page');
-						if (pages && pages.length > 0) {
-							// Destruir instancia anterior si existe
-							if (flipInstanceRef.current) {
-								flipInstanceRef.current.destroy();
-								flipInstanceRef.current = null;
-							}
-
-							const pageFlip = new PageFlip(bookRef.current as HTMLElement, {
-								width,
-								height,
-								size: 'fixed' as any,
-								minWidth: 300,
-								maxWidth: 1000,
-								minHeight: 400,
-								maxHeight: 1533,
-
-								showCover: true,
-								// En mobile: una sola página; en desktop: doble página
-								usePortrait: isMobile,
-
-								flippingTime: 650,
-								maxShadowOpacity: 0.6,
-								drawShadow: true,
-								showPageCorners: true,
-								disableFlipByClick: false,
-								clickEventForward: true,
-								mobileScrollSupport: true,
-								swipeDistance: 30,
-								startZIndex: 20,
-								autoSize: true
-							});
-
-							pageFlip.loadFromHTML(pages as any);
-
-							pageFlip.on('flip', (e: any) => {
-								// PageFlip da índice 0-based
-								onFlipRef.current(e.data + 1);
-							});
-
-							flipInstanceRef.current = pageFlip;
-							onInitRef.current(pageFlip);
+						if (flipInstanceRef.current) {
+							flipInstanceRef.current.destroy();
 						}
+
+						pageFlip = new PageFlip(bookRef.current as HTMLElement, {
+							width,
+							height,
+							size: 'fixed' as any,
+							minWidth: 300,
+							maxWidth: 1200,
+							minHeight: 400,
+							maxHeight: 1800,
+							showCover: !isMobile, // Desactivar showCover en mobile evita saltos bruscos en el modo retrato
+							usePortrait: isMobile,
+							flippingTime: 550,
+							maxShadowOpacity: 0.6,
+							drawShadow: true,
+							showPageCorners: true,
+							disableFlipByClick: false,
+							clickEventForward: true,
+							mobileScrollSupport: true,
+							swipeDistance: 30,
+							startZIndex: 20,
+							autoSize: !isMobile // Desactivar autoSize en mobile previene re-cálculos bruscos durante el giro
+						});
+
+						pageFlip.loadFromHTML(pages as any);
+						pageFlip.on('flip', (e: any) => {
+							callbacksRef.current.onFlip(e.data + 1);
+						});
+
+						flipInstanceRef.current = pageFlip;
+						callbacksRef.current.onInit(pageFlip);
 					} catch (err) {
-						console.error('Error en PageFlip:', err);
+						console.error('Error inicializando PageFlip:', err);
 					}
-				}, 250);
+				}
+			}, 300);
 
-				return () => {
-					clearTimeout(timeout);
-				};
-			}
-		}, [localNumPages, width, height, isMobile]);
-
-		// Cleanup al desmontar
-		useEffect(() => {
 			return () => {
-				if (flipInstanceRef.current) {
+				clearTimeout(timeout);
+				if (pageFlip) {
 					try {
-						flipInstanceRef.current.destroy();
-					} catch {
-						// noop
+						pageFlip.destroy();
+					} catch (e) {
+						/* no-op */
 					}
-					flipInstanceRef.current = null;
 				}
 			};
-		}, []);
+		}, [localNumPages, width, height, isMobile]);
 
 		const pdfOptions = React.useMemo(
 			() => ({
@@ -154,7 +124,7 @@ const FlipBookInternal = React.memo(
 				<Document
 					file={pdfUrl}
 					onLoadSuccess={onDocumentLoadSuccess}
-					onLoadError={(err) => onLoadErrorRef.current(err)}
+					onLoadError={(err) => callbacksRef.current.onLoadError(err)}
 					loading=""
 					options={pdfOptions}
 				>
@@ -167,7 +137,7 @@ const FlipBookInternal = React.memo(
 									<div
 										key={index + 1}
 										className={`page ${isCover ? 'page-cover' : 'page-inner'} bg-white`}
-										data-density={isCover ? 'hard' : 'soft'}
+										data-density={isCover && !isMobile ? 'hard' : 'soft'}
 									>
 										<Page
 											pageNumber={index + 1}
@@ -208,6 +178,8 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [retryCount, setRetryCount] = useState<number>(0);
+	const [loadKey, setLoadKey] = useState<number>(0);
 	const pageFlipRef = useRef<any>(null);
 
 	// Lazy-load: solo montar flipbook cuando entra al viewport
@@ -256,8 +228,16 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 		const onFsChange = () => {
 			setIsFullscreen(!!document.fullscreenElement);
 		};
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'ArrowLeft') goToPreviousPage();
+			if (e.key === 'ArrowRight') goToNextPage();
+		};
 		document.addEventListener('fullscreenchange', onFsChange);
-		return () => document.removeEventListener('fullscreenchange', onFsChange);
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+			document.removeEventListener('fullscreenchange', onFsChange);
+			window.removeEventListener('keydown', handleKeyDown);
+		};
 	}, []);
 
 	const toggleFullscreen = async () => {
@@ -274,9 +254,20 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 		}
 	};
 
-	// Calcular proporción automáticamente
-	const computedHeight = height;
-	const computedWidth = width ?? Math.round(computedHeight * ASPECT_RATIO);
+	const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : BASE_WIDTH;
+
+	// LÍMITES CLAROS Y CONSISTENTES
+	const DESKTOP_MAX_BOOK_WIDTH = 1300; // Ancho máximo del libro abierto
+	const MOBILE_MAX_PAGE_WIDTH_RATIO = 0.95;
+
+	const computedWidth = Math.min(
+		width ?? BASE_WIDTH,
+		isMobile
+			? Math.floor(viewportWidth * MOBILE_MAX_PAGE_WIDTH_RATIO) // mobile
+			: Math.floor(Math.min(viewportWidth * 0.95, DESKTOP_MAX_BOOK_WIDTH) / 2) // desktop
+	);
+
+	const computedHeight = Math.round(computedWidth / ASPECT_RATIO);
 
 	// Callbacks estables (para no romper PageFlip)
 	const handleInit = React.useCallback((pageFlip: any) => {
@@ -291,15 +282,30 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 		setNumPages(numPages);
 		setLoading(false);
 		setError(null);
+		setRetryCount(0); // Resetear reintentos si carga ok
 		// Mantener currentPage consistente
 		setCurrentPage((prev) => Math.min(prev, numPages || prev));
 	}, []);
 
-	const handleLoadError = React.useCallback((error: Error) => {
-		console.error('Error cargando PDF:', error);
-		setError('Error al cargar el PDF.');
-		setLoading(false);
-	}, []);
+	const handleLoadError = React.useCallback(
+		(error: Error) => {
+			console.error('Error cargando PDF:', error);
+
+			if (retryCount < 1) {
+				console.log('Fallo en la carga inicial, reintentando en 2 segundos...');
+				setTimeout(() => {
+					setRetryCount((prev) => prev + 1);
+					setLoadKey((prev) => prev + 1); // Forzar re-montado para reintento
+				}, 2000);
+			} else {
+				setError(
+					'Hubo un problema al cargar la revista después de varios intentos. Por favor, refresca la página.'
+				);
+				setLoading(false);
+			}
+		},
+		[retryCount]
+	);
 
 	const goToPreviousPage = () => {
 		if (pageFlipRef.current) pageFlipRef.current.flipPrev();
@@ -325,7 +331,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 				<button
 					onClick={goToPreviousPage}
 					disabled={currentPage === 1 || loading}
-					className="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-400"
+					className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:shadow-none"
 				>
 					← Anterior
 				</button>
@@ -355,7 +361,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 				<button
 					onClick={goToNextPage}
 					disabled={numPages > 0 ? currentPage === numPages || loading : loading}
-					className="rounded-full bg-blue-600 px-6 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-gray-400"
+					className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:shadow-none"
 				>
 					Siguiente →
 				</button>
@@ -387,7 +393,9 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 			{isVisible && loading && (
 				<div className="flex flex-col items-center justify-center py-16">
 					<div className="mb-4 h-10 w-10 rounded-full border-[3px] border-blue-200 border-t-blue-600" />
-					<p className="text-sm text-gray-600">Cargando revista...</p>
+					<p className="text-sm text-gray-600">
+						{retryCount > 0 ? 'La conexión falló, reintentando carga...' : 'Cargando revista...'}
+					</p>
 				</div>
 			)}
 
@@ -401,17 +409,28 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 			{/* FlipBook */}
 			{isVisible && !error && (
 				<div className="revista-inner flex w-full justify-center">
-					<div className="w-full max-w-[95vw] sm:max-w-[650px] md:max-w-[900px] lg:max-w-[1100px] xl:max-w-[1300px]">
-						<FlipBookInternal
-							pdfUrl={pdfUrl}
-							width={computedWidth}
-							height={computedHeight}
-							isMobile={isMobile}
-							onInit={handleInit}
-							onFlip={handleFlip}
-							onLoadSuccess={handleLoadSuccess}
-							onLoadError={handleLoadError}
-						/>
+					<div className="revista-stage flex w-full justify-center">
+						<div
+							className="w-full"
+							style={
+								{
+									maxWidth: isMobile ? `${computedWidth}px` : 'var(--book-max-width)'
+								} as React.CSSProperties
+							}
+						>
+							<style>{`:root { --book-max-width: ${computedWidth * 2}px; }`}</style>
+							<FlipBookInternal
+								key={loadKey}
+								pdfUrl={pdfUrl}
+								width={computedWidth}
+								height={computedHeight}
+								isMobile={isMobile}
+								onInit={handleInit}
+								onFlip={handleFlip}
+								onLoadSuccess={handleLoadSuccess}
+								onLoadError={handleLoadError}
+							/>
+						</div>
 					</div>
 				</div>
 			)}
@@ -457,13 +476,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
           align-items: center;
           justify-content: center;
           background-color: #ffffff;
-
-          /* Shadow base (modo escritorio / tablet) */
-          box-shadow:
-            0 15px 25px rgba(0,0,0,0.18),
-            0 8px 15px rgba(0,0,0,0.12),
-            0 3px 6px rgba(0,0,0,0.10);
-
+          box-shadow: none;
           border-radius: 0;
         }
 
@@ -530,7 +543,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
         @media (max-width: 768px) {
           /* Fondo más neutro y menos recargado */
           .revista-container {
-            padding: 1.5rem 0.75rem 2rem;
+            padding: 1.4rem 0.7rem 1.8rem;
             background: linear-gradient(to bottom, #f9fafb 0, #ffffff 60%, #f3f4f6 100%);
           }
 
@@ -547,6 +560,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
             width: 100%;
             max-width: 320px;
             margin: 0 auto;
+            justify-content: center;
           }
 
           .revista-inner {
@@ -558,19 +572,40 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
           }
 
           .page {
+            box-shadow: none;
+          }
+
+          .flipbook-container {
             box-shadow:
-              0 12px 22px rgba(15, 23, 42, 0.18),
-              0 6px 12px rgba(15, 23, 42, 0.14);
+              0 10px 25px rgba(0, 0, 0, 0.15),
+              0 6px 10px rgba(0, 0, 0, 0.1);
           }
 
           .stf__hardPageShadow,
           .stf__softPageShadow {
-            opacity: 0.9;
+            opacity: 0.8;
           }
 
           .mx-auto.mt-6.w-full.max-w-xl {
-            margin-top: 1.25rem;
+            margin-top: 1.5rem;
           }
+
+			.revista-stage {
+			display: flex;
+			justify-content: center;
+			width: 100%;
+			}
+
+			/* Remove transform scales that cause blur */
+			/* The resizing logic is now handled by computedWidth/computedHeight and PageFlip autoSize */
+
+			
+
+			.revista-inner,
+			.flipbook-container {
+				overflow: visible;
+			}
+
         }
       `}</style>
 		</div>
