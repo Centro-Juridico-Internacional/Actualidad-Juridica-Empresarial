@@ -11,6 +11,7 @@ interface SimpleCarouselProps {
 	dots?: boolean;
 	arrows?: boolean;
 	infinite?: boolean;
+	showProgressBar?: boolean;
 	style?: React.CSSProperties;
 }
 
@@ -22,13 +23,18 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 	dots = true,
 	arrows = true,
 	infinite = true,
+	showProgressBar = true,
 	style
 }) => {
 	const slides = Array.isArray(children) ? children : [children];
 	const [index, setIndex] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
 	const len = slides.length || 1;
-	const timerRef = useRef<number | null>(null);
+
 	const containerRef = useRef<HTMLDivElement | null>(null);
+	const lastTimeRef = useRef<number>(0);
+	const animationFrameRef = useRef<number | null>(null);
+	const accumulatedTimeRef = useRef<number>(0);
 
 	const goTo = useCallback(
 		(i: number) => {
@@ -36,41 +42,71 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 			if (next < 0) next = infinite ? len - 1 : 0;
 			if (next >= len) next = infinite ? 0 : len - 1;
 			setIndex(next);
+			accumulatedTimeRef.current = 0;
+			// Reset progress in DOM immediately
+			const activeDot = containerRef.current?.querySelector(
+				'.carousel-dot.is-active'
+			) as HTMLElement;
+			if (activeDot) activeDot.style.setProperty('--progress', '0%');
 		},
 		[infinite, len]
 	);
 
-	useEffect(() => {
-		if (!autoplay || len <= 1) return;
-		const tick = () => {
-			timerRef.current = window.setTimeout(() => {
-				setIndex((i) => (i + 1) % len);
-			}, autoplaySpeed);
-		};
-		tick();
-		return () => {
-			if (timerRef.current) window.clearTimeout(timerRef.current);
-		};
-	}, [autoplay, autoplaySpeed, len]);
+	const nextSlide = useCallback(() => {
+		setIndex((i) => (i + 1) % len);
+		accumulatedTimeRef.current = 0;
+		// Reset progress in DOM immediately
+		const activeDot = containerRef.current?.querySelector('.carousel-dot.is-active') as HTMLElement;
+		if (activeDot) activeDot.style.setProperty('--progress', '0%');
+	}, [len]);
+
+	// Main animation loop for progress bar and autoplay
+	const animate = useCallback(
+		(time: number) => {
+			if (lastTimeRef.current === 0) {
+				lastTimeRef.current = time;
+			}
+
+			const deltaTime = time - lastTimeRef.current;
+			lastTimeRef.current = time;
+
+			if (!isPaused && autoplay && len > 1) {
+				accumulatedTimeRef.current += deltaTime;
+				const newProgress = Math.min((accumulatedTimeRef.current / autoplaySpeed) * 100, 100);
+
+				// Direct DOM update for performance (60fps without React re-renders)
+				const activeDot = containerRef.current?.querySelector(
+					'.carousel-dot.is-active'
+				) as HTMLElement;
+				if (activeDot) {
+					activeDot.style.setProperty('--progress', `${newProgress}%`);
+				}
+
+				if (accumulatedTimeRef.current >= autoplaySpeed) {
+					nextSlide();
+				}
+			}
+
+			animationFrameRef.current = requestAnimationFrame(animate);
+		},
+		[autoplay, autoplaySpeed, isPaused, len, nextSlide]
+	);
 
 	useEffect(() => {
-		const el = containerRef.current;
-		if (!el || !autoplay) return;
-		const onEnter = () => {
-			if (timerRef.current) window.clearTimeout(timerRef.current);
-		};
-		const onLeave = () => {
-			timerRef.current = window.setTimeout(() => setIndex((i) => (i + 1) % len), autoplaySpeed);
-		};
-		el.addEventListener('mouseenter', onEnter);
-		el.addEventListener('mouseleave', onLeave);
+		animationFrameRef.current = requestAnimationFrame(animate);
 		return () => {
-			el.removeEventListener('mouseenter', onEnter);
-			el.removeEventListener('mouseleave', onLeave);
+			if (animationFrameRef.current) {
+				cancelAnimationFrame(animationFrameRef.current);
+			}
 		};
-	}, [autoplay, autoplaySpeed, len]);
+	}, [animate]);
 
-	// Variables CSS
+	// Reset timer on slide change if manually navigated
+	useEffect(() => {
+		lastTimeRef.current = 0;
+	}, [index]);
+
+	// Variables CSS for track movement
 	useEffect(() => {
 		const root = containerRef.current;
 		if (root) {
@@ -83,31 +119,34 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 	return (
 		<div
 			ref={containerRef}
-			className={`carousel-container ${className}`}
-			{...(style && { style })}
+			className={`carousel-container group relative overflow-hidden ${className}`}
+			style={style}
 			role="region"
 			aria-label="Carrusel de contenido"
 			aria-roledescription="carrusel"
+			onMouseEnter={() => setIsPaused(true)}
+			onMouseLeave={() => setIsPaused(false)}
 		>
+			{/* Progress Bar removed from here - now integrated into dots */}
+
 			<div className="carousel-track">
 				{slides.map((child, i) => (
-					// @ts-ignore
 					<div
 						key={i}
-						className="carousel-slide"
+						className={`carousel-slide ${i === index ? 'is-active' : ''}`}
 						role="group"
 						aria-roledescription="diapositiva"
 						aria-label={`${i + 1} de ${len}`}
-						aria-hidden={i !== index}
+						aria-hidden={i !== index ? 'true' : 'false'}
 						tabIndex={i === index ? 0 : -1}
 					>
-						{child}
+						<div className="carousel-slide-inner">{child}</div>
 					</div>
 				))}
 			</div>
 
 			{arrows && len > 1 && (
-				<>
+				<div className="carousel-arrows">
 					<button
 						type="button"
 						aria-label="Anterior"
@@ -115,8 +154,19 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 						className="carousel-arrow carousel-arrow-prev"
 						disabled={!infinite && index === 0}
 					>
-						<span className="sr-only">Anterior</span>
-						<span aria-hidden="true">‹</span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<polyline points="15 18 9 12 15 6"></polyline>
+						</svg>
 					</button>
 					<button
 						type="button"
@@ -125,10 +175,21 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 						className="carousel-arrow carousel-arrow-next"
 						disabled={!infinite && index === len - 1}
 					>
-						<span className="sr-only">Siguiente</span>
-						<span aria-hidden="true">›</span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<polyline points="9 18 15 12 9 6"></polyline>
+						</svg>
 					</button>
-				</>
+				</div>
 			)}
 
 			{dots && len > 1 && (
@@ -141,7 +202,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 							aria-selected={i === index ? 'true' : 'false'}
 							aria-controls={`slide-${i}`}
 							onClick={() => goTo(i)}
-							className="carousel-dot"
+							className={`carousel-dot ${i === index ? 'is-active' : ''}`}
 						>
 							<span className="sr-only">Ir a diapositiva {i + 1}</span>
 						</button>

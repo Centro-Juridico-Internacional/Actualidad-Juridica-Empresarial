@@ -38,45 +38,45 @@ const pautasForCarousel = pautas
 	<div class="grid gap-8 md:grid-cols-2">
 		<!-- Entrevistas -->
 		<div
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-700 to-green-800 shadow-xl transition-transform duration-300 ease-out hover:shadow-2xl"
+			class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-green-700 to-emerald-900 shadow-2xl transition-all duration-300"
 		>
-			<div class="relative min-h-[260px] w-full">
-				<div class="absolute inset-0 bg-black/25"></div>
-				<CarouselInterview interviews={interviews} client:visible />
-			</div>
+			<CarouselInterview interviews={interviews} client:visible />
 
 			<div
-				class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6"
+				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
 			>
-				<div class="relative top-3.5">
-					<h3 class="text-xl font-semibold text-white md:text-2xl">Entrevistas Destacadas</h3>
-					<p class="text-sm text-gray-200/90">Conversaciones con expertos del derecho</p>
+				<div class="space-y-0.5">
+					<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
+						Entrevistas Destacadas
+					</h3>
+					<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
+						Conversaciones con expertos del derecho
+					</p>
 				</div>
 			</div>
 		</div>
 
 		<!-- Pautas -->
 		<div
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-700 via-emerald-800 to-emerald-900 shadow-xl transition-transform duration-300 ease-out hover:shadow-2xl"
+			class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-green-700 to-green-800 shadow-2xl transition-all duration-300"
 		>
-			<div class="relative min-h-[260px] w-full">
-				<div class="absolute inset-0 bg-black/25"></div>
-				<Carousel
-					width="w-full"
-					autoplaySpeed={5000}
-					dotDuration={true}
-					data={pautasForCarousel}
-					client:visible
-				/>
-			</div>
+			<Carousel
+				width="w-full"
+				autoplaySpeed={5000}
+				dotDuration={true}
+				data={pautasForCarousel}
+				client:visible
+			/>
 
 			<!-- Texto ARRIBA -->
 			<div
-				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent p-6"
+				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
 			>
-				<div class="space-y-1">
-					<h3 class="text-xl font-semibold text-white md:text-2xl">Pautas Destacadas</h3>
-					<p class="text-sm text-gray-200/90">Mensajes de nuestros aliados y patrocinadores</p>
+				<div class="space-y-0.5">
+					<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">Pautas Destacadas</h3>
+					<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
+						Mensajes de nuestros aliados y patrocinadores
+					</p>
 				</div>
 			</div>
 		</div>

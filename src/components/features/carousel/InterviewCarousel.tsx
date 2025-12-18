@@ -29,12 +29,17 @@ const InterviewCarousel: React.FC<InterviewCarouselProps> = ({ interviews = [] }
 		.reverse();
 
 	return (
-		<SimpleCarouselLite autoplay autoplaySpeed={8000} style={carouselStyle} infinite arrows>
+		<SimpleCarouselLite
+			autoplay
+			autoplaySpeed={8000}
+			style={carouselStyle}
+			infinite
+			arrows
+			className="h-full w-full"
+		>
 			{latestInterviews.map((interview) => (
-				<div key={interview.title}>
-					<div className="m-auto flex h-full w-full items-center justify-center text-white">
-						<YouTubeLite videoid={interview.url!} title={interview.title!} />
-					</div>
+				<div key={interview.title} className="h-full w-full overflow-hidden rounded-3xl">
+					<YouTubeLite videoid={interview.url!} title={interview.title!} />
 				</div>
 			))}
 		</SimpleCarouselLite>

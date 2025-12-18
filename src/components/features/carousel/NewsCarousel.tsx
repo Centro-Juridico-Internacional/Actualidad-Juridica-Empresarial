@@ -22,15 +22,15 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
 	return (
 		<SimpleCarouselLite
 			autoplay
-			autoplaySpeed={5000}
+			autoplaySpeed={8000}
 			style={carouselStyle}
 			infinite
 			dots
 			arrows
-			className="h-full rounded-2xl shadow-xl"
+			className="h-full rounded-3xl shadow-xl"
 		>
 			{topNews.map((item) => (
-				<div key={item.slug} className="relative h-full overflow-hidden rounded-2xl">
+				<div key={item.slug} className="relative h-full overflow-hidden rounded-3xl">
 					<img
 						src={item.image || ''}
 						alt={item.titulo}

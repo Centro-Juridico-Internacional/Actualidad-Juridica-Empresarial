@@ -15,7 +15,7 @@ const carouselStyle = {
  */
 const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, data: DATA }) => {
 	return (
-		<div className={`${width} rounded-xl shadow-xl`}>
+		<div className={`${width} h-full overflow-hidden rounded-2xl shadow-xl`}>
 			<SimpleCarouselLite
 				autoplay={!!dotDuration}
 				autoplaySpeed={autoplaySpeed}
@@ -29,18 +29,14 @@ const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, 
 						<img
 							src={item.image}
 							alt={`${item.title} imagen`}
-							className={`flex h-full w-full items-center justify-center bg-green-600 object-cover`}
+							className="h-full w-full rounded-3xl object-cover"
 							loading="lazy"
 							decoding="async"
 						/>
 					);
 
 					return (
-						<div
-							key={item.title}
-							id={item.title}
-							className="overflow-hidden rounded-2xl border-4 border-green-950"
-						>
+						<div key={item.title} id={item.title} className="h-full w-full">
 							{item.url ? (
 								<a
 									href={item.url}
