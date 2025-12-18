@@ -35,33 +35,79 @@ const dataHeaderSections: HeaderSection[] = [
 <BannerHeader booleanBanner={booleanHeader} />
 <header class="sticky top-0 z-50 w-full bg-green-700 shadow-sm" transition:name="header">
 	<div class="container-main">
-		<div class="flex h-24 items-center justify-between">
+		<!-- Desktop & Mobile Main Row -->
+		<div class="flex h-20 items-center justify-between md:h-24">
 			<a href="/" class="flex items-center">
 				<img
 					src="/header/logo.svg"
 					alt="Centro Jurídico Internacional"
-					class="h-16 w-auto"
+					class="h-12 w-auto md:h-16"
 					loading="eager"
 					decoding="async"
 					fetchpriority="high"
 				/>
 			</a>
 
+			<!-- Desktop Actions -->
 			<div class="hidden items-center gap-4 md:flex">
 				<SearchBar client:load placeholder="Buscar artículos..." />
-				<!-- <ThemeToggle client:load /> -->
 				<a href="/contacto" class="btn btn-primary text-gray-50"> Contactar </a>
+			</div>
+
+			<!-- Mobile Actions -->
+			<div class="flex items-center md:hidden">
+				<button
+					id="mobile-search-trigger"
+					class="rounded-full p-2 pr-0 text-gray-50 transition-colors hover:bg-white/10"
+					aria-label="Buscar"
+				>
+					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+					</svg>
+				</button>
+				<button
+					id="menu-toggle"
+					class="group relative h-12 w-8 rounded-lg text-gray-50 transition-colors hover:bg-white/10 focus:outline-none"
+					aria-expanded="false"
+					aria-controls="mobile-menu"
+					aria-label="Menú principal"
+				>
+					<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+						<span
+							id="hamburger-line-1"
+							class="absolute block h-0.5 w-6 -translate-y-2 bg-current transition-all duration-300 ease-in-out"
+						></span>
+						<span
+							id="hamburger-line-2"
+							class="absolute block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out"
+						></span>
+						<span
+							id="hamburger-line-3"
+							class="absolute block h-0.5 w-6 translate-y-2 bg-current transition-all duration-300 ease-in-out"
+						></span>
+					</div>
+				</button>
 			</div>
 		</div>
 
-		<nav class="border-t border-gray-100">
+		<!-- Mobile Search Overlay (Controlled via JS) -->
+		<div id="mobile-search-bar" class="hidden pb-4 md:hidden">
+			<SearchBar client:load placeholder="Buscar artículos..." className="w-full" />
+		</div>
+
+		<!-- Desktop Navigation -->
+		<nav class="hidden border-t border-white/10 md:block">
 			<ul class="flex items-center justify-between space-x-1 py-1">
 				{
 					dataHeaderSections.map((section) => (
 						<li class="flex-1">
 							<a
 								href={section.url}
-								class="hover:text-primary flex items-center justify-center py-3 text-sm font-medium text-gray-50 transition-colors"
+								class="flex items-center justify-center py-3 text-sm font-medium text-gray-50 transition-colors hover:text-white"
 							>
 								<span class="text-header-section">{section.nombre}</span>
 							</a>
@@ -71,6 +117,162 @@ const dataHeaderSections: HeaderSection[] = [
 			</ul>
 		</nav>
 	</div>
+
+	<!-- Mobile Drawer Overlay -->
+	<div
+		id="mobile-menu"
+		class="fixed inset-0 z-50 translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden"
+		aria-hidden="true"
+	>
+		<!-- Backdrop -->
+		<div
+			id="menu-backdrop"
+			class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-500"
+		>
+		</div>
+
+		<!-- Drawer Content -->
+		<div
+			class="absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col bg-green-800 p-8 shadow-2xl"
+		>
+			<div class="mb-10 flex items-center justify-between">
+				<h2 class="text-2xl font-bold tracking-tight text-white">Explorar</h2>
+				<button
+					id="menu-close"
+					class="rounded-full p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+					aria-label="Cerrar menú"
+				>
+					<svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<nav class="flex flex-col gap-1 overflow-y-auto">
+				{
+					dataHeaderSections.map((section, index) => (
+						<a
+							href={section.url}
+							class="menu-item flex -translate-x-4 items-center gap-4 rounded-xl px-5 py-4 text-xl font-semibold text-white/90 opacity-0 transition-all hover:bg-white/10 hover:pl-7 active:scale-[0.98]"
+							style={`transition-delay: ${index * 50 + 100}ms`}
+						>
+							<span class="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+							{section.nombre}
+						</a>
+					))
+				}
+				<div
+					class="menu-item mt-8 -translate-x-4 border-t border-white/10 pt-8 opacity-0"
+					style={`transition-delay: ${dataHeaderSections.length * 50 + 150}ms`}
+				>
+					<a
+						href="/contacto"
+						class="flex w-full transform items-center justify-center gap-2 rounded-2xl bg-white px-6 py-5 text-center text-lg font-bold text-green-800 shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-[0.98]"
+					>
+						<span>Contactar ahora</span>
+						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+						</svg>
+					</a>
+				</div>
+			</nav>
+
+			<div class="mt-auto pt-8">
+				<p class="text-center text-sm font-medium text-white/40">
+					&copy; {new Date().getFullYear()} Actualidad Jurídica
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Use astro:page-load to handle ViewTransitions correctly
+		document.addEventListener('astro:page-load', () => {
+			const menuToggle = document.getElementById('menu-toggle');
+			const menuClose = document.getElementById('menu-close');
+			const mobileMenu = document.getElementById('mobile-menu');
+			const menuBackdrop = document.getElementById('menu-backdrop');
+			const searchTrigger = document.getElementById('mobile-search-trigger');
+			const mobileSearchBar = document.getElementById('mobile-search-bar');
+			const menuItems = document.querySelectorAll('.menu-item');
+
+			// Hamburger lines for animation
+			const line1 = document.getElementById('hamburger-line-1');
+			const line2 = document.getElementById('hamburger-line-2');
+			const line3 = document.getElementById('hamburger-line-3');
+
+			let isOpen = false;
+
+			function toggleMenu(forceClose = false) {
+				isOpen = forceClose ? false : !isOpen;
+
+				if (isOpen) {
+					// Open
+					mobileMenu?.classList.replace('translate-x-full', 'translate-x-0');
+					menuBackdrop?.classList.replace('opacity-0', 'opacity-100');
+
+					// Animate Hamburger to X
+					line1?.classList.replace('-translate-y-2', 'rotate-45');
+					line2?.classList.add('opacity-0', 'scale-0');
+					line3?.classList.replace('translate-y-2', '-rotate-45');
+
+					document.body.style.overflow = 'hidden';
+					mobileMenu?.setAttribute('aria-hidden', 'false');
+					menuToggle?.setAttribute('aria-expanded', 'true');
+
+					// Staggered items entry
+					menuItems.forEach((item) => {
+						item.classList.remove('opacity-0', '-translate-x-4');
+						item.classList.add('opacity-100', 'translate-x-0');
+					});
+				} else {
+					// Close
+					mobileMenu?.classList.replace('translate-x-0', 'translate-x-full');
+					menuBackdrop?.classList.replace('opacity-100', 'opacity-0');
+
+					// Animate X to Hamburger
+					line1?.classList.replace('rotate-45', '-translate-y-2');
+					line2?.classList.remove('opacity-0', 'scale-0');
+					line3?.classList.replace('-rotate-45', 'translate-y-2');
+
+					document.body.style.overflow = '';
+					mobileMenu?.setAttribute('aria-hidden', 'true');
+					menuToggle?.setAttribute('aria-expanded', 'false');
+
+					// Reset items
+					menuItems.forEach((item) => {
+						item.classList.add('opacity-0', '-translate-x-4');
+						item.classList.remove('opacity-100', 'translate-x-0');
+					});
+				}
+			}
+
+			menuToggle?.addEventListener('click', () => toggleMenu());
+			menuClose?.addEventListener('click', () => toggleMenu(true));
+			menuBackdrop?.addEventListener('click', () => toggleMenu(true));
+
+			searchTrigger?.addEventListener('click', () => {
+				mobileSearchBar?.classList.toggle('hidden');
+				if (!mobileSearchBar?.classList.contains('hidden')) {
+					mobileSearchBar?.querySelector('input')?.focus();
+				}
+			});
+
+			// Close menu on link click
+			mobileMenu?.querySelectorAll('a').forEach((link) => {
+				link.addEventListener('click', () => toggleMenu(true));
+			});
+		});
+	</script>
+
 	<style>
 		.text-header-section {
 			position: relative;
@@ -79,7 +281,7 @@ const dataHeaderSections: HeaderSection[] = [
 		.text-header-section::after {
 			content: '';
 			position: absolute;
-			bottom: 0px;
+			bottom: -4px;
 			left: 0;
 			width: 100%;
 			height: 2px;
@@ -91,6 +293,29 @@ const dataHeaderSections: HeaderSection[] = [
 
 		.text-header-section:hover::after {
 			transform: scaleX(1);
+		}
+
+		/* Mobile menu transition fixes */
+		#mobile-menu {
+			visibility: hidden;
+		}
+		#mobile-menu:not(.translate-x-full) {
+			visibility: visible;
+		}
+		#mobile-menu.translate-x-full {
+			visibility: hidden;
+			transition:
+				transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+				visibility 0s linear 0.5s;
+		}
+
+		#mobile-menu:not(.translate-x-full) {
+			transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		/* Menu item entry animation */
+		.menu-item {
+			transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		}
 	</style>
 </header>
