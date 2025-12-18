@@ -21,6 +21,7 @@ import { getPdfs } from '@/lib/api/revista';
 import '@/styles/revista-responsive.css';
 import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 import Recognitions from '@/components/sections/home/Recognitions.astro';
+import SocialMedia from '@/components/sections/home/SocialMedia.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
 // Fetch all data in parallel to reduce load time
@@ -56,4 +57,5 @@ const { products } = newsData;
 			<Revista client:only="react" pdfUrl={pdfs[0].pdf} height={700} className="revista-flipbook" />
 		)
 	}
+	<SocialMedia />
 </Layout>
