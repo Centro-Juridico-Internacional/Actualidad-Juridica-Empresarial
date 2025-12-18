@@ -174,7 +174,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 						<img
 							src={product.autorAvatar}
 							alt={product.autorName}
-							className={`object-cover ${
+							className={`object-fill ${
 								isCompact ? 'h-8 w-8 sm:h-9 sm:w-9' : 'h-10 w-10 md:h-12 md:w-12'
 							}`}
 							loading="lazy"
