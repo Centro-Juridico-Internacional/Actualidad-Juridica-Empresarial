@@ -91,6 +91,7 @@ const schema = {
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
+
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title={product.titulo} booleanLayout={true} breadcrumbTitle={product.titulo}>
@@ -121,7 +122,9 @@ const schema = {
 								</a>
 							))
 						}
-						<span class="rounded-full bg-black/40 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+						<span
+							class="rounded-full bg-black/40 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm"
+						>
 							⏱️ {readingTime} min lectura
 						</span>
 					</div>
@@ -135,13 +138,15 @@ const schema = {
 		</div>
 
 		<!-- Contenido Principal -->
-		<div class="container-main py-12 !px-0">
+		<div class="container-main !px-0 py-12">
 			<Breadcrumb title={product.titulo} className="mb-8" />
 			<div class="grid gap-8 lg:grid-cols-[1fr_1fr_0.7fr]">
 				<!-- Artículo -->
 				<div class="lg:col-span-2">
 					<!-- Meta información -->
-					<div class="mb-8 flex flex-col justify-between gap-6 border-b border-gray-100 pb-6 sm:flex-row sm:items-center">
+					<div
+						class="mb-8 flex flex-col justify-between gap-6 border-b border-gray-100 pb-6 sm:flex-row sm:items-center"
+					>
 						<a href={autorSlug} class="group flex items-center gap-3">
 							<img
 								src={product.autorAvatar}
@@ -151,7 +156,7 @@ const schema = {
 							/>
 							<div>
 								<p class="font-medium text-gray-900 group-hover:text-green-600">
-									{product.autorName}
+									{product.autorName} - {product.autorRol ?? 'Autor'}
 								</p>
 								<p class="text-sm text-gray-500">
 									{product.dia} • {product.hora}
@@ -160,10 +165,10 @@ const schema = {
 						</a>
 
 						<div class="no-print">
-							<SocialShare 
-								client:visible 
-								url={`${origin}/noticia/${newsId}`} 
-								title={product.titulo} 
+							<SocialShare
+								client:visible
+								url={`${origin}/noticia/${newsId}`}
+								title={product.titulo}
 							/>
 						</div>
 					</div>
@@ -193,13 +198,13 @@ const schema = {
 				<aside class="space-y-6 lg:sticky lg:top-8">
 					<div class="rounded-2xl bg-white p-6 shadow-md">
 						<h2 class="mb-6 text-xl font-bold text-gray-900">
-							{product.categorias.length > 0 ? "Noticias relacionadas" : "Últimas noticias"}
+							{product.categorias.length > 0 ? 'Noticias relacionadas' : 'Últimas noticias'}
 						</h2>
-						<SmartRelatedNews 
-							currentSlug={newsId} 
-                            currentTitle={product.titulo}
-							categorySlugs={product.categorias.map(c => c.toLowerCase())}
-							limit={4} 
+						<SmartRelatedNews
+							currentSlug={newsId}
+							currentTitle={product.titulo}
+							categorySlugs={product.categorias.map((c) => c.toLowerCase())}
+							limit={4}
 						/>
 					</div>
 				</aside>
