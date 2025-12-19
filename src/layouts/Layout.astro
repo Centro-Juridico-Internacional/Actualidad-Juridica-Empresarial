@@ -21,6 +21,14 @@ import SideButtons from '@/components/features/ui/SideButtons.astro';
 import type { LayoutSEOProps } from '@/lib/seo';
 import { ensureAbsoluteUrl, processSEOMetadata } from '@/lib/seo';
 
+// Import Schema.org helpers
+import {
+	generateOrganizationSchema,
+	generateWebSiteSchema,
+	getSchemaScript,
+	SITE_CONFIG
+} from '@/lib/schemaOrg';
+
 // Props interface
 interface Props extends LayoutSEOProps {
 	booleanLayout: boolean;
@@ -112,11 +120,18 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<meta property="og:image:alt" content={title} />
 		<meta property="og:url" content={href} />
 		<meta property="og:site_name" content="Centro Jurídico Internacional" />
-		{ogType === 'article' && publishedAt && <meta property="article:published_time" content={publishedAt} />}
-		{ogType === 'article' && updatedAt && <meta property="article:modified_time" content={updatedAt} />}
+		{
+			ogType === 'article' && publishedAt && (
+				<meta property="article:published_time" content={publishedAt} />
+			)
+		}
+		{
+			ogType === 'article' && updatedAt && (
+				<meta property="article:modified_time" content={updatedAt} />
+			)
+		}
 		{ogType === 'article' && authorName && <meta property="article:author" content={authorName} />}
 
-		<!-- Twitter Card - COMPLETO -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:site" content="@CentroJuridicoI" />
 		<meta name="twitter:creator" content="@CentroJuridicoI" />
@@ -127,6 +142,36 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 
 		<!-- Canonical -->
 		<link rel="canonical" href={href} />
+
+		<!-- Schema.org JSON-LD Global (Organization + WebSite) -->
+		<Fragment
+			set:html={getSchemaScript(
+				generateOrganizationSchema(
+					{
+						name: SITE_CONFIG.name,
+						logo: SITE_CONFIG.logo,
+						url: SITE_CONFIG.url,
+						description: SITE_CONFIG.description,
+						sameAs: SITE_CONFIG.sameAs
+					},
+					origin
+				)
+			)}
+		/>
+		<Fragment
+			set:html={getSchemaScript(
+				generateWebSiteSchema(
+					{
+						name: SITE_CONFIG.name,
+						description: SITE_CONFIG.description,
+						url: SITE_CONFIG.url,
+						logo: SITE_CONFIG.logo,
+						siteLanguage: SITE_CONFIG.siteLanguage
+					},
+					origin
+				)
+			)}
+		/>
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />

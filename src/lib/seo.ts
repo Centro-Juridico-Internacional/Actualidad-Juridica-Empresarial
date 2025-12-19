@@ -119,10 +119,9 @@ export function processSEOMetadata(
 }
 
 /**
- * Genera objeto de context para Schema.org NewsArticle
- * @param metadata Metadatos procesados
- * @param origin Origin del sitio
- * @returns Objeto Schema.org JSON-LD
+ * Genera objeto de context para Schema.org NewsArticle (DEPRECATED)
+ * ⚠️ Usar schemaOrg.ts en su lugar para mejores resultados
+ * @deprecated Usar generateNewsArticleSchema de @/lib/schemaOrg
  */
 export function generateNewsSchema(metadata: SEOMetadata, authorAvatarUrl?: string) {
 	return {

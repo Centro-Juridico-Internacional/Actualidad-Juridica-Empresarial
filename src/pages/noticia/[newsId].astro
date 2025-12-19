@@ -6,8 +6,17 @@ import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { getNewsBySlug } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
-// SEO imports
-import { generateNewsSchema } from '@/lib/seo';
+// SEO & Schema.org imports
+import { processSEOMetadata } from '@/lib/seo';
+import {
+	generateNewsArticleSchema,
+	generateBreadcrumbSchema,
+	generateVideoSchema,
+	getSchemaScript,
+	validateNewsArticleSchema,
+	SITE_CONFIG,
+	normalizeDate
+} from '@/lib/schemaOrg';
 
 // Astro components (layouts)
 import Layout from '@/layouts/Layout.astro';
@@ -70,30 +79,88 @@ const autorSlug: string = product.autorName
 	: '#';
 
 // Get origin for absolute URLs
-const { origin } = Astro.url;
+const { origin, href } = Astro.url;
 
-// Generate Schema.org JSON-LD with image dimensions
-const schema = generateNewsSchema(
+// ============================================
+// SCHEMA.ORG IMPLEMENTATION - COMPLETO
+// ============================================
+
+// 1. NewsArticle Schema (mejorado)
+const newsArticleSchema = generateNewsArticleSchema(
 	{
-		title: product.titulo,
+		headline: product.titulo,
 		description: metaDescription,
 		image: product.image,
-		imageWidth: 1200,
-		imageHeight: 630,
-		url: Astro.url.href,
-		publishedAt: product.publishedAt || new Date().toISOString(),
-		updatedAt: product.updatedAt || product.publishedAt || new Date().toISOString(),
-		authorName: product.autorName || 'Centro Jurídico Internacional',
-		authorUrl: `${origin}${autorSlug}`,
-		siteName: 'Centro Jurídico Internacional'
+		datePublished: product.publishedAt || new Date().toISOString(),
+		dateModified: product.updatedAt || product.publishedAt || new Date().toISOString(),
+		author: product.autorName
+			? {
+					name: product.autorName,
+					url: `${origin}${autorSlug}`,
+					...(product.autorAvatar && {
+						image: {
+							url: product.autorAvatar
+						}
+					})
+				}
+			: undefined,
+		publisher: {
+			name: SITE_CONFIG.name,
+			logo: SITE_CONFIG.logo,
+			url: SITE_CONFIG.url
+		},
+		mainEntityOfPage: href,
+		articleBody: plainText.slice(0, 5000),
+		keywords: product.categorias.slice(0, 5),
+		wordCount: words
 	},
-	product.autorAvatar
+	origin
 );
+
+// Validar schema para Google Rich Results
+const newsSchemaValidation = validateNewsArticleSchema(newsArticleSchema);
+console.log('NewsArticle Validation:', newsSchemaValidation);
+
+// 2. BreadcrumbList Schema
+const breadcrumbs = [
+	{ url: origin, name: 'Inicio' },
+	{ url: `${origin}/noticia`, name: 'Noticias' },
+	...product.categorias.map((cat: string) => ({
+		url: `${origin}/categorias/${cat.toLowerCase().replace(/\s+/g, '-')}`,
+		name: cat
+	})),
+	{ url: href, name: product.titulo }
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs, origin);
+
+// 3. Video Schema (opcional, si hay YouTube URL)
+let videoSchema = null;
+if (product.UrlYoutube) {
+	videoSchema = generateVideoSchema(
+		{
+			name: product.titulo,
+			description: metaDescription,
+			youtubeUrl: product.UrlYoutube,
+			publishedAt: product.publishedAt || new Date().toISOString(),
+			thumbnailUrl: product.image
+		},
+		origin
+	);
+}
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+<!-- Schema.org JSON-LD Scripts -->
+<!-- 1. NewsArticle (Obligatorio) -->
+<Fragment set:html={getSchemaScript(newsArticleSchema)} />
+
+<!-- 2. BreadcrumbList (Altamente recomendado) -->
+<Fragment set:html={getSchemaScript(breadcrumbSchema)} />
+
+<!-- 3. VideoObject (Si aplica) -->
+{videoSchema && <Fragment set:html={getSchemaScript(videoSchema)} />}
 
 <Layout
 	title={product.titulo}
