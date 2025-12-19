@@ -24,7 +24,7 @@ export default function ScrollToTop() {
 	};
 
 	return (
-		<div className="animate-fade-in no-print fixed right-8 bottom-8 z-[9999999]">
+		<div className="animate-fade-in no-print fixed right-2 bottom-8 z-[9999999] lg:right-8 lg:bottom-8">
 			{isVisible && (
 				<button
 					onClick={scrollToTop}

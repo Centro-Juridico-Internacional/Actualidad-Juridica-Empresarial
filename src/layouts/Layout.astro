@@ -15,12 +15,13 @@ import Header from '@/layouts/Header.astro';
 import Footer from '@/layouts/Footer.astro';
 import ScrollToTop from '@/components/features/ui/ScrollToTop.tsx';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import SideButtons from '@/components/features/ui/SideButtons.astro';
 
 // Props interface
 interface Props {
 	title: string;
 	booleanLayout: boolean;
- 	breadcrumbTitle?: string;
+	breadcrumbTitle?: string;
 }
 
 // Destructure props with explicit typing
@@ -104,7 +105,6 @@ const { origin, href } = Astro.url;
 
 		<!-- Preconexiones -->
 
-
 		<!-- View Transitions y Analytics -->
 		<meta name="view-transition" content="same-origin" />
 		<ClientRouter />
@@ -127,13 +127,16 @@ const { origin, href } = Astro.url;
 
 		<!-- Scroll To Top (Root Level for Z-Index) -->
 		<ScrollToTop client:idle />
+		<SideButtons />
 
 		<!-- Footer con transición suave -->
 		<Footer />
 
 		<!-- Elemento invisible en pantalla, visible solo al imprimir (fixed footer) -->
 		<div class="print-footer-container hidden">
-			<p>© Centro Jurídico Internacional - Documento Confidencial y Protegido por Derechos de Autor.</p>
+			<p>
+				© Centro Jurídico Internacional - Documento Confidencial y Protegido por Derechos de Autor.
+			</p>
 			<p>Generado desde: {origin}</p>
 		</div>
 	</body><style>

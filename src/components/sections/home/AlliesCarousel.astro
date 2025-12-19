@@ -56,16 +56,17 @@ const allies = [
 ];
 
 // Duplicate list for seamless infinite scroll
-const doubleAllies = [...allies, ...allies];
+// const doubleAllies = [...allies, ...allies];
 ---
 
-<section class="allies-carousel-section my-24" id="alliesSection">
+<section class="allies-carousel-section my-16" id="alliesSection">
 	<Titles text="Nuestros Aliados Estratégicos" />
 
 	<div class="marquee">
+		<!-- First list -->
 		<div class="marquee-content">
 			{
-				doubleAllies.map((ally) => (
+				allies.map((ally) => (
 					<div class="ally-item">
 						{ally.url ? (
 							<a
@@ -74,6 +75,32 @@ const doubleAllies = [...allies, ...allies];
 								rel="noopener noreferrer"
 								class="ally-link"
 								title={ally.name}
+							>
+								<img src={ally.logo} alt={ally.name} loading="lazy" />
+							</a>
+						) : (
+							<div class="ally-link no-click" title={ally.name}>
+								<img src={ally.logo} alt={ally.name} loading="lazy" />
+							</div>
+						)}
+					</div>
+				))
+			}
+		</div>
+
+		<!-- Duplicate list for seamless infinite scroll -->
+		<div class="marquee-content" aria-hidden="true">
+			{
+				allies.map((ally) => (
+					<div class="ally-item">
+						{ally.url ? (
+							<a
+								href={ally.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="ally-link"
+								title={ally.name}
+								tabindex="-1"
 							>
 								<img src={ally.logo} alt={ally.name} loading="lazy" />
 							</a>
@@ -108,8 +135,8 @@ const doubleAllies = [...allies, ...allies];
 	.marquee-content {
 		flex-shrink: 0;
 		display: flex;
-		justify-content: space-around;
-		min-width: 100%;
+		align-items: center;
+		justify-content: flex-start;
 		gap: 4rem;
 		animation: scroll 40s linear infinite;
 	}

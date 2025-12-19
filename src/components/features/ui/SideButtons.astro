@@ -1,0 +1,167 @@
+---
+// Component: Side Buttons
+// Description: Fixed buttons on the sides for desktop, and sticky bottom bar for mobile.
+// Updated: Premium subtle animations, rounded-b-2xl as per user request.
+---
+
+<!-- Desktop Side Floating Tabs -->
+<div class="pointer-events-none fixed inset-0 z-[40000] hidden overflow-hidden lg:block">
+	<!-- Left Button: Pagos en Línea -->
+	<div class="absolute top-1/2 left-0 h-0 w-0">
+		<a
+			target="_blank"
+			rel="noopener noreferrer"
+			href="https://www.centrojuridicointernacional.com/payments/"
+			class="left-btn-transform group pointer-events-auto absolute flex items-center gap-3 rounded-b-2xl border border-green-200 bg-white/95 p-1 pr-4 whitespace-nowrap shadow-[0_4px_20px_rgb(0,0,0,0.08)] backdrop-blur-sm hover:border-green-300 hover:bg-white hover:shadow-[0_8px_25px_rgb(22,163,74,0.2)]"
+			style="top: 0; left: 0;"
+		>
+			<!-- Icon: Rotate 90deg to be upright -->
+			<div
+				class="flex h-10 w-10 flex-shrink-0 scale-90 rotate-90 items-center justify-center rounded-full bg-green-50 text-green-600 shadow-sm transition-all duration-200 group-hover:scale-100 group-hover:bg-green-100 group-hover:text-green-700"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<rect x="2" y="5" width="20" height="14" rx="2"></rect>
+					<line x1="2" y1="10" x2="22" y2="10"></line>
+				</svg>
+			</div>
+			<!-- Text -->
+			<div class="pb-1">
+				<span
+					class="block text-xs font-black tracking-widest text-gray-700 uppercase transition-colors group-hover:text-green-800"
+				>
+					Pagos en Línea
+				</span>
+			</div>
+		</a>
+	</div>
+
+	<!-- Right Button: Descarga Diplomas -->
+	<div class="absolute top-1/2 right-0 h-0 w-0">
+		<a
+			target="_blank"
+			rel="noopener noreferrer"
+			href="https://gabriela.centrojuridicointernacional.co:41270/CertiCliente/download"
+			class="right-btn-transform group pointer-events-auto absolute top-0 right-0 flex flex-row-reverse items-center gap-3 rounded-b-2xl border border-blue-200 bg-white/95 p-1 pl-4 whitespace-nowrap shadow-[0_4px_20px_rgb(0,0,0,0.08)] backdrop-blur-sm hover:border-blue-300 hover:bg-white hover:shadow-[0_8px_25px_rgb(37,99,235,0.2)]"
+		>
+			<!-- Icon: Rotate -90deg to be upright -->
+			<div
+				class="flex h-10 w-10 flex-shrink-0 scale-90 -rotate-90 items-center justify-center rounded-full bg-blue-50 text-blue-600 shadow-sm transition-all duration-200 group-hover:scale-100 group-hover:bg-blue-100 group-hover:text-blue-700"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="M22 10v6M2 10v6"></path>
+					<path d="M2 10l10-5 10 5-10 5z"></path>
+					<path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+				</svg>
+			</div>
+			<!-- Text -->
+			<div class="pb-1">
+				<span
+					class="block text-xs font-black tracking-widest text-gray-700 uppercase transition-colors group-hover:text-blue-800"
+				>
+					Descarga Diplomas
+				</span>
+			</div>
+		</a>
+	</div>
+</div>
+
+<!-- Mobile Floating Dock -->
+<!-- Ensuring it stays below ScrollToTop which is at bottom-28 -->
+<div
+	class="pointer-events-none fixed right-0 bottom-6 left-0 z-50 flex justify-center px-4 lg:hidden"
+>
+	<div
+		class="pointer-events-auto flex items-center gap-1 rounded-2xl border border-gray-200 bg-white/95 p-1.5 shadow-2xl backdrop-blur-md"
+	>
+		<!-- Pagos -->
+		<a
+			target="_blank"
+			rel="noopener noreferrer"
+			href="https://www.centrojuridicointernacional.com/payments/"
+			class="flex items-center gap-2 rounded-xl bg-green-50 px-5 py-3 text-sm font-bold text-green-700 transition-all hover:bg-green-100 active:scale-95"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-5 w-5"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<rect x="2" y="5" width="20" height="14" rx="2"></rect>
+				<line x1="2" y1="10" x2="22" y2="10"></line>
+			</svg>
+			<span>Pagos</span>
+		</a>
+
+		<div class="h-6 w-px bg-gray-200"></div>
+
+		<!-- Diplomas -->
+		<a
+			target="_blank"
+			rel="noopener noreferrer"
+			href="https://gabriela.centrojuridicointernacional.co:41270/CertiCliente/download"
+			class="flex items-center gap-2 rounded-xl bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 transition-all hover:bg-blue-100 active:scale-95"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-5 w-5"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<path d="M22 10v6M2 10v6"></path>
+				<path d="M2 10l10-5 10 5-10 5z"></path>
+				<path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+			</svg>
+			<span>Diplomas</span>
+		</a>
+	</div>
+</div>
+
+<style>
+	/* Standard text rendering settings */
+	span {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* TRANSFORM CLASSES */
+	/* No lateral movement on hover, only transition of internal properties */
+
+	.left-btn-transform {
+		transform-origin: top left;
+		transform: rotate(-90deg) translateX(-50%);
+		transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+
+	.right-btn-transform {
+		transform-origin: top right;
+		transform: rotate(90deg) translateX(50%);
+		transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+</style>
