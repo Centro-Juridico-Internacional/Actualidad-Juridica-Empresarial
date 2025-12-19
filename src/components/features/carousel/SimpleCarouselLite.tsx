@@ -106,6 +106,42 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 		lastTimeRef.current = 0;
 	}, [index]);
 
+	// Touch handlers for swipe support
+	const touchStartX = useRef<number | null>(null);
+	const touchCurrentX = useRef<number | null>(null);
+	const minSwipeDistance = 50;
+
+	const handleTouchStart = (e: React.TouchEvent) => {
+		touchStartX.current = e.targetTouches[0].clientX;
+		touchCurrentX.current = e.targetTouches[0].clientX;
+		setIsPaused(true);
+	};
+
+	const handleTouchMove = (e: React.TouchEvent) => {
+		touchCurrentX.current = e.targetTouches[0].clientX;
+	};
+
+	const handleTouchEnd = () => {
+		if (!touchStartX.current || !touchCurrentX.current) return;
+
+		const distance = touchStartX.current - touchCurrentX.current;
+		const isSignificantSwipe = Math.abs(distance) > minSwipeDistance;
+
+		if (isSignificantSwipe) {
+			if (distance > 0) {
+				// Swiped left -> next
+				nextSlide();
+			} else {
+				// Swiped right -> prev
+				goTo(index - 1);
+			}
+		}
+
+		touchStartX.current = null;
+		touchCurrentX.current = null;
+		setIsPaused(false);
+	};
+
 	// Variables CSS for track movement
 	useEffect(() => {
 		const root = containerRef.current;
@@ -126,6 +162,9 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 			aria-roledescription="carrusel"
 			onMouseEnter={() => setIsPaused(true)}
 			onMouseLeave={() => setIsPaused(false)}
+			onTouchStart={handleTouchStart}
+			onTouchMove={handleTouchMove}
+			onTouchEnd={handleTouchEnd}
 		>
 			{/* Progress Bar removed from here - now integrated into dots */}
 

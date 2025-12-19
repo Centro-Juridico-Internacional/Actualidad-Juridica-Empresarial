@@ -116,6 +116,60 @@ const allies = [
 	</div>
 </section>
 
+<script>
+	const marquee = document.querySelector('.marquee') as HTMLElement;
+	const content = document.querySelector('.marquee-content') as HTMLElement;
+
+	if (marquee && content) {
+		let isDragging = false;
+		let startX = 0;
+		let currentX = 0;
+
+		const handleStart = (e: MouseEvent | TouchEvent) => {
+			isDragging = true;
+			startX = 'touches' in e ? e.touches[0].pageX : (e as MouseEvent).pageX;
+
+			const style = window.getComputedStyle(content);
+			// @ts-ignore
+			const matrix = new WebKitCSSMatrix(style.transform);
+			currentX = matrix.m41;
+
+			marquee.style.cursor = 'grabbing';
+			marquee.classList.add('is-dragging');
+		};
+
+		const handleMove = (e: MouseEvent | TouchEvent) => {
+			if (!isDragging) return;
+			const x = 'touches' in e ? e.touches[0].pageX : (e as MouseEvent).pageX;
+			const walk = (x - startX) * 1.2;
+
+			content.style.animationPlayState = 'paused';
+			content.style.transform = `translateX(${currentX + walk}px)`;
+		};
+
+		const handleEnd = () => {
+			if (!isDragging) return;
+			isDragging = false;
+			marquee.style.cursor = 'grab';
+			marquee.classList.remove('is-dragging');
+
+			setTimeout(() => {
+				content.style.animationPlayState = '';
+				content.style.transform = '';
+			}, 50);
+		};
+
+		marquee.addEventListener('mousedown', handleStart);
+		marquee.addEventListener('touchstart', handleStart, { passive: true });
+
+		window.addEventListener('mousemove', handleMove);
+		window.addEventListener('touchmove', handleMove, { passive: false });
+
+		window.addEventListener('mouseup', handleEnd);
+		window.addEventListener('touchend', handleEnd);
+	}
+</script>
+
 <style>
 	.allies-carousel-section {
 		overflow: hidden;
@@ -130,6 +184,11 @@ const allies = [
 		gap: 4rem;
 		mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 		-webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+		cursor: grab;
+	}
+
+	.marquee.is-dragging .marquee-content {
+		animation: none !important;
 	}
 
 	.marquee-content {

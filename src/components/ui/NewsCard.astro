@@ -49,7 +49,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		<!-- Categorías y Fecha -->
 		<div class="mb-4 flex flex-wrap items-center gap-2">
 			<span
-				class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700"
+				class="relative z-20 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700"
 			>
 				{product.dia} • {product.hora}
 			</span>
@@ -57,7 +57,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 				product.categorias.map((item: any) => (
 					<a
 						href={`/categorias/${item.toLowerCase()}`}
-						class="inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase hover:bg-green-50 hover:text-green-700"
+						class="relative z-20 inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase hover:bg-green-50 hover:text-green-700"
 					>
 						{item}
 					</a>
@@ -69,7 +69,13 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		<h1
 			class="mb-2 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
 		>
-			<a href={`/noticia/${product.slug}`}>{product.titulo}</a>
+			<a
+				href={`/noticia/${product.slug}`}
+				class="after:absolute after:inset-0 after:z-10"
+				aria-label={product.titulo}
+			>
+				{product.titulo}
+			</a>
 		</h1>
 
 		<!-- Extracto con clamp para no romper alturas -->
@@ -81,7 +87,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		{
 			product.UrlYoutube && (
 				<div
-					class="mb-4 aspect-video overflow-hidden rounded-xl shadow-sm"
+					class="relative z-20 mb-4 aspect-video overflow-hidden rounded-xl shadow-sm"
 					data-videoid={product.UrlYoutube}
 				>
 					<YouTubeLite
@@ -99,7 +105,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 			<a
 				href={autorSlug}
 				title={product.autorName}
-				class="relative overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
+				class="relative z-20 overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
 			>
 				<img
 					src={product.autorAvatar}
@@ -109,7 +115,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 					decoding="async"
 				/>
 			</a>
-			<div class="flex flex-col">
+			<div class="relative z-20 flex flex-col">
 				<a href={autorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
 					{product.autorName}
 				</a>
