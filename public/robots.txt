@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://actualidadfrontend.vercel.app/sitemap-index.xml

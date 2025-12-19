@@ -3,6 +3,7 @@
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 
 // Internal utilities
+import { Image } from 'astro:assets';
 import { truncateBlocks } from '@/utils/truncateBlocks';
 import type { NewsArticle } from '@/lib/api/news';
 
@@ -31,9 +32,11 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md">
 	<!-- Imagen con overlay gradual (altura consistente) -->
 	<div class="relative aspect-[16/9] w-full overflow-hidden">
-		<img
+		<Image
 			src={product.image}
 			alt={`${product.titulo} imagen`}
+			width={800}
+			height={450}
 			class="h-full w-full object-cover transition-transform duration-700 ease-in-out"
 			loading="lazy"
 			decoding="async"
@@ -66,7 +69,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 		</div>
 
 		<!-- Título -->
-		<h1
+		<h3
 			class="mb-2 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
 		>
 			<a
@@ -76,7 +79,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 			>
 				{product.titulo}
 			</a>
-		</h1>
+		</h3>
 
 		<!-- Extracto con clamp para no romper alturas -->
 		<div class="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600 lg:line-clamp-4">
@@ -107,9 +110,11 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 				title={product.autorName}
 				class="relative z-20 overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
 			>
-				<img
+				<Image
 					src={product.autorAvatar}
 					alt={product.autorName}
+					width={40}
+					height={40}
 					class="h-10 w-10 object-fill"
 					loading="lazy"
 					decoding="async"

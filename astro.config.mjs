@@ -4,9 +4,11 @@ import tailwindcss from "@tailwindcss/vite";
 import vercel from "@astrojs/vercel"; // ⬅️ CAMBIO IMPORTANTE
 import react from "@astrojs/react";
 import compress from "astro-compress";
+import sitemap from "@astrojs/sitemap";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  site: "https://actualidadfrontend.vercel.app",
   output: "server", // SSR con ISR (Vercel cachea las páginas)
 
   // ISR config para Vercel - permite revalidación bajo demanda
@@ -82,6 +84,7 @@ export default defineConfig({
 
   integrations: [
     react({ include: ["**/*.tsx", "**/*.jsx"] }),
-    compress(),
+    // Solo habilitar sitemap y compresión en producción para evitar conflictos en dev
+    ...(process.env.NODE_ENV === "production" ? [sitemap(), compress()] : []),
   ],
 });

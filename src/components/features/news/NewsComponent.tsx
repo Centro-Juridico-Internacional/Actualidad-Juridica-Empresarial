@@ -117,13 +117,13 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 			{/* Título + Contenido */}
 			<div className={`flex-grow ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
 				<a href={`/noticia/${product.slug}`} className="block">
-					<h2
+					<h3
 						className={`leading-snug font-bold tracking-tight ${
 							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
 						} ${getTitleSizeClasses()}`}
 					>
 						{getHighlightedText(product.titulo, highlightQuery)}
-					</h2>
+					</h3>
 				</a>
 
 				{showContent && product.contenido && (

@@ -26,6 +26,8 @@ export interface NewsArticle {
 	autorAvatar: string | null;
 	autorRol: string | null;
 	categorias: string[];
+	publishedAt: string | null;
+	updatedAt: string | null;
 }
 
 export interface Pagination {
@@ -84,7 +86,9 @@ function transformNewsItem(item: any): NewsArticle {
 		autorName: autor?.name ?? null,
 		autorAvatar: avatarRel ? withHost(avatarRel) : DEFAULT_AUTHOR_AVATAR,
 		autorRol: autor?.cargo ?? null,
-		categorias
+		categorias,
+		publishedAt: a.publishedAt ?? null,
+		updatedAt: a.updatedAt ?? null
 	};
 }
 
@@ -102,6 +106,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 		`&populate[autor][fields][0]=name` +
 		`&populate[autor][fields][1]=cargo` +
 		`&populate[categorias][fields][0]=name` +
+		`&fields[0]=titulo&fields[1]=contenido&fields[2]=slug&fields[3]=UrlYoutube&fields[4]=publishedAt&fields[5]=updatedAt` +
 		`&sort=updatedAt:desc`;
 
 	const res = await query(qs);
@@ -122,7 +127,8 @@ export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
 		`&populate[autor][populate][avatar][fields][0]=url` +
 		`&populate[autor][fields][0]=name` +
 		`&populate[autor][fields][1]=cargo` +
-		`&populate[categorias][fields][0]=name`;
+		`&populate[categorias][fields][0]=name` +
+		`&fields[0]=titulo&fields[1]=contenido&fields[2]=slug&fields[3]=UrlYoutube&fields[4]=publishedAt&fields[5]=updatedAt`;
 
 	const res = await query(qs);
 
@@ -152,7 +158,8 @@ export async function getLatestNews(
 		`&populate[autor][populate][avatar][fields][0]=url` +
 		`&populate[autor][fields][0]=name` +
 		`&populate[autor][fields][1]=cargo` +
-		`&populate[categorias][fields][0]=name`;
+		`&populate[categorias][fields][0]=name` +
+		`&fields[0]=titulo&fields[1]=contenido&fields[2]=slug&fields[3]=UrlYoutube&fields[4]=publishedAt&fields[5]=updatedAt`;
 
 	const res = await query(qs);
 

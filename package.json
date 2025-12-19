@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
+    "@astrojs/sitemap": "^3.6.0",
     "@astrojs/vercel": "^8.0.4",
     "@emailjs/browser": "^4.4.1",
     "@fontsource-variable/noto-sans-jp": "^5.2.9",

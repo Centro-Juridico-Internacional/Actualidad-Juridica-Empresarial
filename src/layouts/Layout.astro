@@ -22,13 +22,32 @@ interface Props {
 	title: string;
 	booleanLayout: boolean;
 	breadcrumbTitle?: string;
+	description?: string;
+	ogTitle?: string;
+	ogImage?: string;
+	ogType?: 'website' | 'article';
 }
 
 // Destructure props with explicit typing
-const { title, booleanLayout, breadcrumbTitle }: Props = Astro.props;
+const {
+	title,
+	booleanLayout,
+	breadcrumbTitle,
+	description,
+	ogTitle,
+	ogImage,
+	ogType = 'website'
+}: Props = Astro.props;
 
 // Get dynamic URL for metadata and print
 const { origin, href } = Astro.url;
+
+// SEO Fallbacks
+const defaultDescription =
+	'Abogados expertos en derecho laboral, comercial y recaudo de cartera. Proteja su empresa legalmente con el respaldo del Centro Jurídico Internacional. Asesoría gratuita inicial.';
+const seoDescription = description || defaultDescription;
+const seoOgTitle = ogTitle || `${title} | Actualidad Jurídica`;
+const seoOgImage = ogImage || `${origin}/header/logo.svg`;
 ---
 
 <!doctype html>
@@ -58,10 +77,7 @@ const { origin, href } = Astro.url;
 		<!-- SEO -->
 		<title>{title.charAt(0).toUpperCase() + title.slice(1)} | Actualidad Jurídica</title>
 
-		<meta
-			name="description"
-			content="Abogados expertos en derecho laboral, comercial y recaudo de cartera. Proteja su empresa legalmente con el respaldo del Centro Jurídico Internacional. Asesoría gratuita inicial."
-		/>
+		<meta name="description" content={seoDescription} />
 		<meta
 			name="keywords"
 			content="abogados en Colombia, firma de abogados, recaudo de cartera, asesoría legal, servicios jurídicos, bufete de abogados, Centro Jurídico Internacional, CJI, protección legal empresas"
@@ -69,27 +85,18 @@ const { origin, href } = Astro.url;
 		<meta name="author" content="Centro Jurídico Internacional" />
 
 		<!-- Open Graph -->
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Centro Jurídico Internacional - Abogados en Colombia" />
-		<meta
-			property="og:description"
-			content="Abogados expertos en derecho y recaudo de cartera. Proteja su empresa legalmente. Consultas jurídicas para empresas y particulares en Colombia."
-		/>
-		<meta property="og:image" content="/header/logo.svg" />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:title" content={seoOgTitle} />
+		<meta property="og:description" content={seoDescription} />
+		<meta property="og:image" content={seoOgImage} />
 		<meta property="og:url" content={href} />
 		<meta property="og:site_name" content="Centro Jurídico Internacional" />
 
 		<!-- Twitter Card -->
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta
-			name="twitter:title"
-			content="Centro Jurídico Internacional - Abogados y Recaudo de Cartera"
-		/>
-		<meta
-			name="twitter:description"
-			content="Firma legal especializada en protección jurídica empresarial y recuperación de cartera en Colombia."
-		/>
-		<meta name="twitter:image" content="/header/logo.svg" />
+		<meta name="twitter:title" content={seoOgTitle} />
+		<meta name="twitter:description" content={seoDescription} />
+		<meta name="twitter:image" content={seoOgImage} />
 
 		<!-- Canonical -->
 		<link rel="canonical" href={href} />

@@ -58,6 +58,9 @@ const words = countWords(product.contenido);
 const plainText = getPlainText(product.contenido);
 const readingTime = Math.ceil(words / 200); // 200 words per minute average
 
+// SEO Description: Get first 160 characters of plain text as meta description
+const metaDescription = plainText.slice(0, 157) + (plainText.length > 157 ? '...' : '');
+
 // Generate author slug for navigation
 const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
@@ -70,8 +73,8 @@ const schema = {
 	'@type': 'NewsArticle',
 	headline: product.titulo,
 	image: [product.image],
-	datePublished: new Date().toISOString(), // Idealmente usar product.publishedAt si existe
-	dateModified: new Date().toISOString(),
+	datePublished: product.publishedAt || new Date().toISOString(),
+	dateModified: product.updatedAt || product.publishedAt || new Date().toISOString(),
 	author: [
 		{
 			'@type': 'Person',
@@ -94,7 +97,15 @@ const schema = {
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
-<Layout title={product.titulo} booleanLayout={true} breadcrumbTitle={product.titulo}>
+<Layout
+	title={product.titulo}
+	booleanLayout={true}
+	breadcrumbTitle={product.titulo}
+	description={metaDescription}
+	ogTitle={product.titulo}
+	ogImage={product.image ?? undefined}
+	ogType="article"
+>
 	<ReadingProgressBar client:load targetId="news-article-content" />
 
 	<article id="news-article-content" class="animate-fadeIn">
