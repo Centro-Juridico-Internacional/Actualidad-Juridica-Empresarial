@@ -17,15 +17,14 @@ import ScrollToTop from '@/components/features/ui/ScrollToTop.tsx';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import SideButtons from '@/components/features/ui/SideButtons.astro';
 
+// Import SEO helpers
+import type { LayoutSEOProps } from '@/lib/seo';
+import { ensureAbsoluteUrl, processSEOMetadata } from '@/lib/seo';
+
 // Props interface
-interface Props {
-	title: string;
+interface Props extends LayoutSEOProps {
 	booleanLayout: boolean;
 	breadcrumbTitle?: string;
-	description?: string;
-	ogTitle?: string;
-	ogImage?: string;
-	ogType?: 'website' | 'article';
 }
 
 // Destructure props with explicit typing
@@ -34,20 +33,38 @@ const {
 	booleanLayout,
 	breadcrumbTitle,
 	description,
-	ogTitle,
 	ogImage,
-	ogType = 'website'
+	ogImageWidth,
+	ogImageHeight,
+	ogType = 'website',
+	publishedAt,
+	updatedAt,
+	authorName,
+	authorUrl
 }: Props = Astro.props;
 
 // Get dynamic URL for metadata and print
 const { origin, href } = Astro.url;
 
-// SEO Fallbacks
-const defaultDescription =
-	'Abogados expertos en derecho laboral, comercial y recaudo de cartera. Proteja su empresa legalmente con el respaldo del Centro Jurídico Internacional. Asesoría gratuita inicial.';
-const seoDescription = description || defaultDescription;
-const seoOgTitle = ogTitle || `${title} | Actualidad Jurídica`;
-const seoOgImage = ogImage || `${origin}/header/logo.svg`;
+// Process SEO metadata with validation
+const seoData = processSEOMetadata(
+	{
+		title,
+		description: description || '',
+		image: ogImage,
+		imageWidth: ogImageWidth,
+		imageHeight: ogImageHeight,
+		url: href,
+		publishedAt,
+		updatedAt,
+		authorName,
+		authorUrl
+	},
+	origin
+);
+
+// Twitter Card specific
+const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 ---
 
 <!doctype html>
@@ -77,26 +94,36 @@ const seoOgImage = ogImage || `${origin}/header/logo.svg`;
 		<!-- SEO -->
 		<title>{title.charAt(0).toUpperCase() + title.slice(1)} | Actualidad Jurídica</title>
 
-		<meta name="description" content={seoDescription} />
+		<meta name="description" content={seoData.description} />
 		<meta
 			name="keywords"
 			content="abogados en Colombia, firma de abogados, recaudo de cartera, asesoría legal, servicios jurídicos, bufete de abogados, Centro Jurídico Internacional, CJI, protección legal empresas"
 		/>
 		<meta name="author" content="Centro Jurídico Internacional" />
 
-		<!-- Open Graph -->
+		<!-- Open Graph - COMPLETO CON DIMENSIONES -->
 		<meta property="og:type" content={ogType} />
-		<meta property="og:title" content={seoOgTitle} />
-		<meta property="og:description" content={seoDescription} />
-		<meta property="og:image" content={seoOgImage} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={seoData.description} />
+		<meta property="og:image" content={seoData.image} />
+		<meta property="og:image:width" content={String(seoData.imageWidth)} />
+		<meta property="og:image:height" content={String(seoData.imageHeight)} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:alt" content={title} />
 		<meta property="og:url" content={href} />
 		<meta property="og:site_name" content="Centro Jurídico Internacional" />
+		{ogType === 'article' && publishedAt && <meta property="article:published_time" content={publishedAt} />}
+		{ogType === 'article' && updatedAt && <meta property="article:modified_time" content={updatedAt} />}
+		{ogType === 'article' && authorName && <meta property="article:author" content={authorName} />}
 
-		<!-- Twitter Card -->
+		<!-- Twitter Card - COMPLETO -->
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content={seoOgTitle} />
-		<meta name="twitter:description" content={seoDescription} />
-		<meta name="twitter:image" content={seoOgImage} />
+		<meta name="twitter:site" content="@CentroJuridicoI" />
+		<meta name="twitter:creator" content="@CentroJuridicoI" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={seoData.description} />
+		<meta name="twitter:image" content={twitterImage} />
+		<meta name="twitter:image:alt" content={title} />
 
 		<!-- Canonical -->
 		<link rel="canonical" href={href} />

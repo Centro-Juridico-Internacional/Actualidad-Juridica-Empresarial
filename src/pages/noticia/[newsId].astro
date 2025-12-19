@@ -6,6 +6,9 @@ import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { getNewsBySlug } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
+// SEO imports
+import { generateNewsSchema } from '@/lib/seo';
+
 // Astro components (layouts)
 import Layout from '@/layouts/Layout.astro';
 
@@ -66,31 +69,26 @@ const autorSlug: string = product.autorName
 	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
-// Generate Schema.org JSON-LD
+// Get origin for absolute URLs
 const { origin } = Astro.url;
-const schema = {
-	'@context': 'https://schema.org',
-	'@type': 'NewsArticle',
-	headline: product.titulo,
-	image: [product.image],
-	datePublished: product.publishedAt || new Date().toISOString(),
-	dateModified: product.updatedAt || product.publishedAt || new Date().toISOString(),
-	author: [
-		{
-			'@type': 'Person',
-			name: product.autorName || 'Centro Jurídico Internacional',
-			url: `${origin}${autorSlug}`
-		}
-	],
-	publisher: {
-		'@type': 'Organization',
-		name: 'Centro Jurídico Internacional',
-		logo: {
-			'@type': 'ImageObject',
-			url: `${origin}/header/logo.svg`
-		}
-	}
-};
+
+// Generate Schema.org JSON-LD with image dimensions
+const schema = generateNewsSchema(
+	{
+		title: product.titulo,
+		description: metaDescription,
+		image: product.image,
+		imageWidth: 1200,
+		imageHeight: 630,
+		url: Astro.url.href,
+		publishedAt: product.publishedAt || new Date().toISOString(),
+		updatedAt: product.updatedAt || product.publishedAt || new Date().toISOString(),
+		authorName: product.autorName || 'Centro Jurídico Internacional',
+		authorUrl: `${origin}${autorSlug}`,
+		siteName: 'Centro Jurídico Internacional'
+	},
+	product.autorAvatar
+);
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
@@ -102,9 +100,14 @@ const schema = {
 	booleanLayout={true}
 	breadcrumbTitle={product.titulo}
 	description={metaDescription}
-	ogTitle={product.titulo}
-	ogImage={product.image ?? undefined}
+	ogImage={product.image}
+	ogImageWidth={1200}
+	ogImageHeight={630}
 	ogType="article"
+	publishedAt={product.publishedAt || undefined}
+	updatedAt={product.updatedAt || undefined}
+	authorName={product.autorName || undefined}
+	authorUrl={`${origin}${autorSlug}`}
 >
 	<ReadingProgressBar client:load targetId="news-article-content" />
 
