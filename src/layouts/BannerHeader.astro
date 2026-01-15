@@ -53,12 +53,14 @@ if (carouselData.length === 0) {
 	.banner-header-container {
 		height: 30vh;
 		min-height: 120px;
+		object-fit: cover;
 	}
 
 	@media (max-width: 768px) {
 		.banner-header-container {
-			height: 25vh;
+			height: auto;
 			min-height: 100px;
+			object-fit: contain;
 		}
 	}
 
@@ -66,7 +68,7 @@ if (carouselData.length === 0) {
 	.banner-header-container :global(img) {
 		height: 100%;
 		width: 100%;
-		object-fit: contain;
+		
 		object-position: center;
 	}
 </style>
