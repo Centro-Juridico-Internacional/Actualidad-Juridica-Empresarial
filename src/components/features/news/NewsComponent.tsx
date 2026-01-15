@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+import ReactMarkdown from 'react-markdown';
 import { truncateBlocks } from '@/utils/truncateBlocks';
 
 interface NewsComponentProps {
@@ -47,9 +47,9 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		);
 	};
 
-	const { blocks, truncated } = product.contenido
+	const { text: contentText, truncated } = product.contenido
 		? truncateBlocks(product.contenido, truncateWords)
-		: { blocks: [], truncated: false };
+		: { text: '', truncated: false };
 
 	const autorSlug = product.autorName
 		? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
@@ -133,7 +133,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 								isCompact ? 'prose-sm line-clamp-2' : 'prose-base md:line-clamp-3'
 							}`}
 						>
-							<BlocksRenderer content={blocks} />
+							<ReactMarkdown>{contentText}</ReactMarkdown>
 						</div>
 
 						{truncated && (

@@ -1,6 +1,6 @@
 ---
 // External imports
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+// import ReactMarkdown from 'react-markdown'; // Removed
 
 // Internal utilities
 import { Image } from 'astro:assets';
@@ -26,7 +26,7 @@ const autorSlug: string = product.autorName
 	: '#';
 
 // Truncate content blocks to specified word count
-const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
+const { text: contentText, truncated } = truncateBlocks(product.contenido, truncateWords);
 ---
 
 <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md">
@@ -83,7 +83,7 @@ const { blocks, truncated } = truncateBlocks(product.contenido, truncateWords);
 
 		<!-- Extracto con clamp para no romper alturas -->
 		<div class="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600 lg:line-clamp-4">
-			<BlocksRenderer content={blocks} client:load />
+			{contentText}
 		</div>
 
 		<!-- Video de YouTube si existe (altura consistente) -->

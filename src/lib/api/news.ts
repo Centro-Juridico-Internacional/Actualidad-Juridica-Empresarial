@@ -4,7 +4,10 @@ import { DEFAULT_NEWS_IMAGE, DEFAULT_AUTHOR_AVATAR } from './_mediaDefaults';
 /**
  * Type para contenido rich text de Strapi
  */
-type StrapiBlockContent = any[];
+/**
+ * Type para contenido rich text de Strapi
+ */
+type StrapiBlockContent = string | any[];
 
 /** Zona horaria y locale por defecto (Colombia) */
 const DEFAULT_TIMEZONE = 'America/Bogota';
@@ -68,7 +71,7 @@ function transformNewsItem(item: any): NewsArticle {
 
 	return {
 		titulo: a.titulo ?? '',
-		contenido: a.contenido ?? [],
+		contenido: a.contenido ?? '', // Default to empty string for RichText
 		slug: a.slug ?? '',
 		image: imageRel ? withHost(imageRel) : DEFAULT_NEWS_IMAGE,
 		dia: date.toLocaleDateString(DEFAULT_LOCALE, {

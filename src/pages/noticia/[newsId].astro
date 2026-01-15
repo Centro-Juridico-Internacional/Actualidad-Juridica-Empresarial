@@ -1,6 +1,6 @@
 ---
 // External imports
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+import { marked } from 'marked';
 
 // Internal API imports
 import { getNewsBySlug } from '@/lib/api/news';
@@ -41,29 +41,20 @@ const product: NewsArticle | null = await getNewsBySlug(newsId);
 if (!product) throw Astro.redirect('/404');
 
 // Calculate Reading Time
-const countWords = (blocks: any[]) => {
-	let text = '';
-	blocks?.forEach((block) => {
-		if (block.type === 'paragraph' || block.type === 'heading') {
-			block.children?.forEach((child: any) => {
-				if (child.type === 'text') text += child.text + ' ';
-			});
-		}
-	});
+const countWords = (text: any) => {
+	if (!text || typeof text !== 'string') return 0;
 	return text.split(/\s+/).length;
 };
 
 // Extract plain text for Audio Player
-const getPlainText = (blocks: any[]) => {
-	let text = '';
-	blocks?.forEach((block) => {
-		if (block.type === 'paragraph' || block.type === 'heading') {
-			block.children?.forEach((child: any) => {
-				if (child.type === 'text') text += child.text + ' ';
-			});
-		}
-	});
-	return text.trim();
+// For markdown strings, we might want to strip markdown symbols, but for now simple text is enough or use a regex strip
+const getPlainText = (text: any) => {
+	if (!text || typeof text !== 'string') return '';
+	// Simple markdown stripper
+	return text
+		.replace(/[#*`_~]/g, '') // remove common markdown symbols
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace links with anchor text
+		.trim();
 };
 
 const words = countWords(product.contenido);
@@ -90,7 +81,8 @@ const newsArticleSchema = generateNewsArticleSchema(
 	{
 		headline: product.titulo,
 		description: metaDescription,
-		image: product.image,
+		//@ts-ignore
+		image: product.image || undefined,
 		datePublished: product.publishedAt || new Date().toISOString(),
 		dateModified: product.updatedAt || product.publishedAt || new Date().toISOString(),
 		author: product.autorName
@@ -143,7 +135,7 @@ if (product.UrlYoutube) {
 			description: metaDescription,
 			youtubeUrl: product.UrlYoutube,
 			publishedAt: product.publishedAt || new Date().toISOString(),
-			thumbnailUrl: product.image
+			thumbnailUrl: product.image || undefined
 		},
 		origin
 	);
@@ -167,7 +159,7 @@ if (product.UrlYoutube) {
 	booleanLayout={true}
 	breadcrumbTitle={product.titulo}
 	description={metaDescription}
-	ogImage={product.image}
+	ogImage={product.image || undefined}
 	ogImageWidth={1200}
 	ogImageHeight={630}
 	ogType="article"
@@ -257,13 +249,11 @@ if (product.UrlYoutube) {
 					<div class="mb-6 flex justify-end">
 						<ArticleAudioPlayer client:load title={product.titulo} content={plainText} />
 					</div>
-
 					<!-- Contenido -->
 					<div
 						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none rounded-2xl bg-gray-50 px-6 py-6"
-					>
-						<BlocksRenderer content={product.contenido} />
-					</div>
+						set:html={marked.parse(product.contenido as string)}
+					/>
 
 					<!-- Video de YouTube -->
 					{
@@ -333,9 +323,7 @@ if (product.UrlYoutube) {
 		transition-property: transform;
 		transition-duration: 300ms;
 	}
-	:global(.prose img:hover) {
-		transform: scale(1.02);
-	}
+
 
 	:global(.prose blockquote) {
 		border-radius: 0.5rem;
