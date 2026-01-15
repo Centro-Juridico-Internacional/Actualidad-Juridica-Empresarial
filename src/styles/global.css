@@ -233,7 +233,7 @@ body {
 }
 
 @media print {
-	/* Ocultar elementos de navegación y UI no imprimibles */
+	/* ... existing print styles ... */
 	header,
 	footer,
 	aside,
@@ -287,4 +287,35 @@ body {
 		font-size: 0.8em;
 		color: #666;
 	}
+}
+
+/** 
+ * CONTENEDORES DE PROSA (MarkDown) RESPONSIVOS
+ * Asegura que ningún elemento interno (imágenes, tablas, enlaces largos) rompa el layout.
+ */
+.prose {
+	max-width: 100% !important;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+}
+
+.prose img,
+.prose video,
+.prose iframe {
+	max-width: 100% !important;
+	height: auto !important;
+}
+
+.prose pre,
+.prose code {
+	white-space: pre-wrap !important;
+	word-break: break-all !important;
+}
+
+.prose table {
+	display: block;
+	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
 }

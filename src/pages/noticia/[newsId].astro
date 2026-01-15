@@ -201,17 +201,17 @@ if (product.UrlYoutube) {
 							⏱️ {readingTime} min lectura
 						</span>
 					</div>
-					<h1
-						class="text-xl leading-tight font-bold break-words text-white md:text-2xl lg:text-3xl xl:text-4xl"
-					>
-						{product.titulo}
-					</h1>
+						<h1
+							class="text-2xl leading-tight font-bold break-words text-white sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl"
+						>
+							{product.titulo}
+						</h1>
 				</div>
 			</div>
 		</div>
 
 		<!-- Contenido Principal -->
-		<div class="container-main !px-0 py-12">
+		<div class="container-main px-4 py-12 sm:px-6 lg:px-0">
 			<Breadcrumb title={product.titulo} className="mb-8" />
 			<div class="grid gap-8 lg:grid-cols-[1fr_1fr_0.7fr]">
 				<!-- Artículo -->
@@ -251,7 +251,7 @@ if (product.UrlYoutube) {
 					</div>
 					<!-- Contenido -->
 					<div
-						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none rounded-2xl bg-gray-50 px-6 py-6"
+						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none break-words overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 sm:px-6"
 						set:html={marked.parse(product.contenido as string)}
 					/>
 
@@ -335,5 +335,27 @@ if (product.UrlYoutube) {
 	:global(.prose a:hover) {
 		color: #047857;
 		text-decoration: underline;
+	}
+
+	/* Asegurar que el contenido markdown sea 100% responsivo */
+	:global(.prose) {
+		max-width: 100%;
+		overflow-x: hidden;
+	}
+
+	:global(.prose img, .prose video, .prose iframe) {
+		max-width: 100% !important;
+		height: auto !important;
+	}
+
+	:global(.prose table) {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+
+	:global(.prose pre, .prose code) {
+		white-space: pre-wrap;
+		word-break: break-all;
 	}
 </style>
