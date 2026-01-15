@@ -6,40 +6,67 @@ interface Props {
 
 // Internal API imports
 import { getBanner } from '@/lib/api/banner';
+import Carousel from '@/components/features/carousel/Carousel';
 
 // Destructure props with explicit typing
 const { booleanBanner }: Props = Astro.props;
 
-// Fetch banner data
+// Fetch unique banner (which now contains multiple images)
 const banner = await getBanner();
+
+// Convert multiple images to CarouselImage format
+const carouselData = (banner?.banners ?? []).map((imgUrl, index) => ({
+	id: `${banner.slug || 'main-banner'}-${index}`,
+	title: banner.nombre || 'Banner Principal',
+	image: imgUrl,
+	url: 'https://seminariojuridico.com/' // Persistent link
+}));
+
+if (carouselData.length === 0) {
+	console.log('[BannerHeader] No se encontraron banners para mostrar.');
+}
 ---
 
 {
-	banner?.banner && (
-		<a
+	carouselData.length > 0 && (
+		<div
 			class:list={[
-				'relative mx-auto w-full max-w-[1260px] overflow-hidden rounded-b-lg shadow-lg transition-transform duration-300 hover:scale-[1.005]',
+				'banner-header-container relative mx-auto w-full max-w-[1260px] overflow-hidden  transition-transform duration-300 hover:scale-[1.005]',
 				{ hidden: booleanBanner }
 			]}
-			href="https://seminariojuridico.com/"
-			target="_blank"
-			rel="noopener noreferrer"
 		>
-			<img
-				src={banner.banner}
-				alt={banner.nombre}
-				class="h-auto w-full object-cover"
-				loading="eager"
-				decoding="async"
-			/>
-			<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
-		</a>
+			<div class="mx-auto w-full h-full">
+				<Carousel
+					width="w-full"
+					dotDuration={true}
+					autoplaySpeed={5000}
+					data={carouselData}
+					client:load
+				/>
+			</div>
+			<div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/10 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
+		</div>
 	)
 }
 
 <style>
-	img {
-		aspect-ratio: 16/3;
-		transform: translateZ(0);
+	.banner-header-container {
+		height: 30vh;
+		min-height: 120px;
+	}
+
+	@media (max-width: 768px) {
+		.banner-header-container {
+			height: 25vh;
+			min-height: 100px;
+		}
+	}
+
+	/* Asegurar que las imágenes dentro del carrusel cubran el área */
+	.banner-header-container :global(img) {
+		height: 100%;
+		width: 100%;
+		object-fit: contain;
+		object-position: center;
 	}
 </style>

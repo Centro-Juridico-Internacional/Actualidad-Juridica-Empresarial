@@ -1,0 +1,58 @@
+---
+interface Props {
+	href: string;
+	platform: string;
+	title: string;
+	description: string;
+	actionText: string;
+	gradientClass: string;
+	hoverShadowClass: string;
+	className?: string;
+}
+
+const {
+	href,
+	platform,
+	title,
+	description,
+	actionText,
+	gradientClass,
+	hoverShadowClass,
+	className = ''
+} = Astro.props;
+---
+
+<a
+	href={href}
+	target="_blank"
+	class:list={[
+		'group relative overflow-hidden rounded-2xl p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 active:scale-95',
+		gradientClass,
+		hoverShadowClass,
+		className
+	]}
+>
+	<div class="flex items-center justify-between">
+		<p class="text-xs font-medium tracking-wider uppercase opacity-80">{platform}</p>
+		<slot name="icon" />
+	</div>
+	<h3 class="mt-4 text-xl font-bold">{title}</h3>
+	<p class="mt-2 text-sm opacity-90">{description}</p>
+	<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
+		<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white">
+			{actionText}
+		</span>
+		<svg
+			class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2.5"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<line x1="5" y1="12" x2="19" y2="12"></line>
+			<polyline points="12 5 19 12 12 19"></polyline>
+		</svg>
+	</div>
+</a>

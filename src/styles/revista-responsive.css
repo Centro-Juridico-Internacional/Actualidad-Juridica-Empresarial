@@ -23,14 +23,14 @@
 /* Laptop / desktop mediano */
 @media (max-width: 1199px) and (min-width: 1024px) {
 	.revista-flipbook .flipbook-container {
-		transform: scale(0.95);
+		/* Eliminado transform para evitar conflictos con PageFlip */
 	}
 }
 
 /* Tablet (doble página, un poco más pequeña) */
 @media (max-width: 1023px) and (min-width: 769px) {
 	.revista-flipbook .flipbook-container {
-		transform: scale(0.9);
+		/* Eliminado transform para evitar conflictos con PageFlip */
 	}
 }
 

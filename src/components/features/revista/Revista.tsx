@@ -216,7 +216,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 					obs.disconnect();
 				}
 			},
-			{ rootMargin: '200px' }
+			{ rootMargin: '600px' }
 		);
 
 		obs.observe(containerRef.current);
@@ -325,7 +325,11 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 	};
 
 	return (
-		<div ref={containerRef} className={`revista-container ${className}`}>
+		<div
+			ref={containerRef}
+			className={`revista-container ${className}`}
+			style={{ minHeight: computedHeight ? `${computedHeight + 200}px` : '700px' }}
+		>
 			{/* Controles de navegación */}
 			<div className="mb-6 flex flex-wrap items-center justify-center gap-4">
 				<button
@@ -603,7 +607,7 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 
 			.revista-inner,
 			.flipbook-container {
-				overflow: visible;
+				overflow: hidden;
 			}
 
         }

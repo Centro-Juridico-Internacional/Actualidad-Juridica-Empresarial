@@ -32,8 +32,9 @@ const pautasForCarousel = pautas
 	}));
 ---
 
-<section id="ContainerInterview-Magazine" class="container-main my-24">
-	<Titles text="Entrevista y pautas del mes" />
+<section class="w-full h-fit py-1 containerInterviewMagazine">
+<section id="ContainerInterview-Magazine" class="container-main my-20">
+	<Titles text="Entrevista y pautas del mes" white={true} />
 
 	<div class="grid gap-8 md:grid-cols-2">
 		<!-- Entrevistas -->
@@ -83,6 +84,8 @@ const pautasForCarousel = pautas
 	</div>
 </section>
 
+</section>
+
 <style>
 	.container-main {
 		margin-left: auto;
@@ -105,4 +108,14 @@ const pautasForCarousel = pautas
 			padding-right: 2rem;
 		}
 	}
+
+
+.containerInterviewMagazine {
+	width: 100%;
+	height: 100%;
+	background-color: #008531e1;
+	background-image: radial-gradient(rgba(255, 255, 255, 0.918) 1px, transparent 0);
+	background-size: 30px 30px;
+	background-position: -3px -3px;
+}
 </style>

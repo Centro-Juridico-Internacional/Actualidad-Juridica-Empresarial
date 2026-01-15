@@ -1,192 +1,131 @@
 ---
 import Titles from '@/components/ui/Titles.astro';
+import SocialCard from '@/components/ui/SocialCard.astro';
+
+const socialMediaData = [
+	{
+		platform: 'tiktok',
+		href: 'https://www.tiktok.com/@centrojuridicosas',
+		title: 'Videos cortos legales',
+		description: 'Noticias, tips y contenido jurídico rápido y claro.',
+		actionText: 'Ver perfil',
+		gradientClass: 'bg-gradient-to-br from-[#000000] via-[#300b1f] to-[#1a1a1a] ring-1 ring-white/10',
+		hoverShadowClass: 'hover:shadow-[0_0_20px_rgba(37,244,238,0.15),0_0_20px_rgba(254,44,85,0.15)]',
+		icon: 'tiktok'
+	},
+	{
+		platform: 'youtube',
+		href: 'https://www.youtube.com/channel/UCUMJo4IlIG8bETW-OhoNNkg',
+		title: 'Videos y conferencias',
+		description: 'Charlas, análisis y eventos jurídicos completos.',
+		actionText: 'Ver canal',
+		gradientClass: 'bg-gradient-to-br from-[#ff0000] to-[#b00000]',
+		hoverShadowClass: 'hover:shadow-red-900/20',
+		icon: 'youtube'
+	},
+	{
+		platform: 'instagram',
+		href: 'https://www.instagram.com/centrojuridicosas/',
+		title: 'Actividad diaria',
+		description: 'Publicaciones, historias y actualidad del día a día.',
+		actionText: 'Ver Instagram',
+		gradientClass: 'bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af]',
+		hoverShadowClass: 'hover:shadow-purple-900/20',
+		icon: 'instagram'
+	},
+	{
+		platform: 'facebook',
+		href: 'https://www.facebook.com/CentroJuridicoInternacional/',
+		title: 'Comunidad y noticias',
+		description: 'Eventos, comunicados y relación con la comunidad.',
+		actionText: 'Ver página',
+		gradientClass: 'bg-gradient-to-br from-[#1877f2] to-[#0f5dc2]',
+		hoverShadowClass: 'hover:shadow-blue-900/20',
+		icon: 'facebook'
+	},
+	{
+		platform: 'linkedin',
+		href: 'https://www.linkedin.com/company/centro-juridico-internacional-s-a-s-/posts/?feedView=all',
+		title: 'Centro Jurídico Internacional',
+		description: 'Análisis legales, eventos y contenido profesional.',
+		actionText: 'Ver LinkedIn',
+		gradientClass: 'bg-gradient-to-br from-[#0077b5] to-[#005582]',
+		hoverShadowClass: 'hover:shadow-cyan-900/20',
+		icon: 'linkedin'
+	},
+	{
+		platform: 'spotify',
+		href: 'https://open.spotify.com/show/5NoxoUHzsDWTVEL359ABkq',
+		title: 'Cápsulas Legales & Podcast',
+		description: 'Escucha nuestros episodios y análisis jurídicos en audio.',
+		actionText: 'Escuchar ahora',
+		gradientClass: 'bg-gradient-to-br from-[#1ED760] via-[#1db954] to-[#388039]',
+		hoverShadowClass: 'hover:shadow-green-500/20',
+		icon: 'spotify',
+		className: 'sm:col-span-1 lg:col-span-1'
+	}
+];
 ---
 
 <section id="SocialMedia" class="container-main pt-2 pb-24">
 	<Titles text="Redes Sociales" />
 
 	<div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-		<!-- TikTok -->
-		<a
-			href="https://www.tiktok.com/@centrojuridicosas"
-			target="_blank"
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#010101] to-[#1a1a1a] p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/20 active:scale-95"
-		>
-			<div class="flex items-center justify-between">
-				<p class="text-xs font-medium tracking-wider uppercase opacity-70">tiktok</p>
-				<svg class="h-6 w-6 opacity-80" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z"
-					></path>
-				</svg>
-			</div>
-			<h3 class="mt-4 text-xl font-bold">Videos cortos legales</h3>
-			<p class="mt-2 text-sm opacity-80">Noticias, tips y contenido jurídico rápido y claro.</p>
-			<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
-				<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white"
-					>Ver perfil</span
-				>
-				<svg
-					class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</div>
-		</a>
-
-		<!-- YouTube -->
-		<a
-			href="https://www.youtube.com/channel/UCUMJo4IlIG8bETW-OhoNNkg"
-			target="_blank"
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ff0000] to-[#b00000] p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-red-900/20 active:scale-95"
-		>
-			<div class="flex items-center justify-between">
-				<p class="text-xs font-medium tracking-wider uppercase opacity-80">youtube</p>
-				<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-					></path>
-				</svg>
-			</div>
-			<h3 class="mt-4 text-xl font-bold">Videos y conferencias</h3>
-			<p class="mt-2 text-sm opacity-90">Charlas, análisis y eventos jurídicos completos.</p>
-			<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
-				<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white"
-					>Ver canal</span
-				>
-				<svg
-					class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</div>
-		</a>
-
-		<!-- Instagram -->
-		<a
-			href="https://www.instagram.com/centrojuridicosas/"
-			target="_blank"
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#f58529] via-[#dd2a7b] to-[#8134af] p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-900/20 active:scale-95"
-		>
-			<div class="flex items-center justify-between">
-				<p class="text-xs font-medium tracking-wider uppercase opacity-80">instagram</p>
-				<svg
-					class="h-6 w-6 opacity-90"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-					<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-					<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-				</svg>
-			</div>
-			<h3 class="mt-4 text-xl font-bold">Actividad diaria</h3>
-			<p class="mt-2 text-sm opacity-90">Publicaciones, historias y actualidad del día a día.</p>
-			<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
-				<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white"
-					>Ver Instagram</span
-				>
-				<svg
-					class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</div>
-		</a>
-
-		<!-- Facebook -->
-		<a
-			href="https://www.facebook.com/CentroJuridicoInternacional/"
-			target="_blank"
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1877f2] to-[#0f5dc2] p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/20 active:scale-95"
-		>
-			<div class="flex items-center justify-between">
-				<p class="text-xs font-medium tracking-wider uppercase opacity-80">facebook</p>
-				<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-					></path>
-				</svg>
-			</div>
-			<h3 class="mt-4 text-xl font-bold">Comunidad y noticias</h3>
-			<p class="mt-2 text-sm opacity-90">Eventos, comunicados y relación con la comunidad.</p>
-			<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
-				<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white"
-					>Ver página</span
-				>
-				<svg
-					class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</div>
-		</a>
-
-		<!-- LinkedIn -->
-		<a
-			href="https://www.linkedin.com/company/centro-juridico-internacional-s-a-s-/posts/?feedView=all"
-			target="_blank"
-			class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0077b5] to-[#005582] p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-900/20 active:scale-95 sm:col-span-2 lg:col-span-1"
-		>
-			<div class="flex items-center justify-between">
-				<p class="text-xs font-medium tracking-wider uppercase opacity-80">linkedin</p>
-				<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-					></path>
-				</svg>
-			</div>
-			<h3 class="mt-4 text-xl font-bold">Centro Jurídico Internacional</h3>
-			<p class="mt-2 text-sm opacity-90">Análisis legales, eventos y contenido profesional.</p>
-			<div class="mt-6 flex items-center gap-2 text-sm font-semibold">
-				<span class="border-b border-white/30 pb-0.5 transition-colors group-hover:border-white"
-					>Ver LinkedIn</span
-				>
-				<svg
-					class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</div>
-		</a>
+		{
+			socialMediaData.map((social) => (
+				<SocialCard {...social}>
+					<Fragment slot="icon">
+						{social.icon === 'tiktok' && (
+							<div class="relative">
+								<svg class="h-6 w-6 relative z-10" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
+								</svg>
+								<svg class="h-6 w-6 absolute -top-[1px] -left-[1.5px] text-[#25F4EE] opacity-70" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
+								</svg>
+								<svg class="h-6 w-6 absolute top-[1px] left-[1.5px] text-[#FE2C55] opacity-70" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
+								</svg>
+							</div>
+						)}
+						{social.icon === 'youtube' && (
+							<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+							</svg>
+						)}
+						{social.icon === 'instagram' && (
+							<svg
+								class="h-6 w-6 opacity-90"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+								<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+								<line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+							</svg>
+						)}
+						{social.icon === 'facebook' && (
+							<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+							</svg>
+						)}
+						{social.icon === 'linkedin' && (
+							<svg class="h-6 w-6 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+							</svg>
+						)}
+						{social.icon === 'spotify' && (
+							<svg class="h-6 w-6 opacity-100" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M12 0C5.378 0 0 5.378 0 12s5.378 12 12 12 12-5.378 12-12S18.622 0 12 0zm5.503 17.306c-.215.352-.676.463-1.028.249-2.834-1.733-6.401-2.126-10.603-1.166-.404.093-.807-.156-.899-.56-.092-.403.156-.806.56-.899 4.606-1.053 8.563-.605 11.72 1.327.352.215.463.676.25 1.029zm1.47-3.255c-.271.442-.847.585-1.289.313-3.243-1.993-8.194-2.57-12.032-1.406-.5.151-1.028-.13-1.179-.629s.13-1.028.629-1.179c4.394-1.334 9.845-.694 13.558 1.587.442.272.585.847.313 1.289l.003.001zm.126-3.411C15.209 8.33 8.79 8.118 5.026 9.26c-.598.181-1.23-.16-1.41-.758-.181-.598.16-1.23.758-1.41 4.316-1.31 11.418-1.06 15.908 1.606.538.319.714 1.01.395 1.548-.319.537-1.01.714-1.547.395l-.001.001z" />
+							</svg>
+						)}
+					</Fragment>
+				</SocialCard>
+			))
+		}
 	</div>
 </section>
