@@ -215,6 +215,23 @@ body {
 	transform: scale(1.2);
 }
 
+@media (max-width: 768px) {
+	.carousel-dots {
+		gap: 0.3rem;
+		padding: 0.3rem 0.6rem;
+		bottom: 1rem;
+	}
+
+	.carousel-dot {
+		height: 2.9px;
+		width: 4.5px;
+	}
+
+	.carousel-dot.is-active {
+		width: 20px;
+	}
+}
+
 @media print {
 	/* Ocultar elementos de navegación y UI no imprimibles */
 	header,
