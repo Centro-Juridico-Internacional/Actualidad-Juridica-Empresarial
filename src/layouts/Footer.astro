@@ -1,12 +1,17 @@
 ---
-// Social media item interface
+/**
+ * FOOTER COMPONENT V3
+ * High-end institutional design using Tailwind CSS
+ * Optimized for mobile and desktop
+ */
+import SocialIcon from "../components/ui/SocialIcon.astro";
+
 interface SocialMediaItem {
 	name: string;
 	url: string;
 	icon: string;
 }
 
-// Social media links data
 const SOCIALMEDIA: SocialMediaItem[] = [
 	{
 		name: 'Linkedin',
@@ -34,168 +39,165 @@ const SOCIALMEDIA: SocialMediaItem[] = [
 		icon: '/footer/tiktok.svg'
 	}
 ];
+
+const LOCATIONS = [
+	{
+		id: 'Bogota',
+		city: 'Bogotá',
+		name: 'Sede Principal',
+		address: 'Carrera 24 No. 27 a 21',
+		mapUrl: 'https://maps.app.goo.gl/9hVc2UAe7Wyuq7eV9',
+		tels: ['601 241 51 00', '601 626 50 41'],
+		cels: ['312 490 21 43', '300 218 32 46'],
+		email: 'consulta@centrojuridicointernacional.com',
+		flag: '/footer/col.svg'
+	},
+	{
+		id: 'Villavicencio',
+		city: 'Villavicencio',
+		name: 'Sede Regional',
+		address: 'Calle 15 # 40 - 01 - C.C. Primavera Urbana - Of. 635',
+		mapUrl: 'https://maps.app.goo.gl/da2ug4j4frULwEXFA',
+		tels: ['608 678 39 15'],
+		cels: ['317 646 77 53', '314 203 34 97'],
+	},
+	{
+		id: 'Ibague',
+		city: 'Ibagué',
+		name: 'Sede Regional',
+		address: 'Carrara 6 No. 53-54 - Ed. Torreon - Of. 801',
+		mapUrl: 'https://maps.app.goo.gl/88FCDmD3sRTmgn1m9',
+		tels: ['608 276 18 05'],
+		cels: ['317 471 90 18', '317 479 82 05'],
+	},
+	{
+		id: 'Tunja',
+		city: 'Tunja',
+		name: 'Sede Regional',
+		address: 'Carrera 1F #40 - 149 - Ed. Marca Torre 2 - Of. 518',
+		mapUrl: 'https://maps.app.goo.gl/PeRCeMW8TuKQMJMn9',
+		tels: ['608 740 19 66'],
+		cels: ['316 025 44 62', '310 518 23 20'],
+	},
+	{
+		id: 'Chia',
+		city: 'Chía',
+		name: 'Sede Regional',
+		address: 'Km. 1.5 via Chía-Cajicá - OXus Centro Empresarial - Of. 308',
+		mapUrl: 'https://maps.app.goo.gl/Hafmhcwfy7x9GtEu6',
+		tels: ['601 863 01 31'],
+		cels: ['310 518 23 47', '317 513 24 62'],
+	},
+	{
+		id: 'USA',
+		city: 'Miami',
+		name: 'Contacto Internacional',
+		address: '1395 Brickel AVE, 8TH FLOOR, MIAMI, FL 33131',
+		mapUrl: 'https://maps.google.com/?q=1395+Brickell+Ave+Miami+FL+33131',
+		tels: [],
+		cels: [],
+		flag: '/footer/usa.svg'
+	}
+];
 ---
 
-<footer
-	class="h-fit w-screen bg-[#084A00] text-[10px] text-gray-50 sm:text-base pb-15 md:pd-0"
-	transition:name="footer"
->
-	<div class="flex h-fit w-full">
-		<img
-			src="/footer/logo.svg"
-			alt="logoImage"
-			class="w-full bg-white pt-20"
-			loading="lazy"
-			decoding="async"
-		/>
-	</div>
-	<div class="flex flex-wrap justify-center xl:flex-nowrap">
-		<div
-			class="mx-4 flex h-fit w-[80vw] items-start justify-center gap-x-12 bg-[#084A00] sm:ml-8 xl:w-1/2 xl:flex-nowrap"
-		>
-			<div id="Bogota" class="mb-8 flex w-1/3 flex-col">
-				<h3 class="flex justify-between text-[80%]">
-					SEDE PRINCIPAL BOGOTA <img
-						src="/footer/col.svg"
-						alt="imageCol"
-						class="w-auto max-w-12"
-						loading="lazy"
-						decoding="async"
-					/>
-				</h3>
-				<p>
-					Dirección: <a
-						href="https://maps.app.goo.gl/9hVc2UAe7Wyuq7eV9"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600">Carrera 24 No. 27 a 21</a
-					>
-					<br />Tels: 601 241 51 00<br />601 245 18 44<br />601 626 50 41<br />Cel: 312 490 21 43<br
-					/>300 218 32 46<br />311 382 06 19<br />Bogotá - Colombia
-				</p>
-
-				<p class="w-fit">
-					Email:
-					<a
-						href="mailto:consulta3@centrojuridicointernacional.com"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600">consulta@centrojuridicointernacional.com</a
-					>
-				</p>
+<footer class="bg-[#042501] text-gray-300 font-sans py-12 md:py-20 border-t border-white/5 w-full overflow-hidden" transition:name="footer">
+	<div class="max-w-[1400px] mx-auto px-6 md:px-8">
+		<!-- Top Section -->
+		<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 pb-12 mb-12 border-b border-white/10">
+			<div class="flex flex-col gap-4">
+				<img src="/footer/logo.svg" alt="Centro Jurídico Internacional" class="h-16 md:h-20 w-auto self-start" />
+				<p class="text-lg md:text-xl text-[#c5a059] font-medium italic">Excelencia Jurídica sin fronteras.</p>
 			</div>
-			<div id="Villavicencio" class="mb-8 w-fit max-w-1/3">
-				<h3 class="flex items-center text-[100%]">SEDE VILLAVICENCIO</h3>
-				<p>
-					Dirección: <a
-						href="https://maps.app.goo.gl/da2ug4j4frULwEXFA"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600"
-						>Calle 15 # 40 - 01 <br />Barrio el Buque - C.C. Primavera Urbana - Oficina 635<br /></a
-					>Tel: 608 678 39 15<br />Cel: 317 646 77 53<br />314 203 34 97<br />310 518 23 10
-				</p>
-			</div>
-			<div id="Ibague" class="mb-8 w-fit max-w-1/3">
-				<h3 class="flex items-center text-[100%]">SEDE IBAGUÉ</h3>
-				<p>
-					Dirección: <a
-						href="https://maps.app.goo.gl/88FCDmD3sRTmgn1m9"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600"
-						>Carrara 6 No. 53-54 <br />Torre 1 oficina 801 Edificio Torreon<br />Empresarial<br
-						/></a
-					>Tel: 608 276 18 05<br />Cel: 317 471 90 18<br />317 479 82 05
-				</p>
+			
+			<div class="flex flex-col md:flex-row gap-6 w-full lg:w-auto">
+				<!-- Contact Card 1 -->
+				<div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 flex-1 min-w-[300px]">
+					<div class="w-12 h-12 flex items-center justify-center bg-[#c5a059]/10 text-[#c5a059] rounded-xl text-2xl">✉</div>
+					<div class="flex flex-col overflow-hidden">
+						<span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 mb-0.5">Email Consultas</span>
+						<a href="mailto:consulta@centrojuridicointernacional.com" class="text-white font-bold hover:text-[#c5a059] transition-colors truncate text-sm sm:text-base">consulta@centrojuridicointernacional.com</a>
+					</div>
+				</div>
+				<!-- Contact Card 2 -->
+				<div class="flex items-center gap-4 bg-white/5 p-5 rounded-2xl border border-white/10 flex-1 min-w-[240px]">
+					<div class="w-12 h-12 flex items-center justify-center bg-[#c5a059]/10 text-[#c5a059] rounded-xl text-2xl">📞</div>
+					<div class="flex flex-col">
+						<span class="text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 mb-0.5">Línea Nacional</span>
+						<a href="tel:+576012415100" class="text-white font-bold hover:text-[#c5a059] transition-colors text-sm sm:text-base">+57 (601) 241 51 00</a>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div
-			class="mx-4 flex h-fit w-[95vw] items-start justify-center gap-x-12 bg-[#084A00] sm:ml-8 md:w-[80vw] xl:w-1/2 xl:flex-nowrap"
-		>
-			<div id="Tunja" class="mb-8 w-1/3">
-				<h3 class="flex items-center text-[100%]">SEDE TUNJA</h3>
-				<p>
-					Dirección: <a
-						href="https://maps.app.goo.gl/PeRCeMW8TuKQMJMn9"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600">Carrera 1F #40 - 149 <br />Ed. Marca Torre 2 oficina 518<br /></a
-					>Tel: 608 740 19 66<br />Tel: 608 276 18 05<br />Cel: 316 025 44 62<br />310 518 23 20
-				</p>
-			</div>
-			<div id="Chia" class="mb-8 w-1/3">
-				<h3 class="flex items-center text-[100%]">SEDE CHÍA</h3>
-				<p>
-					Dirección: <a
-						href="https://maps.app.goo.gl/Hafmhcwfy7x9GtEu6"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-blue-600"
-						><br />OXus centro empresarial<br />km. 1.5 via chía cajíca costado <br />occidental
-						ofc. 308<br /></a
-					>Tel: 601 863 01 31 <br />Cel: 310 518 23 47 <br />317 513 24 62
-				</p>
-			</div>
-			<div id="Usa" class="mb-8 w-1/3">
-				<h3 class="flex justify-between text-[80%]">
-					CONTACTO USA <img
-						src="/footer/usa.svg"
-						alt="imageUsa"
-						class="w-2/10"
-						loading="lazy"
-						decoding="async"
-					/>
-				</h3>
-				<p>
-					Dirección: 1395 Brickel AVE. <br />8 TH FLOOR<br />MIAMI, FL<br />Acevedo Associates<br
-					/>Miami - USA 33131<br />
-				</p>
-			</div>
-		</div>
-	</div>
-	<div
-		class="ml-2 flex flex-wrap items-center justify-center pb-8 md:ml-8 lg:flex-nowrap lg:justify-between"
-	>
-		<p>
-			LEY ESTATUTARIA 1581 DE 2012 (Octubre 17) <br />Reglamentada parcialmente por el Decreto
-			Nacional 1377 de 2013.<br />Por la cual se dictan disposiciones generales para la protección
-			de datos personales <a
-				href="/footer/PPDP.pdf"
-				class="text-blue-600"
-				target="_blank"
-				rel="noopener noreferrer">Conocerlas Aquí</a
-			>
-		</p>
 
-		<div
-			class="mt-8 mr-4 h-fit w-[90%] rounded-l-[8rem] rounded-r-[8rem] bg-[#D1AE6D] sm:w-1/2 md:mr-0 lg:mt-0 lg:w-1/3 lg:rounded-r-[0rem]"
-		>
-			<div class="flex items-center justify-center gap-x-4 px-2 py-5">
-				{
-					SOCIALMEDIA.map((item) => {
-						return (
-							<a href={item.url} class="w-1/7" target="_blank" rel="noopener noreferrer">
-								<img
-									src={item.icon}
-									alt={`${item.name}Image`}
-									class="max-h-96 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105"
-									loading="lazy"
-									decoding="async"
-								/>
+		<!-- Locations Grid -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-x-8 gap-y-12 mb-16">
+			{LOCATIONS.map((loc) => (
+				<div class="flex flex-col gap-4" id={loc.id}>
+					<h4 class="text-white text-xs md:text-[13px] uppercase tracking-[0.2em] font-black flex items-center justify-between border-b-2 border-[#c5a059]/30 pb-3">
+						{loc.city}
+						{loc.flag && <img src={loc.flag} alt={`${loc.city} flag`} class="h-4 w-auto drop-shadow-sm" />}
+					</h4>
+					<div class="flex flex-col gap-4">
+						<div class="flex flex-col gap-1">
+							<span class="text-[#c5a059] text-[10px] font-bold uppercase tracking-widest">{loc.name}</span>
+							<a href={loc.mapUrl} target="_blank" rel="noopener noreferrer" class="text-gray-200 text-sm leading-relaxed hover:text-white inline-block transition-all hover:translate-x-1">
+								{loc.address}
 							</a>
-						);
-					})
-				}
+						</div>
+						
+						{(loc.tels.length > 0 || loc.cels.length > 0) && (
+							<div class="flex flex-col gap-2 p-3 bg-white/5 rounded-lg border border-white/5">
+								{loc.tels.map(t => (
+									<div class="flex items-center gap-2 text-xs">
+										<span class="text-[#c5a059] font-bold">Teléfono.</span>
+										<span class="text-gray-400 font-medium">{t}</span>
+									</div>
+								))}
+								{loc.cels.map(c => (
+									<div class="flex items-center gap-2 text-xs">
+										<span class="text-[#c5a059] font-bold">Celular.</span>
+										<span class="text-gray-400 font-medium">{c}</span>
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+				</div>
+			))}
+		</div>
+
+		<!-- Bottom Section -->
+		<div class="flex flex-col lg:flex-row justify-between items-center gap-12 pt-10 pb-[6dvh] border-t border-white/10">
+			<!-- Social & Legal -->
+			<div class="flex flex-col sm:flex-row items-center gap-8 w-full lg:w-auto">
+				<div class="flex gap-4">
+					{SOCIALMEDIA.map((social) => (
+						<a 
+							href={social.url} 
+							target="_blank" 
+							rel="noopener noreferrer" 
+							class="w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-[#c5a059] hover:-translate-y-1 group shadow-lg" 
+							aria-label={social.name}
+						>
+							<SocialIcon name={social.name} class="text-gray-400 group-hover:text-black" />
+						</a>
+					))}
+				</div>
+				<div class="h-10 w-[1px] bg-white/10 hidden sm:block"></div>
+				<div class="text-center sm:text-left">
+					<p class="text-xs font-black text-white uppercase tracking-widest mb-1">Protección de Datos</p>
+					<a href="/footer/PPDP.pdf" target="_blank" class="text-sm text-[#c5a059] hover:text-white transition-colors underline decoration-[#c5a059]/30 underline-offset-4">Ver política de privacidad</a>
+				</div>
+			</div>
+			
+			<!-- Copyright -->
+			<div class="text-center lg:text-right lg:mt-0">
+				<p class="text-sm text-gray-500 font-medium tracking-wide">
+					© {new Date().getFullYear()} Centro Jurídico Internacional. <br class="sm:hidden" /> 
+					<span class="hidden sm:inline">|</span> Todos los derechos reservados.
+				</p>
 			</div>
 		</div>
 	</div>
 </footer>
-<style>
-	footer h3 {
-		color: #ffffff;
-		letter-spacing: 0.1rem;
-		font-weight: 900;
-		margin-bottom: 1rem;
-	}
-</style>
