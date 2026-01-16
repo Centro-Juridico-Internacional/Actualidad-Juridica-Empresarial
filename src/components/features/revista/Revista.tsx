@@ -412,13 +412,15 @@ const Revista: React.FC<RevistaProps> = ({ pdfUrl, className, width, height }) =
 
 			{/* FlipBook */}
 			{isVisible && !error && (
-				<div className="revista-inner flex w-full justify-center">
-					<div className="revista-stage flex w-full justify-center">
+				<div className="revista-inner relative flex w-full flex-col items-center justify-center">
+					<div className="revista-stage relative flex w-full items-center justify-center overflow-hidden">
 						<div
-							className="w-full"
+							className="relative mx-auto"
 							style={
 								{
-									maxWidth: isMobile ? `${computedWidth}px` : 'var(--book-max-width)'
+									width: isMobile ? `${computedWidth}px` : 'var(--book-max-width)',
+									maxWidth: '100%',
+									height: `${computedHeight}px`
 								} as React.CSSProperties
 							}
 						>
