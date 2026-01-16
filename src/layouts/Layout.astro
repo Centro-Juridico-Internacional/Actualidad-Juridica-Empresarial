@@ -28,6 +28,7 @@ import {
 	getSchemaScript,
 	SITE_CONFIG
 } from '@/lib/schemaOrg';
+import WhatsApp from '@/components/ui/WhatsApp.astro';
 
 // Props interface
 interface Props extends LayoutSEOProps {
@@ -203,7 +204,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 				<slot />
 			</div>
 		</main>
-
+<WhatsApp />
 		<!-- Scroll To Top (Root Level for Z-Index) -->
 		<ScrollToTop client:idle />
 		<SideButtons />
