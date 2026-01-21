@@ -1,0 +1,340 @@
+/* Magazine base */
+.mag-root {
+	padding: 48px 16px 64px;
+}
+
+.mag-header {
+	text-align: center;
+	margin-bottom: 18px;
+}
+.mag-kicker {
+	font-size: 11px;
+	letter-spacing: 0.14em;
+	font-weight: 700;
+	color: rgb(4 120 87);
+}
+.mag-title {
+	margin-top: 8px;
+	font-size: 36px;
+	line-height: 1.1;
+	font-weight: 800;
+	color: rgb(17 24 39);
+}
+.mag-subtitle {
+	margin-top: 10px;
+	font-size: 13px;
+	color: rgb(75 85 99);
+}
+
+.mag-controls {
+	display: flex;
+	gap: 14px;
+	justify-content: center;
+	align-items: center;
+	margin: 18px 0 8px;
+	flex-wrap: wrap;
+}
+
+.mag-btn {
+	border: 1px solid rgb(229 231 235);
+	background: white;
+	color: rgb(31 41 55);
+	padding: 10px 14px;
+	border-radius: 12px;
+	font-weight: 700;
+	font-size: 13px;
+	box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+	transition:
+		transform 120ms ease,
+		opacity 120ms ease;
+}
+.mag-btn:hover:not(:disabled) {
+	transform: translateY(-1px);
+}
+.mag-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.mag-pill {
+	border: 1px solid rgb(229 231 235);
+	background: rgba(255, 255, 255, 0.85);
+	padding: 10px 16px;
+	border-radius: 999px;
+	font-weight: 800;
+	color: rgb(55 65 81);
+	font-size: 13px;
+}
+
+.mag-preload {
+	text-align: center;
+	font-size: 12px;
+	color: rgb(75 85 99);
+	margin-bottom: 18px;
+}
+.mag-preload-meta {
+	opacity: 0.75;
+}
+
+/* ✅ Stage: centrado y sin overflow */
+.mag-stage {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin: 0 auto;
+	max-width: 1400px;
+}
+
+/* Frame */
+.mag-frame {
+	border-radius: 22px;
+	background: linear-gradient(180deg, rgba(16, 185, 129, 0.09), rgba(255, 255, 255, 0.85));
+	border: 1px solid rgba(229, 231, 235, 0.9);
+	box-shadow: 0 24px 70px rgba(2, 6, 23, 0.1);
+
+	max-width: calc(100vw - 24px);
+	overflow: hidden;
+	position: relative;
+}
+
+/* Para evitar que “parpadeen” los bordes durante animación */
+.mag-frame--animating {
+	will-change: transform;
+}
+
+/* Book container */
+.mag-book {
+	position: relative;
+	perspective: 1400px;
+}
+
+/* Spread base (NO gap) */
+.mag-spread {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 0px; /* ✅ sin espacio entre hojas */
+	align-items: stretch;
+	position: relative;
+}
+
+/* Sombra del lomo (sin gap, solo sombra) */
+.mag-spine {
+	position: absolute;
+	left: 50%;
+	top: 0;
+	transform: translateX(-50%);
+	width: 18px;
+	height: 100%;
+	pointer-events: none;
+	background: linear-gradient(
+		90deg,
+		rgba(2, 6, 23, 0.12),
+		rgba(2, 6, 23, 0.02),
+		rgba(2, 6, 23, 0.12)
+	);
+	mix-blend-mode: multiply;
+	opacity: 0.35;
+}
+
+/* Flip layer */
+.mag-flip-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+}
+
+/* Under spread during animation */
+.mag-spread--under {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+/* Page slot */
+.mag-page {
+	background: #ffffff;
+	border-radius: 0px; /* ✅ sin rounded */
+	border: 1px solid rgba(229, 231, 235, 0.95);
+	box-shadow: 0 12px 22px rgba(2, 6, 23, 0.08);
+	overflow: hidden;
+	position: relative;
+}
+
+/* ✅ Nada negro */
+.mag-img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+	background: #ffffff;
+}
+
+/* Placeholder */
+.mag-page--placeholder {
+	background: radial-gradient(
+		circle at 30% 30%,
+		rgba(16, 185, 129, 0.1),
+		rgba(255, 255, 255, 0.95)
+	);
+}
+
+.mag-placeholder {
+	height: 100%;
+	display: grid;
+	place-items: center;
+	color: rgb(107 114 128);
+	user-select: none;
+}
+
+.mag-placeholder-inner {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 10px;
+	opacity: 0.9;
+}
+
+.mag-placeholder-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 999px;
+	background: rgba(16, 185, 129, 0.35);
+}
+
+.mag-placeholder-text {
+	font-size: 12px;
+	font-weight: 700;
+	opacity: 0.75;
+}
+
+/* Skeleton */
+.mag-skeleton {
+	height: 100%;
+	display: grid;
+	place-items: center;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(249, 250, 251, 1));
+}
+
+.mag-spinner {
+	width: 28px;
+	height: 28px;
+	border-radius: 999px;
+	border: 3px solid rgba(16, 185, 129, 0.18);
+	border-top-color: rgba(16, 185, 129, 0.8);
+	animation: magspin 700ms linear infinite;
+}
+.mag-skeleton-text {
+	margin-top: 10px;
+	font-size: 12px;
+	color: rgb(107 114 128);
+	font-weight: 600;
+}
+
+@keyframes magspin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.mag-hint {
+	text-align: center;
+	margin-top: 12px;
+	color: rgb(107 114 128);
+	font-weight: 600;
+}
+
+.mag-error {
+	max-width: 880px;
+	margin: 14px auto 0;
+	background: white;
+	border: 1px solid rgba(239, 68, 68, 0.35);
+	color: rgb(185 28 28);
+	padding: 12px 14px;
+	border-radius: 12px;
+	font-weight: 700;
+}
+
+/* Mobile single container */
+.mag-single {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+}
+
+/* =========================
+   FLIP SHEET (3D)
+   ========================= */
+.mag-sheet {
+	position: absolute;
+	top: 0;
+	/* Se coloca sobre la mitad que gira */
+	transform-style: preserve-3d;
+	transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	will-change: transform;
+	z-index: 50;
+}
+
+/* NEXT: gira la página derecha hacia la izquierda (eje en el lomo) */
+.mag-sheet--next {
+	left: 50%; /* empieza en la mitad derecha */
+	transform-origin: left center;
+	transform: rotateY(0deg);
+}
+
+/* PREV: gira la página izquierda hacia la derecha */
+.mag-sheet--prev {
+	left: 0;
+	transform-origin: right center;
+	transform: rotateY(0deg);
+}
+
+.mag-sheet--run.mag-sheet--next {
+	transform: rotateY(-180deg);
+}
+
+.mag-sheet--run.mag-sheet--prev {
+	transform: rotateY(180deg);
+}
+
+/* Caras */
+.mag-face {
+	position: absolute;
+	inset: 0;
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+	background: #fff;
+	/* separa 1px en Z para evitar z-fighting/flicker */
+	transform: translateZ(1px);
+}
+
+.mag-face--front {
+	/* normal */
+}
+
+.mag-face--back {
+	transform: rotateY(180deg) translateZ(1px);
+}
+
+/* Si aún no hay imagen, no mostramos “imagen rota” */
+.mag-face-blank {
+	width: 100%;
+	height: 100%;
+	background: #ffffff;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+	.mag-root {
+		padding: 26px 12px 44px;
+	}
+
+	.mag-title {
+		font-size: 30px;
+	}
+
+	.mag-frame {
+		max-width: calc(100vw - 18px);
+	}
+}

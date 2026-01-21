@@ -8,22 +8,86 @@ import type { NewsArticle } from '@/lib/api/news';
 interface Props {
 	currentSlug: string;
 	currentTitle: string;
-    categorySlugs?: string[];
+	categorySlugs?: string[];
 	limit?: number;
 }
 
 const { currentSlug, currentTitle, categorySlugs = [], limit = 4 } = Astro.props;
 
 // 1. Extract keywords from title (remove stopwords)
-const stopWords = ['de', 'la', 'el', 'en', 'y', 'a', 'los', 'se', 'del', 'las', 'por', 'un', 'una', 'con', 'no', 'sus', 'su', 'para', 'al', 'lo', 'como', 'más', 'pero', 'o', 'le', 'ir', 'ese', 'si', 'me', 'ya', 'todo', 'esta', 'son', 'mi', 'sin', 'sobre', 'este', 'tambien', 'nos', 'entre', 'cuando', 'muy', 'desde', 'estos', 'nosotros', 'durante', 'uno', 'ni', 'contra', 'ese', 'eso', 'mí', 'qué', 'otro', 'él', 'cual', 'poco', 'ella', 'estar', 'haber', 'cuyo', 'donde'];
+const stopWords = [
+	'de',
+	'la',
+	'el',
+	'en',
+	'y',
+	'a',
+	'los',
+	'se',
+	'del',
+	'las',
+	'por',
+	'un',
+	'una',
+	'con',
+	'no',
+	'sus',
+	'su',
+	'para',
+	'al',
+	'lo',
+	'como',
+	'más',
+	'pero',
+	'o',
+	'le',
+	'ir',
+	'ese',
+	'si',
+	'me',
+	'ya',
+	'todo',
+	'esta',
+	'son',
+	'mi',
+	'sin',
+	'sobre',
+	'este',
+	'tambien',
+	'nos',
+	'entre',
+	'cuando',
+	'muy',
+	'desde',
+	'estos',
+	'nosotros',
+	'durante',
+	'uno',
+	'ni',
+	'contra',
+	'ese',
+	'eso',
+	'mí',
+	'qué',
+	'otro',
+	'él',
+	'cual',
+	'poco',
+	'ella',
+	'estar',
+	'haber',
+	'cuyo',
+	'donde'
+];
 
 const getKeywords = (text: string) => {
-    return text.toLowerCase()
-        .replace(/[^\w\s\u00C0-\u00FF]/g, '') // Remove punctuation
-        .split(/\s+/)
-        .filter(w => w.length > 3 && !stopWords.includes(w))
-        .slice(0, 3) // Take top 3 keywords
-        .join(' ');
+	return text
+		.toLowerCase()
+		.replace(/[^\w\s\u00C0-\u00FF]/g, '') // Remove punctuation
+		.split(/\s+/)
+		.filter((w) => w.length > 3 && !stopWords.includes(w))
+		.slice(0, 3) // Take top 3 keywords
+		.join(' ');
 };
 
 const keywords = getKeywords(currentTitle);
@@ -32,39 +96,37 @@ const keywords = getKeywords(currentTitle);
 let relatedNews: NewsArticle[] = [];
 
 try {
-    if (keywords) {
-        const results = await searchNews({ query: keywords, pageSize: limit + 2 }); // Request more to filter current
-        relatedNews = results.products
-            .filter(n => n.slug !== currentSlug)
-            .slice(0, limit);
-    }
+	if (keywords) {
+		const results = await searchNews({ query: keywords, pageSize: limit + 2 }); // Request more to filter current
+		relatedNews = results.products.filter((n) => n.slug !== currentSlug).slice(0, limit);
+	}
 } catch (e) {
-    console.error("Error matching keywords relation:", e);
+	console.error('Error matching keywords relation:', e);
 }
 
 // 3. If not enough results, fill with Category matches (Fallback)
 if (relatedNews.length < limit) {
-    try {
-        const moreNeeded = limit - relatedNews.length;
-        // Don't exclude currentSlug here again in fetch if we handle it in filter, 
-        // but getLatestNews handles exclusion param.
-        const categoryNews = await getLatestNews(moreNeeded + 2, currentSlug, categorySlugs);
-        
-        // Merge without duplicates
-        const existingSlugs = new Set(relatedNews.map(n => n.slug));
-        for (const news of categoryNews) {
-            if (!existingSlugs.has(news.slug) && relatedNews.length < limit) {
-                relatedNews.push(news);
-                existingSlugs.add(news.slug);
-            }
-        }
-    } catch (e) {
-        console.error("Error matching category relation:", e);
-    }
+	try {
+		const moreNeeded = limit - relatedNews.length;
+		// Don't exclude currentSlug here again in fetch if we handle it in filter,
+		// but getLatestNews handles exclusion param.
+		const categoryNews = await getLatestNews(moreNeeded + 2, currentSlug, categorySlugs);
+
+		// Merge without duplicates
+		const existingSlugs = new Set(relatedNews.map((n) => n.slug));
+		for (const news of categoryNews) {
+			if (!existingSlugs.has(news.slug) && relatedNews.length < limit) {
+				relatedNews.push(news);
+				existingSlugs.add(news.slug);
+			}
+		}
+	} catch (e) {
+		console.error('Error matching category relation:', e);
+	}
 }
 ---
 
-<div class="grid gap-6 grid-cols-1">
+<div class="grid grid-cols-1 gap-6">
 	{
 		relatedNews.map((news: any) => (
 			<div class="group relative flex w-full items-start gap-3 border-b border-gray-100 pb-4 transition-colors hover:border-green-200 sm:gap-4 sm:pb-6">
@@ -72,7 +134,7 @@ if (relatedNews.length < limit) {
 				<div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-24">
 					<img
 						src={news.image}
-						alt={news.titulo}
+						alt={news.title}
 						class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 						loading="lazy"
 						decoding="async"
@@ -84,27 +146,29 @@ if (relatedNews.length < limit) {
 				<div class="flex min-w-0 flex-1 flex-col gap-1">
 					{/* Categoría */}
 					<a
-						href={`/categorias/${news.categorias[0]?.toLowerCase()}`}
+						href={`/categorias/${news.categories[0]?.toLowerCase()}`}
 						class="inline-block w-fit text-xs font-medium text-green-600 transition-colors first-letter:uppercase hover:text-green-700"
 					>
-						{news.categorias[0]?.trim()}
+						{news.categories[0]?.trim()}
 					</a>
 
 					{/* Título con truncamiento a 2 líneas */}
-					<h3 class="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 decoration-green-500 decoration-2 group-hover:underline sm:text-base">
+					<h3 class="line-clamp-2 text-sm leading-tight font-semibold text-gray-900 decoration-green-500 decoration-2 group-hover:underline sm:text-base">
 						<a href={`/noticia/${news.slug}`} class="hover:text-green-700">
-							{news.titulo}
+							{news.title}
 						</a>
 					</h3>
 
 					{/* Fecha */}
-					<time class="mt-1 text-xs text-gray-500">{news.dia}</time>
+					<time class="mt-1 text-xs text-gray-500">{news.day}</time>
 				</div>
 			</div>
 		))
 	}
-    
-    {relatedNews.length === 0 && (
-        <p class="text-sm text-gray-500 italic">No hay noticias relacionadas por ahora.</p>
-    )}
+
+	{
+		relatedNews.length === 0 && (
+			<p class="text-sm text-gray-500 italic">No hay noticias relacionadas por ahora.</p>
+		)
+	}
 </div>

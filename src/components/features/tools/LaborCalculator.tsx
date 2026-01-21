@@ -133,10 +133,14 @@ const LaborCalculator = () => {
 				{/* Fechas */}
 				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 					<div>
-						<label className="font-medium text-gray-700">Fecha Inicio</label>
+						<label htmlFor="start-date" className="font-medium text-gray-700">
+							Fecha Inicio
+						</label>
 						<input
+							id="start-date"
 							type="date"
 							required
+							placeholder="Selecciona la fecha de inicio"
 							value={startDate}
 							onChange={(e) => setStartDate(e.target.value)}
 							className="w-full rounded-xl border bg-gray-50 p-3 transition hover:border-green-300 focus:ring-2 focus:ring-green-300"
@@ -144,10 +148,14 @@ const LaborCalculator = () => {
 					</div>
 
 					<div>
-						<label className="font-medium text-gray-700">Fecha Fin</label>
+						<label htmlFor="end-date" className="font-medium text-gray-700">
+							Fecha Fin
+						</label>
 						<input
+							id="end-date"
 							type="date"
 							required
+							placeholder="Selecciona la fecha de fin"
 							value={endDate}
 							onChange={(e) => setEndDate(e.target.value)}
 							className="w-full rounded-xl border bg-gray-50 p-3 transition hover:border-green-300 focus:ring-2 focus:ring-green-300"
@@ -158,7 +166,9 @@ const LaborCalculator = () => {
 				{/* Salario */}
 				<div className="space-y-2">
 					<div className="flex items-center justify-between">
-						<label className="font-medium text-gray-700">Salario Mensual Base</label>
+						<label htmlFor="salary" className="font-medium text-gray-700">
+							Salario Mensual Base
+						</label>
 
 						<label className="flex items-center gap-2 text-sm">
 							<input
@@ -174,6 +184,7 @@ const LaborCalculator = () => {
 					</div>
 
 					<input
+						id="salary"
 						type="number"
 						disabled={useMinSalary}
 						placeholder="Ej: 2.000.000"

@@ -47,12 +47,12 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		);
 	};
 
-	const { text: contentText, truncated } = product.contenido
-		? truncateBlocks(product.contenido, truncateWords)
+	const { text: contentText, truncated } = product.content
+		? truncateBlocks(product.content, truncateWords)
 		: { text: '', truncated: false };
 
-	const autorSlug = product.autorName
-		? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
+	const authorSlug = product.authorName
+		? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 		: '#';
 
 	// 👇 Detección automática del tamaño del contenedor
@@ -97,7 +97,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		>
 			{/* Categorías */}
 			<div className={`${isCompact ? 'mb-2.5 gap-1.5' : 'mb-4 gap-2'} flex flex-wrap`}>
-				{product.categorias?.map((cat: string, idx: number) => (
+				{product.categories?.map((cat: string, idx: number) => (
 					<a
 						key={cat + idx}
 						href={`/categorias/${cat.toLowerCase().replace(/\s+/g, '_')}`}
@@ -122,11 +122,11 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
 						} ${getTitleSizeClasses()}`}
 					>
-						{getHighlightedText(product.titulo, highlightQuery)}
+						{getHighlightedText(product.title, highlightQuery)}
 					</h3>
 				</a>
 
-				{showContent && product.contenido && (
+				{showContent && product.content && (
 					<div className={`${bgOverlay ? 'opacity-90' : ''}`}>
 						<div
 							className={`prose max-w-none text-gray-50 ${
@@ -165,15 +165,15 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					bgOverlay ? 'border-white/10' : 'border-gray-100'
 				}`}
 			>
-				{product.autorAvatar && (
+				{product.authorAvatar && (
 					<a
-						href={autorSlug}
-						title={product.autorName}
+						href={authorSlug}
+						title={product.authorName}
 						className="relative shrink-0 overflow-hidden rounded-full ring-2 ring-green-600/20 transition-transform hover:scale-105"
 					>
 						<img
-							src={product.autorAvatar}
-							alt={product.autorName}
+							src={product.authorAvatar}
+							alt={product.authorName}
 							className={`object-fill ${
 								isCompact ? 'h-8 w-8 sm:h-9 sm:w-9' : 'h-10 w-10 md:h-12 md:w-12'
 							}`}
@@ -185,19 +185,19 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 
 				<div className="flex min-w-0 flex-col">
 					<a
-						href={autorSlug}
+						href={authorSlug}
 						className={`truncate font-medium ${
 							bgOverlay ? 'text-white hover:text-green-300' : 'text-gray-900 hover:text-green-700'
 						} ${isCompact ? 'text-[13px]' : 'text-sm md:text-base'}`}
 					>
-						{product.autorName}
+						{product.authorName}
 					</a>
 					<time
 						className={`${
 							bgOverlay ? 'text-white/80' : 'text-gray-500'
 						} ${isCompact ? 'text-[11px]' : 'text-xs md:text-sm'}`}
 					>
-						{product.dia}
+						{product.day}
 					</time>
 				</div>
 			</div>
@@ -211,7 +211,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 				{/* Imagen de fondo */}
 				<img
 					src={product.image}
-					alt={product.titulo}
+					alt={product.title}
 					className="absolute inset-0 h-full w-full object-cover object-center"
 					draggable={false}
 					loading={eagerImage ? 'eager' : 'lazy'}
@@ -223,7 +223,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 				<a
 					href={`/noticia/${product.slug}`}
 					className="absolute inset-0 z-0"
-					aria-label={`Leer más sobre ${product.titulo}`}
+					aria-label={`Leer más sobre ${product.title}`}
 				/>
 
 				{/* Contenido con z-index superior para que sus enlaces funcionen */}

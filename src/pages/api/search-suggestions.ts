@@ -53,10 +53,10 @@ export const GET: APIRoute = async ({ request }) => {
 			const imgRel = a.imagenes?.data?.attributes?.url ?? a.imagenes?.url ?? null;
 
 			return {
-				titulo: a.titulo ?? '',
+				title: a.titulo ?? '',
 				slug: a.slug ?? '',
 				image: imgRel ? withHost(imgRel) : DEFAULT_NEWS_IMAGE,
-				autorName: a.autor?.data?.attributes?.name ?? a.autor?.name ?? null
+				authorName: a.autor?.data?.attributes?.name ?? a.autor?.name ?? null
 			};
 		});
 

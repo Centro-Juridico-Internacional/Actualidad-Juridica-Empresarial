@@ -33,7 +33,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
 				<div key={item.slug} className="relative h-full overflow-hidden rounded-3xl">
 					<img
 						src={item.image || ''}
-						alt={item.titulo}
+						alt={item.title}
 						className="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
 						loading="eager"
 						decoding="async"

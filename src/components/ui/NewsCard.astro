@@ -21,20 +21,20 @@ interface Props {
 const { product, truncateWords = 30, className = '' }: Props = Astro.props;
 
 // Generate author slug for link
-const autorSlug: string = product.autorName
-	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
+const authorSlug: string = product.authorName
+	? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
 // Truncate content blocks to specified word count
-const { text: contentText, truncated } = truncateBlocks(product.contenido, truncateWords);
+const { text: contentText, truncated } = truncateBlocks(product.content, truncateWords);
 ---
 
 <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md">
 	<!-- Imagen con overlay gradual (altura consistente) -->
 	<div class="relative aspect-[16/9] w-full overflow-hidden">
 		<Image
-			src={product.image}
-			alt={`${product.titulo} imagen`}
+			src={product.image || '/news-default.png'}
+			alt={`${product.title} imagen`}
 			width={800}
 			height={450}
 			class="h-full w-full object-cover transition-transform duration-700 ease-in-out"
@@ -54,10 +54,10 @@ const { text: contentText, truncated } = truncateBlocks(product.contenido, trunc
 			<span
 				class="relative z-20 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700"
 			>
-				{product.dia} • {product.hora}
+				{product.day} • {product.time}
 			</span>
 			{
-				product.categorias.map((item: any) => (
+				product.categories.map((item: any) => (
 					<a
 						href={`/categorias/${item.toLowerCase()}`}
 						class="relative z-20 inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase hover:bg-green-50 hover:text-green-700"
@@ -75,9 +75,9 @@ const { text: contentText, truncated } = truncateBlocks(product.contenido, trunc
 			<a
 				href={`/noticia/${product.slug}`}
 				class="after:absolute after:inset-0 after:z-10"
-				aria-label={product.titulo}
+				aria-label={product.title}
 			>
-				{product.titulo}
+				{product.title}
 			</a>
 		</h3>
 
@@ -88,14 +88,14 @@ const { text: contentText, truncated } = truncateBlocks(product.contenido, trunc
 
 		<!-- Video de YouTube si existe (altura consistente) -->
 		{
-			product.UrlYoutube && (
+			product.youtubeUrl && (
 				<div
 					class="relative z-20 mb-4 aspect-video overflow-hidden rounded-xl shadow-sm"
-					data-videoid={product.UrlYoutube}
+					data-videoid={product.youtubeUrl}
 				>
 					<YouTubeLite
-						videoid={product.UrlYoutube}
-						title={product.titulo}
+						videoid={product.youtubeUrl}
+						title={product.title}
 						client:visible
 						transition:persist
 					/>
@@ -106,13 +106,13 @@ const { text: contentText, truncated } = truncateBlocks(product.contenido, trunc
 		<!-- Empuja autor al fondo para que la card llene la fila -->
 		<div class="mt-auto flex items-center gap-3 border-t border-gray-100 pt-4">
 			<a
-				href={autorSlug}
-				title={product.autorName}
+				href={authorSlug}
+				title={product.authorName}
 				class="relative z-20 overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
 			>
 				<Image
-					src={product.autorAvatar}
-					alt={product.autorName}
+					src={product.authorAvatar || '/avatar-default.png'}
+					alt={product.authorName}
 					width={40}
 					height={40}
 					class="h-10 w-10 object-fill"
@@ -121,10 +121,10 @@ const { text: contentText, truncated } = truncateBlocks(product.contenido, trunc
 				/>
 			</a>
 			<div class="relative z-20 flex flex-col">
-				<a href={autorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
-					{product.autorName}
+				<a href={authorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
+					{product.authorName}
 				</a>
-				<span class="text-xs text-gray-500">{product.autorRol ?? 'Autor'}</span>
+				<span class="text-xs text-gray-500">{product.authorRole ?? 'Autor'}</span>
 			</div>
 		</div>
 	</div>

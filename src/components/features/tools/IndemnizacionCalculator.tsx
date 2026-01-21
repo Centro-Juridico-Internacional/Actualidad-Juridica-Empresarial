@@ -87,13 +87,16 @@ const IndemnizacionCalculator = () => {
 					<div className="flex items-center gap-2">
 						<input
 							type="checkbox"
+							id="use-smmlv"
 							checked={useSMMLV}
 							onChange={(e) => {
 								setUseSMMLV(e.target.checked);
 								if (e.target.checked) setSalary(String(SALARIO_MINIMO_2025));
 							}}
 						/>
-						<span className="text-sm text-gray-600">Usar SMMLV 2025</span>
+						<label htmlFor="use-smmlv" className="text-sm text-gray-600">
+							Usar SMMLV 2025
+						</label>
 					</div>
 
 					<input
@@ -115,6 +118,7 @@ const IndemnizacionCalculator = () => {
 							value={years}
 							onChange={(e) => setYears(e.target.value)}
 							className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-red-300"
+							placeholder="Ej: 2"
 						/>
 					</div>
 					<div>
@@ -124,14 +128,18 @@ const IndemnizacionCalculator = () => {
 							value={months}
 							onChange={(e) => setMonths(e.target.value)}
 							className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-red-300"
+							placeholder="Ej: 6"
 						/>
 					</div>
 				</div>
 
 				{/* Tipo de contrato */}
 				<div>
-					<label className="font-medium">Tipo de contrato</label>
+					<label htmlFor="contract-type" className="font-medium">
+						Tipo de contrato
+					</label>
 					<select
+						id="contract-type"
 						value={contractType}
 						onChange={(e) => setContractType(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-red-300"
@@ -150,6 +158,7 @@ const IndemnizacionCalculator = () => {
 							value={fixedDuration}
 							onChange={(e) => setFixedDuration(e.target.value)}
 							className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-red-300"
+							placeholder="Ej: 12"
 						/>
 					</div>
 				)}

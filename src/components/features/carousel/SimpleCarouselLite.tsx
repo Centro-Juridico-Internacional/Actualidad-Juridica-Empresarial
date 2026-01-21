@@ -172,11 +172,11 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 				{slides.map((child, i) => (
 					<div
 						key={i}
+						id={`slide-${i}`}
 						className={`carousel-slide ${i === index ? 'is-active' : ''}`}
 						role="group"
 						aria-roledescription="diapositiva"
 						aria-label={`${i + 1} de ${len}`}
-						aria-hidden={i !== index ? 'true' : 'false'}
 						tabIndex={i === index ? 0 : -1}
 					>
 						<div className="carousel-slide-inner">{child}</div>
@@ -232,14 +232,12 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 			)}
 
 			{dots && len > 1 && (
-				<div className="carousel-dots" role="tablist">
+				<div className="carousel-dots">
 					{slides.map((_, i) => (
 						<button
 							key={i}
 							type="button"
-							role="tab"
-							aria-selected={i === index ? 'true' : 'false'}
-							aria-controls={`slide-${i}`}
+							aria-label={`Ir a diapositiva ${i + 1}`}
 							onClick={() => goTo(i)}
 							className={`carousel-dot ${i === index ? 'is-active' : ''}`}
 						>

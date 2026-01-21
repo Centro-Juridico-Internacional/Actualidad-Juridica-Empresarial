@@ -78,7 +78,7 @@ export default defineConfig({
     },
 
     ssr: {
-      noExternal: ["@fontsource-variable/*"],
+      noExternal: ["@fontsource-variable/*", "@jaymanyoo/pdf-book-viewer"],
     },
   },
 

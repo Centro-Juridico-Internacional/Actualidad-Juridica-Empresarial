@@ -57,16 +57,16 @@ const getPlainText = (text: any) => {
 		.trim();
 };
 
-const words = countWords(product.contenido);
-const plainText = getPlainText(product.contenido);
+const words = countWords(product.content);
+const plainText = getPlainText(product.content);
 const readingTime = Math.ceil(words / 200); // 200 words per minute average
 
 // SEO Description: Get first 160 characters of plain text as meta description
 const metaDescription = plainText.slice(0, 157) + (plainText.length > 157 ? '...' : '');
 
 // Generate author slug for navigation
-const autorSlug: string = product.autorName
-	? `/autores/${product.autorName.toLowerCase().replace(/\s+/g, '_')}`
+const authorSlug: string = product.authorName
+	? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
 // Get origin for absolute URLs
@@ -79,19 +79,19 @@ const { origin, href } = Astro.url;
 // 1. NewsArticle Schema (mejorado)
 const newsArticleSchema = generateNewsArticleSchema(
 	{
-		headline: product.titulo,
+		headline: product.title,
 		description: metaDescription,
 		//@ts-ignore
 		image: product.image || undefined,
 		datePublished: product.publishedAt || new Date().toISOString(),
 		dateModified: product.updatedAt || product.publishedAt || new Date().toISOString(),
-		author: product.autorName
+		author: product.authorName
 			? {
-					name: product.autorName,
-					url: `${origin}${autorSlug}`,
-					...(product.autorAvatar && {
+					name: product.authorName,
+					url: `${origin}${authorSlug}`,
+					...(product.authorAvatar && {
 						image: {
-							url: product.autorAvatar
+							url: product.authorAvatar
 						}
 					})
 				}
@@ -103,7 +103,7 @@ const newsArticleSchema = generateNewsArticleSchema(
 		},
 		mainEntityOfPage: href,
 		articleBody: plainText.slice(0, 5000),
-		keywords: product.categorias.slice(0, 5),
+		keywords: product.categories.slice(0, 5),
 		wordCount: words
 	},
 	origin
@@ -117,23 +117,23 @@ console.log('NewsArticle Validation:', newsSchemaValidation);
 const breadcrumbs = [
 	{ url: origin, name: 'Inicio' },
 	{ url: `${origin}/noticia`, name: 'Noticias' },
-	...product.categorias.map((cat: string) => ({
+	...product.categories.map((cat: string) => ({
 		url: `${origin}/categorias/${cat.toLowerCase().replace(/\s+/g, '-')}`,
 		name: cat
 	})),
-	{ url: href, name: product.titulo }
+	{ url: href, name: product.title }
 ];
 
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs, origin);
 
 // 3. Video Schema (opcional, si hay YouTube URL)
 let videoSchema = null;
-if (product.UrlYoutube) {
+if (product.youtubeUrl) {
 	videoSchema = generateVideoSchema(
 		{
-			name: product.titulo,
+			name: product.title,
 			description: metaDescription,
-			youtubeUrl: product.UrlYoutube,
+			youtubeUrl: product.youtubeUrl,
 			publishedAt: product.publishedAt || new Date().toISOString(),
 			thumbnailUrl: product.image || undefined
 		},
@@ -144,8 +144,7 @@ if (product.UrlYoutube) {
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
-<!-- Schema.org JSON-LD Scripts -->
-<!-- 1. NewsArticle (Obligatorio) -->
+<!-- Schema.org JSON-LD Scripts --><!-- 1. NewsArticle (Obligatorio) -->
 <Fragment set:html={getSchemaScript(newsArticleSchema)} />
 
 <!-- 2. BreadcrumbList (Altamente recomendado) -->
@@ -155,9 +154,9 @@ if (product.UrlYoutube) {
 {videoSchema && <Fragment set:html={getSchemaScript(videoSchema)} />}
 
 <Layout
-	title={product.titulo}
+	title={product.title}
 	booleanLayout={true}
-	breadcrumbTitle={product.titulo}
+	breadcrumbTitle={product.title}
 	description={metaDescription}
 	ogImage={product.image || undefined}
 	ogImageWidth={1200}
@@ -165,8 +164,8 @@ if (product.UrlYoutube) {
 	ogType="article"
 	publishedAt={product.publishedAt || undefined}
 	updatedAt={product.updatedAt || undefined}
-	authorName={product.autorName || undefined}
-	authorUrl={`${origin}${autorSlug}`}
+	authorName={product.authorName || undefined}
+	authorUrl={`${origin}${authorSlug}`}
 >
 	<ReadingProgressBar client:load targetId="news-article-content" />
 
@@ -175,7 +174,7 @@ if (product.UrlYoutube) {
 		<div class="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
 			<img
 				src={product.image}
-				alt={`${product.titulo} imagen`}
+				alt={`${product.title} imagen`}
 				class="absolute inset-0 h-full w-full object-cover"
 				loading="eager"
 				decoding="async"
@@ -186,7 +185,7 @@ if (product.UrlYoutube) {
 				<div class="animate-slideUp max-w-3xl">
 					<div class="mb-6 flex flex-wrap gap-3">
 						{
-							product.categorias.map((cat: string) => (
+							product.categories.map((cat: string) => (
 								<a
 									href={`/categorias/${cat.toLowerCase()}`}
 									class="rounded-full bg-green-500/90 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-green-600"
@@ -201,18 +200,18 @@ if (product.UrlYoutube) {
 							⏱️ {readingTime} min lectura
 						</span>
 					</div>
-						<h1
-							class="text-2xl leading-tight font-bold break-words text-white sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl"
-						>
-							{product.titulo}
-						</h1>
+					<h1
+						class="text-2xl leading-tight font-bold break-words text-white sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl"
+					>
+						{product.title}
+					</h1>
 				</div>
 			</div>
 		</div>
 
 		<!-- Contenido Principal -->
 		<div class="container-main px-4 py-12 sm:px-6 lg:px-0">
-			<Breadcrumb title={product.titulo} className="mb-8" />
+			<Breadcrumb title={product.title} className="mb-8" />
 			<div class="grid gap-8 lg:grid-cols-[1fr_1fr_0.7fr]">
 				<!-- Artículo -->
 				<div class="lg:col-span-2">
@@ -220,19 +219,19 @@ if (product.UrlYoutube) {
 					<div
 						class="mb-8 flex flex-col justify-between gap-6 border-b border-gray-100 pb-6 sm:flex-row sm:items-center"
 					>
-						<a href={autorSlug} class="group flex items-center gap-3">
+						<a href={authorSlug} class="group flex items-center gap-3">
 							<img
-								src={product.autorAvatar}
-								alt={product.autorName}
+								src={product.authorAvatar}
+								alt={product.authorName}
 								class="h-12 w-12 rounded-full ring-2 ring-green-100 transition-all group-hover:ring-green-300"
 								loading="lazy"
 							/>
 							<div>
 								<p class="font-medium text-gray-900 group-hover:text-green-600">
-									{product.autorName} - {product.autorRol ?? 'Autor'}
+									{product.authorName} - {product.authorRole ?? 'Autor'}
 								</p>
 								<p class="text-sm text-gray-500">
-									{product.dia} • {product.hora}
+									{product.day} • {product.time}
 								</p>
 							</div>
 						</a>
@@ -241,25 +240,25 @@ if (product.UrlYoutube) {
 							<SocialShare
 								client:visible
 								url={`${origin}/noticia/${newsId}`}
-								title={product.titulo}
+								title={product.title}
 							/>
 						</div>
 					</div>
 
 					<div class="mb-6 flex justify-end">
-						<ArticleAudioPlayer client:load title={product.titulo} content={plainText} />
+						<ArticleAudioPlayer client:load title={product.title} content={plainText} />
 					</div>
 					<!-- Contenido -->
 					<div
-						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none break-words overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 sm:px-6"
-						set:html={marked.parse(product.contenido as string)}
+						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 break-words sm:px-6"
+						set:html={marked.parse(product.content as string)}
 					/>
 
 					<!-- Video de YouTube -->
 					{
-						product.UrlYoutube && (
+						product.youtubeUrl && (
 							<div class="mt-12 overflow-hidden rounded-2xl shadow-lg">
-								<YouTubeLite videoid={product.UrlYoutube} title={product.titulo} client:visible />
+								<YouTubeLite videoid={product.youtubeUrl} title={product.title} client:visible />
 							</div>
 						)
 					}
@@ -269,12 +268,12 @@ if (product.UrlYoutube) {
 				<aside class="space-y-6 lg:sticky lg:top-8">
 					<div class="rounded-2xl bg-white p-6 shadow-md">
 						<h2 class="mb-6 text-xl font-bold text-gray-900">
-							{product.categorias.length > 0 ? 'Noticias relacionadas' : 'Últimas noticias'}
+							{product.categories.length > 0 ? 'Noticias relacionadas' : 'Últimas noticias'}
 						</h2>
 						<SmartRelatedNews
 							currentSlug={newsId}
-							currentTitle={product.titulo}
-							categorySlugs={product.categorias.map((c) => c.toLowerCase())}
+							currentTitle={product.title}
+							categorySlugs={product.categories.map((c) => c.toLowerCase())}
 							limit={4}
 						/>
 					</div>
@@ -323,7 +322,6 @@ if (product.UrlYoutube) {
 		transition-property: transform;
 		transition-duration: 300ms;
 	}
-
 
 	:global(.prose blockquote) {
 		border-radius: 0.5rem;

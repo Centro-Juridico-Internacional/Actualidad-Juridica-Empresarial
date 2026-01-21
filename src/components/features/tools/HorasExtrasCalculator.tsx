@@ -76,7 +76,7 @@ const HorasExtrasCalculator = () => {
 				<div>
 					<label className="font-medium text-gray-700">Salario mensual</label>
 
-					<div className="mt-1 flex items-center gap-2">
+					<label className="mt-1 flex items-center gap-2">
 						<input
 							type="checkbox"
 							checked={useMin}
@@ -86,7 +86,7 @@ const HorasExtrasCalculator = () => {
 							}}
 						/>
 						<span className="text-sm">Usar SMMLV 2025</span>
-					</div>
+					</label>
 
 					<input
 						type="number"
@@ -107,6 +107,7 @@ const HorasExtrasCalculator = () => {
 							value={extraDiurna}
 							onChange={(e) => setExtraDiurna(Number(e.target.value))}
 							className="w-full rounded-xl border p-3"
+							placeholder="0"
 						/>
 					</div>
 
@@ -117,6 +118,7 @@ const HorasExtrasCalculator = () => {
 							value={extraNocturna}
 							onChange={(e) => setExtraNocturna(Number(e.target.value))}
 							className="w-full rounded-xl border p-3"
+							placeholder="0"
 						/>
 					</div>
 
@@ -127,6 +129,7 @@ const HorasExtrasCalculator = () => {
 							value={nocturnoOrdinario}
 							onChange={(e) => setNocturnoOrdinario(Number(e.target.value))}
 							className="w-full rounded-xl border p-3"
+							placeholder="0"
 						/>
 					</div>
 
@@ -137,6 +140,7 @@ const HorasExtrasCalculator = () => {
 							value={dominicalDiurna}
 							onChange={(e) => setDominicalDiurna(Number(e.target.value))}
 							className="w-full rounded-xl border p-3"
+							placeholder="0"
 						/>
 					</div>
 
@@ -147,6 +151,7 @@ const HorasExtrasCalculator = () => {
 							value={dominicalNocturna}
 							onChange={(e) => setDominicalNocturna(Number(e.target.value))}
 							className="w-full rounded-xl border p-3"
+							placeholder="0"
 						/>
 					</div>
 				</div>

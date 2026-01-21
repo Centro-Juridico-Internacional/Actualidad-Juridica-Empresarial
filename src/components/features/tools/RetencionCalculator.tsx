@@ -119,6 +119,7 @@ const RetencionCalculator = () => {
 					</label>
 					<input
 						type="number"
+						placeholder="Ej: 120.000"
 						value={dedSalud}
 						onChange={(e) => setDedSalud(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3"
@@ -132,6 +133,7 @@ const RetencionCalculator = () => {
 					</label>
 					<input
 						type="number"
+						placeholder="Ej: 120.000"
 						value={dedPension}
 						onChange={(e) => setDedPension(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3"
@@ -141,11 +143,14 @@ const RetencionCalculator = () => {
 				{/* Dependientes */}
 				<div className="flex items-center gap-2">
 					<input
+						id="dependientes"
 						type="checkbox"
 						checked={dependientes}
 						onChange={(e) => setDependientes(e.target.checked)}
 					/>
-					<label className="text-sm text-gray-700">Declarar dependientes (máx. 32 UVT)</label>
+					<label htmlFor="dependientes" className="text-sm text-gray-700">
+						Declarar dependientes (máx. 32 UVT)
+					</label>
 				</div>
 
 				{/* Intereses */}
@@ -156,6 +161,7 @@ const RetencionCalculator = () => {
 					</label>
 					<input
 						type="number"
+						placeholder="Ej: 0"
 						value={intereses}
 						onChange={(e) => setIntereses(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3"

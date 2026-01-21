@@ -7,9 +7,9 @@ interface SearchBarProps {
 }
 
 interface Suggestion {
-	titulo: string;
+	title: string;
 	slug: string;
-	autorName?: string;
+	authorName?: string;
 	image?: string;
 }
 
@@ -142,14 +142,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
 										<h4
 											className="truncate text-sm font-medium"
 											dangerouslySetInnerHTML={{
-												__html: item.titulo.replace(
+												__html: item.title.replace(
 													new RegExp(`(${searchQuery})`, 'gi'),
 													'<span class="text-green-600 font-bold">$1</span>'
 												)
 											}}
 										/>
-										{item.autorName && (
-											<p className="truncate text-xs text-gray-500">Por: {item.autorName}</p>
+										{item.authorName && (
+											<p className="truncate text-xs text-gray-500">Por: {item.authorName}</p>
 										)}
 									</div>
 								</a>

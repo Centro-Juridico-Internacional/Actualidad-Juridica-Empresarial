@@ -18,17 +18,17 @@ interface GetNewsParams {
 }
 
 export interface NewsArticle {
-	titulo: string;
-	contenido: StrapiBlockContent;
+	title: string;
+	content: StrapiBlockContent;
 	slug: string;
 	image: string | null;
-	dia: string;
-	hora: string;
-	UrlYoutube: string | null;
-	autorName: string | null;
-	autorAvatar: string | null;
-	autorRol: string | null;
-	categorias: string[];
+	day: string;
+	time: string;
+	youtubeUrl: string | null;
+	authorName: string | null;
+	authorAvatar: string | null;
+	authorRole: string | null;
+	categories: string[];
 	publishedAt: string | null;
 	updatedAt: string | null;
 }
@@ -70,26 +70,26 @@ function transformNewsItem(item: any): NewsArticle {
 	const date = new Date(fecha);
 
 	return {
-		titulo: a.titulo ?? '',
-		contenido: a.contenido ?? '', // Default to empty string for RichText
+		title: a.titulo ?? '',
+		content: a.contenido ?? '', // Default to empty string for RichText
 		slug: a.slug ?? '',
 		image: imageRel ? withHost(imageRel) : DEFAULT_NEWS_IMAGE,
-		dia: date.toLocaleDateString(DEFAULT_LOCALE, {
+		day: date.toLocaleDateString(DEFAULT_LOCALE, {
 			timeZone: DEFAULT_TIMEZONE,
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		}),
-		hora: date.toLocaleTimeString(DEFAULT_LOCALE, {
+		time: date.toLocaleTimeString(DEFAULT_LOCALE, {
 			timeZone: DEFAULT_TIMEZONE,
 			hour: '2-digit',
 			minute: '2-digit'
 		}),
-		UrlYoutube: a.UrlYoutube ?? null,
-		autorName: autor?.name ?? null,
-		autorAvatar: avatarRel ? withHost(avatarRel) : DEFAULT_AUTHOR_AVATAR,
-		autorRol: autor?.cargo ?? null,
-		categorias,
+		youtubeUrl: a.UrlYoutube ?? null,
+		authorName: autor?.name ?? null,
+		authorAvatar: avatarRel ? withHost(avatarRel) : DEFAULT_AUTHOR_AVATAR,
+		authorRole: autor?.cargo ?? null,
+		categories: categorias,
 		publishedAt: a.publishedAt ?? null,
 		updatedAt: a.updatedAt ?? null
 	};

@@ -248,6 +248,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 						onMouseEnter={() => setShowStopTooltip(true)}
 						onMouseLeave={() => setShowStopTooltip(false)}
 						className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-500 transition-colors hover:bg-red-100 hover:text-red-600"
+						title="Detener reproducción"
 					>
 						<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path

@@ -11,16 +11,16 @@ import NewsCard from '@/components/ui/NewsCard.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
 // Get author ID from route params
-const { autoresId } = Astro.params as { autoresId: string };
-if (!autoresId) throw Astro.redirect('/404');
+const { authorId } = Astro.params as { authorId: string };
+if (!authorId) throw Astro.redirect('/404');
 
 // Fetch all news articles
 const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
 
 // Filter articles by author slug
 const authorNews: NewsArticle[] = products.filter((item: NewsArticle) => {
-	const slug: string = (item.autorName || '').toLowerCase().replace(/\s+/g, '_');
-	return slug === autoresId;
+	const slug: string = (item.authorName || '').toLowerCase().replace(/\s+/g, '_');
+	return slug === authorId;
 });
 
 if (authorNews.length === 0) throw Astro.redirect('/404');
@@ -34,12 +34,16 @@ const capitalizeWords = (str: string): string => {
 };
 
 // Generate readable author name from slug
-const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
+const authorName: string = capitalizeWords(authorId.replace(/_/g, ' '));
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
-<Layout title={`Noticias de ${authorName}`} booleanLayout={true} breadcrumbTitle={`Noticias de ${authorName}`}>
+<Layout
+	title={`Noticias de ${authorName}`}
+	booleanLayout={true}
+	breadcrumbTitle={`Noticias de ${authorName}`}
+>
 	<div class="min-h-screen bg-gradient-to-b from-green-50/50 to-white">
 		<section class="container-main py-16">
 			<div class="relative mb-12 text-center">
@@ -55,8 +59,8 @@ const authorName: string = capitalizeWords(autoresId.replace(/_/g, ' '));
 					Descubre los últimos artículos y análisis de nuestro experto colaborador
 				</p>
 			</div>
-			
-			<Breadcrumb title={`Noticias de ${authorName}`} className="mb-6 mt-8" />
+
+			<Breadcrumb title={`Noticias de ${authorName}`} className="mt-8 mb-6" />
 
 			<div class="grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{

@@ -78,11 +78,12 @@ const AprendizajeCalculator = () => {
 			<form className="space-y-6" onSubmit={calc}>
 				{/* Fase */}
 				<div>
-					<label className="font-medium text-gray-700">
+					<label htmlFor="phase-select" className="font-medium text-gray-700">
 						Fase del contrato
 						<Tooltip text="La fase lectiva paga el 50% del SMMLV. La productiva, el 75%." />
 					</label>
 					<select
+						id="phase-select"
 						value={phase}
 						onChange={(e) => setPhase(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-teal-300"

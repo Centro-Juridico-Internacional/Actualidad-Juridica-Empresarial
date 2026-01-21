@@ -90,13 +90,16 @@ const IncapacidadCalculator = () => {
 					<div className="mt-1 flex items-center gap-2">
 						<input
 							type="checkbox"
+							id="use-min-salary"
 							checked={useMin}
 							onChange={(e) => {
 								setUseMin(e.target.checked);
 								if (e.target.checked) setSalary(String(SALARIO_MINIMO_2025));
 							}}
 						/>
-						<span className="text-sm text-gray-600">Usar SMMLV 2025</span>
+						<label htmlFor="use-min-salary" className="text-sm text-gray-600">
+							Usar SMMLV 2025
+						</label>
 					</div>
 
 					<input
@@ -117,13 +120,17 @@ const IncapacidadCalculator = () => {
 						value={days}
 						onChange={(e) => setDays(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-yellow-300"
+						placeholder="Ej: 5"
 					/>
 				</div>
 
 				{/* Tipo */}
 				<div>
-					<label className="font-medium">Tipo de incapacidad</label>
+					<label htmlFor="incapacidad-type" className="font-medium">
+						Tipo de incapacidad
+					</label>
 					<select
+						id="incapacidad-type"
 						value={type}
 						onChange={(e) => setType(e.target.value)}
 						className="w-full rounded-xl border bg-gray-50 p-3 focus:ring-2 focus:ring-yellow-300"

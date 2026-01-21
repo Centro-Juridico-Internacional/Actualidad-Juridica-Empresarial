@@ -50,17 +50,17 @@ export async function searchNews({ query: q, page = 1, pageSize = 20, categoryId
 		const date = new Date(a.publishedAt ?? a.updatedAt ?? a.createdAt);
 
 		return {
-			titulo: a.titulo ?? '',
-			contenido: a.contenido ?? [],
+			title: a.titulo ?? '',
+			content: a.contenido ?? [],
 			slug: a.slug ?? '',
 			image: img ? withHost(img) : DEFAULT_NEWS_IMAGE,
-			dia: date.toLocaleDateString(),
-			hora: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-			UrlYoutube: a.UrlYoutube ?? null,
-			autorName: autor?.name ?? null,
-			autorAvatar: avatar ? withHost(avatar) : DEFAULT_AUTHOR_AVATAR,
-			autorRol: autor?.cargo ?? null,
-			categorias: (a.categorias?.data ?? []).map((c: any) => c.attributes?.name).filter(Boolean)
+			day: date.toLocaleDateString(),
+			time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+			youtubeUrl: a.UrlYoutube ?? null,
+			authorName: autor?.name ?? null,
+			authorAvatar: avatar ? withHost(avatar) : DEFAULT_AUTHOR_AVATAR,
+			authorRole: autor?.cargo ?? null,
+			categories: (a.categorias?.data ?? []).map((c: any) => c.attributes?.name).filter(Boolean)
 		};
 	});
 

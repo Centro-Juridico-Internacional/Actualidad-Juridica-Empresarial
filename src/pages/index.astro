@@ -8,16 +8,16 @@ import InformationOfInterest from '@/components/sections/home/InformationOfInter
 import MoreNews from '@/components/sections/home/MoreNews.astro';
 import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
-import Revista from '@/components/features/revista/Revista';
+import Magazine from '@/components/features/magazines/Magazine';
 
 // Internal API imports
 import { getNews } from '@/lib/api/news';
 import { getPautas } from '@/lib/api/pautas';
 import { getInterviewsUrl } from '@/lib/api/interviews';
 import { getCapsulasUrl } from '@/lib/api/capsulas';
-import { getPdfs } from '@/lib/api/revista';
+import { getMagazines } from '@/lib/api/magazines';
 
-// Importar estilos responsive de la revista SOLO para esta página
+// Import responsive styles for magazine only for this page
 import '@/styles/revista-responsive.css';
 import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 import Recognitions from '@/components/sections/home/Recognitions.astro';
@@ -26,25 +26,21 @@ import AlliesCarousel from '@/components/sections/home/AlliesCarousel.astro';
 
 // Fetch all data once at page level to avoid redundant API calls
 // Fetch all data in parallel to reduce load time
-const [newsData, pautas, interviews, capsulas, pdfs] = await Promise.all([
+const [newsData, pautas, interviews, capsulas, magazines] = await Promise.all([
 	getNews({ categoryId: '' }),
 	getPautas(),
 	getInterviewsUrl(),
 	getCapsulasUrl(),
-	getPdfs()
+	getMagazines()
 ]);
 
 const { products } = newsData;
+console.log(magazines);
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
 
 <Layout title="Inicio" booleanLayout={false}>
-	<!-- 🔹 Prefetch SOLO del PDF de la revista -->
-	<Fragment slot="head">
-		<link rel="prefetch" href="/revistas/revista.pdf" />
-	</Fragment>
-
 	<News products={products} />
 	<InformationOfInterest products={products} />
 	<MoreNews products={products} />
@@ -52,12 +48,16 @@ const { products } = newsData;
 	<Podcast capsulas={capsulas} />
 	<UpcomingEvents />
 	<Recognitions />
-
+	<!-- {magazines[0]?.pdf && <Magazine client:only="react" pdfUrl={magazines[0].pdf} />} -->
 	{
-		pdfs[0]?.pdf && (
-			<Revista client:only="react" pdfUrl={pdfs[0].pdf} height={700} className="revista-flipbook" />
+		magazines[0]?.pdf && (
+			<Magazine
+				client:only="react"
+				pdfUrl={`/api/pdf?url=${encodeURIComponent(magazines[0].pdf)}`}
+			/>
 		)
 	}
+
 	<AlliesCarousel />
 	<SocialMedia />
 </Layout>

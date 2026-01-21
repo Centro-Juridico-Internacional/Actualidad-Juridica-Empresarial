@@ -12,15 +12,14 @@ interface Props {
 }
 
 // Destructure props with defaults
-const {
-	currentSlug = null,
-	layout = 'vertical',
-	categorySlugs,
-	limit = 4
-}: Props = Astro.props;
+const { currentSlug = null, layout = 'vertical', categorySlugs, limit = 4 }: Props = Astro.props;
 
 // Fetch latest news (optimized) excluding current article, optionally filtered by categories
-const latestNews: NewsArticle[] = await getLatestNews(limit, currentSlug ?? undefined, categorySlugs);
+const latestNews: NewsArticle[] = await getLatestNews(
+	limit,
+	currentSlug ?? undefined,
+	categorySlugs
+);
 ---
 
 <div
@@ -33,7 +32,7 @@ const latestNews: NewsArticle[] = await getLatestNews(limit, currentSlug ?? unde
 				<div class="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-24">
 					<img
 						src={news.image}
-						alt={news.titulo}
+						alt={news.title}
 						class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 						loading="lazy"
 						decoding="async"
@@ -45,21 +44,21 @@ const latestNews: NewsArticle[] = await getLatestNews(limit, currentSlug ?? unde
 				<div class="flex min-w-0 flex-1 flex-col gap-1">
 					{/* Categoría */}
 					<a
-						href={`/categorias/${news.categorias[0]?.toLowerCase()}`}
+						href={`/categorias/${news.categories[0]?.toLowerCase()}`}
 						class="inline-block w-fit text-xs font-medium text-green-600 transition-colors first-letter:uppercase hover:text-green-700"
 					>
-						{news.categorias[0]?.trim()}
+						{news.categories[0]?.trim()}
 					</a>
 
 					{/* Título con truncamiento a 2 líneas */}
-					<h3 class="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 decoration-green-500 decoration-2 group-hover:underline sm:text-base">
+					<h3 class="line-clamp-2 text-sm leading-tight font-semibold text-gray-900 decoration-green-500 decoration-2 group-hover:underline sm:text-base">
 						<a href={`/noticia/${news.slug}`} class="hover:text-green-700">
-							{news.titulo}
+							{news.title}
 						</a>
 					</h3>
 
 					{/* Fecha */}
-					<time class="mt-1 text-xs text-gray-500">{news.dia}</time>
+					<time class="mt-1 text-xs text-gray-500">{news.day}</time>
 				</div>
 			</div>
 		))

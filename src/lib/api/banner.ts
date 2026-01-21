@@ -1,5 +1,17 @@
 import { query, withHost } from '../strapi';
 
+interface StrapiMediaItem {
+	attributes?: {
+		url?: string;
+	};
+	url?: string;
+}
+
+interface StrapiMedia {
+	data?: StrapiMediaItem | StrapiMediaItem[];
+	url?: string;
+}
+
 interface Banner {
 	nombre: string;
 	slug: string;
@@ -18,26 +30,27 @@ export async function getBanner(): Promise<Banner> {
 	/**
 	 * Función recursiva para extraer URLs de imágenes de estructuras Strapi
 	 */
-	const extractUrls = (media: any): string[] => {
+	const extractUrls = (media: StrapiMedia): string[] => {
 		if (!media) return [];
 
 		// Caso: Array de datos (Strapi 4 multiple)
 		if (Array.isArray(media.data)) {
 			return media.data
-				.map((item: any) => withHost(item.attributes?.url ?? item.url))
-				.filter((url): url is string => url !== null);
+				.map((item: StrapiMediaItem) => withHost(item.attributes?.url ?? item.url))
+				.filter((url: string | null): url is string => url !== null);
 		}
 
 		// Caso: Array directo (Strapi 5 o configuraciones custom)
 		if (Array.isArray(media)) {
-			return media
-				.map((item: any) => withHost(item.attributes?.url ?? item.url))
-				.filter((url): url is string => url !== null);
+			return (media as StrapiMediaItem[])
+				.map((item: StrapiMediaItem) => withHost(item.attributes?.url ?? item.url))
+				.filter((url: string | null): url is string => url !== null);
 		}
 
 		// Caso: Objeto único con data (Strapi 4 single)
-		if (media.data) {
-			const url = media.data.attributes?.url ?? media.data.url;
+		if (media.data && !Array.isArray(media.data)) {
+			const url =
+				(media.data as StrapiMediaItem).attributes?.url ?? (media.data as StrapiMediaItem).url;
 			return url ? [withHost(url)!] : [];
 		}
 
