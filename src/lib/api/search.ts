@@ -1,21 +1,33 @@
+// Capa de Servicios y Tipos de Datos
 import { query, withHost } from '../strapi';
 import { DEFAULT_NEWS_IMAGE, DEFAULT_AUTHOR_AVATAR } from './_mediaDefaults';
-import type { NewsArticle, Pagination } from './news';
+import type { NewsArticle } from './news';
 
 /**
- * Busca noticias en Strapi por múltiples criterios
+ * Motor de Búsqueda de Noticias.
+ * Busca coincidencias parciales (containsi) en múltiples campos:
+ * - Título
+ * - Nombre del Autor
+ * - Cargo del Autor
+ * - Nombre de Categoría
  */
 export async function searchNews({ query: q, page = 1, pageSize = 20, categoryId }: any) {
+	// Si no hay query ni categoría, retornamos vacío para no saturar
 	if (!q?.trim() && !categoryId) {
 		return { products: [], pagination: undefined };
 	}
 
+	// Sanitización de Query String
+	// 1. Elimina caracteres especiales salvo letras, números y espacios
+	// 2. Colapsa espacios múltiples
+	// 3. Convierte a minúsculas para búsqueda case-insensitive
 	const clean = q
 		.trim()
-		.replace(/[^\w\s\u00C0-\u00FF]/g, ' ')
+		.replace(/[^\w\s\u00C0-\u00FF]/g, ' ') // \u00C0-\u00FF incluye acentos latinos
 		.replace(/\s+/g, ' ')
 		.toLowerCase();
 
+	// Construcción de filtros OR (alguno debe coincidir)
 	const filters =
 		`filters[$or][0][titulo][$containsi]=${clean}` +
 		`&filters[$or][1][autor][name][$containsi]=${clean}` +
@@ -33,6 +45,7 @@ export async function searchNews({ query: q, page = 1, pageSize = 20, categoryId
 		`&pagination[page]=${page}` +
 		`&pagination[pageSize]=${pageSize}`;
 
+	// Filtro adicional estricto por Categoría si existe
 	if (categoryId) {
 		qs += `&filters[categorias][slug][$eq]=${categoryId}`;
 	}
@@ -54,8 +67,8 @@ export async function searchNews({ query: q, page = 1, pageSize = 20, categoryId
 			content: a.contenido ?? [],
 			slug: a.slug ?? '',
 			image: img ? withHost(img) : DEFAULT_NEWS_IMAGE,
-			day: date.toLocaleDateString(),
-			time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+			day: date.toLocaleDateString('es-CO'),
+			time: date.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
 			youtubeUrl: a.UrlYoutube ?? null,
 			authorName: autor?.name ?? null,
 			authorAvatar: avatar ? withHost(avatar) : DEFAULT_AUTHOR_AVATAR,

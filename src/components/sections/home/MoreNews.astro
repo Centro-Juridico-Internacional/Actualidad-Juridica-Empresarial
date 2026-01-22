@@ -8,13 +8,13 @@ import type { NewsArticle } from '@/lib/api/news';
 // Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
-	/** Array of news articles to display */
+	/** Array de artículos de noticias para el listado secundario */
 	products: NewsArticle[];
 }
 
-// Destructure props
+// Desestructuración de propiedades
 const { products }: Props = Astro.props;
 
 // Slice noticias de la 7 a la 13 (índices 6-12, total de 7 noticias)
@@ -22,18 +22,15 @@ const moreNews = products.slice(7, 13);
 ---
 
 <section class="container-main my-24">
-	<!-- Section title -->
+	<!-- Título de la Sección -->
 	<Titles text="Más noticias que te podrían interesar" />
 
-	<!-- News grid -->
+	<!-- Cuadrícula (Grid) de Noticias Secundarias -->
 	{
 		moreNews.length > 0 && (
-			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" id="MoreNewsSection">
 				{moreNews.map((newsItem) => (
-					<div
-						class="group relative h-80 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"
-						id="MoreNewsSection"
-					>
+					<div class="group relative h-80 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl">
 						<NewsComponent
 							product={newsItem}
 							bgOverlay={true}
@@ -48,27 +45,3 @@ const moreNews = products.slice(7, 13);
 		)
 	}
 </section>
-
-<style>
-	.container-main {
-		margin-left: auto;
-		margin-right: auto;
-		max-width: 80rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
-	}
-
-	@media (min-width: 640px) {
-		.container-main {
-			padding-left: 1.5rem;
-			padding-right: 1.5rem;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.container-main {
-			padding-left: 2rem;
-			padding-right: 2rem;
-		}
-	}
-</style>

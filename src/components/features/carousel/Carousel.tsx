@@ -10,8 +10,9 @@ const carouselStyle = {
 } as const;
 
 /**
- * Carousel component for displaying images in a rotating carousel
- * Uses SimpleCarouselLite internally for carousel functionality
+ * Componente Carousel
+ * Renderiza una galería rotativa de imágenes utilizando SimpleCarouselLite.
+ * Diseñado para ser altamente performante mediante el uso de React.memo.
  */
 const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, data: DATA }) => {
 	return (
@@ -58,7 +59,8 @@ const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, 
 };
 
 export default React.memo(Carousel, (prevProps, nextProps) => {
-	// Only re-render if these props actually change
+	// Solo re-renderizar si las propiedades críticas han cambiado realmente.
+	// Esto optimiza el ciclo de vida del componente en arquitecturas de islas (Astro).
 	return (
 		prevProps.width === nextProps.width &&
 		prevProps.autoplaySpeed === nextProps.autoplaySpeed &&

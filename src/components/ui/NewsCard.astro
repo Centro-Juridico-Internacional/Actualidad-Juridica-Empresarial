@@ -1,31 +1,30 @@
 ---
-// External imports
-// import ReactMarkdown from 'react-markdown'; // Removed
+// Importaciones Externas
 
-// Internal utilities
+// Utilidades Internas
 import { Image } from 'astro:assets';
 import { truncateBlocks } from '@/utils/truncateBlocks';
 import type { NewsArticle } from '@/lib/api/news';
 
-// React components
+// Componentes React
 import YouTubeLite from '@/components/features/media/YouTubeLite';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
 	product: NewsArticle;
 	truncateWords?: number;
 	className?: string;
 }
 
-// Destructure props with defaults
+// Desestructuración de props con valores por defecto
 const { product, truncateWords = 30, className = '' }: Props = Astro.props;
 
-// Generate author slug for link
+// Generar slug del autor para el enlace
 const authorSlug: string = product.authorName
 	? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
-// Truncate content blocks to specified word count
+// Truncar bloques de contenido al conteo de palabras especificado
 const { text: contentText, truncated } = truncateBlocks(product.content, truncateWords);
 ---
 

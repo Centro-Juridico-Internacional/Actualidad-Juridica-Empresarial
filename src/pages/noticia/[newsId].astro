@@ -1,12 +1,12 @@
 ---
-// External imports
+// Librería para el procesamiento de contenido en formato Markdown
 import { marked } from 'marked';
 
-// Internal API imports
+// Capa de Servicios y Tipos de Datos
 import { getNewsBySlug } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
-// SEO & Schema.org imports
+// Integración de Meta-Tags SEO y Datos Estructurados (Schema.org)
 import { processSEOMetadata } from '@/lib/seo';
 import {
 	generateNewsArticleSchema,
@@ -14,62 +14,61 @@ import {
 	generateVideoSchema,
 	getSchemaScript,
 	validateNewsArticleSchema,
-	SITE_CONFIG,
-	normalizeDate
+	SITE_CONFIG
 } from '@/lib/schemaOrg';
 
-// Astro components (layouts)
+// Componentes de Layout
 import Layout from '@/layouts/Layout.astro';
 
-// Astro components (UI)
+// Componentes de Interfaz de Usuario (UI)
 import SmartRelatedNews from '@/components/ui/SmartRelatedNews.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// React components (features)
+// Componentes de Funcionalidad y Multimedia (Features)
 import YouTubeLite from '@/components/features/media/YouTubeLite';
 import ArticleAudioPlayer from '@/components/features/media/ArticleAudioPlayer';
 
 import SocialShare from '@/components/features/social/SocialShare';
 import ReadingProgressBar from '@/components/features/ui/ReadingProgressBar';
 
-// Get news ID from route params
+// Captura e identificación de la noticia desde los parámetros de la ruta (slug)
 const { newsId } = Astro.params as { newsId: string };
 if (!newsId) throw Astro.redirect('/404');
 
-// Fetch specific news article by slug (optimized)
+// Obtención del artículo completo desde el servicio de datos (Optimizado por slug)
 const product: NewsArticle | null = await getNewsBySlug(newsId);
 if (!product) throw Astro.redirect('/404');
 
-// Calculate Reading Time
+// Lógica de cálculo del tiempo estimado de lectura (Basado en recuento de palabras)
 const countWords = (text: any) => {
 	if (!text || typeof text !== 'string') return 0;
 	return text.split(/\s+/).length;
 };
 
-// Extract plain text for Audio Player
-// For markdown strings, we might want to strip markdown symbols, but for now simple text is enough or use a regex strip
+// Extracción de Texto Plano para el Reproductor de Audio (Accesibilidad)
+// Se eliminan símbolos markdown y enlaces para una lectura fluida del sintetizador.
 const getPlainText = (text: any) => {
 	if (!text || typeof text !== 'string') return '';
-	// Simple markdown stripper
+	// Limpiador básico de formato Markdown
 	return text
-		.replace(/[#*`_~]/g, '') // remove common markdown symbols
-		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // replace links with anchor text
+		.replace(/[#*`_~]/g, '') // Eliminar símbolos comunes
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Reemplazar enlaces por su texto ancla
 		.trim();
 };
 
 const words = countWords(product.content);
 const plainText = getPlainText(product.content);
-const readingTime = Math.ceil(words / 200); // 200 words per minute average
+const readingTime = Math.ceil(words / 200); // Promedio de 200 palabras por minuto
 
-// SEO Description: Get first 160 characters of plain text as meta description
+// Preparación de Meta-Descripción SEO: Extrae los primeros 160 caracteres del texto limpio.
 const metaDescription = plainText.slice(0, 157) + (plainText.length > 157 ? '...' : '');
 
-// Generate author slug for navigation
+// Generación de URL interna para el perfil del autor
 const authorSlug: string = product.authorName
 	? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 	: '#';
 
-// Get origin for absolute URLs
+// Identificación de origen para la generación de URLs absolutas (Necesario para Schema.org)
 const { origin, href } = Astro.url;
 
 // ============================================
@@ -111,7 +110,6 @@ const newsArticleSchema = generateNewsArticleSchema(
 
 // Validar schema para Google Rich Results
 const newsSchemaValidation = validateNewsArticleSchema(newsArticleSchema);
-console.log('NewsArticle Validation:', newsSchemaValidation);
 
 // 2. BreadcrumbList Schema
 const breadcrumbs = [
@@ -141,7 +139,7 @@ if (product.youtubeUrl) {
 	);
 }
 
-// ISR maneja el cache automáticamente en modo hybrid
+// La estrategia ISR se orquesta mediante el modo 'hybrid' de la plataforma.
 ---
 
 <!-- Schema.org JSON-LD Scripts --><!-- 1. NewsArticle (Obligatorio) -->

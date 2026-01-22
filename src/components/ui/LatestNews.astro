@@ -1,9 +1,9 @@
 ---
-// Internal API imports
+// Importaciones de API Interna
 import { getLatestNews } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
 	currentSlug?: string | null;
 	layout?: 'vertical' | 'horizontal';
@@ -11,10 +11,10 @@ interface Props {
 	limit?: number;
 }
 
-// Destructure props with defaults
+// Desestructuración de props con valores por defecto
 const { currentSlug = null, layout = 'vertical', categorySlugs, limit = 4 }: Props = Astro.props;
 
-// Fetch latest news (optimized) excluding current article, optionally filtered by categories
+// Obtener últimas noticias (optimizado) excluyendo la actual, y filtrando por categoría opcionalmente
 const latestNews: NewsArticle[] = await getLatestNews(
 	limit,
 	currentSlug ?? undefined,

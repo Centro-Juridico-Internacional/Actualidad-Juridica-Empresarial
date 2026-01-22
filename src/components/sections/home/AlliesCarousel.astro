@@ -3,7 +3,7 @@ import Titles from '@/components/ui/Titles.astro';
 
 /**
  * AlliesCarousel.astro
- * Infinite scrolling marquee for company allies/partners
+ * Marquesina de desplazamiento infinito para logos de aliados y socios estratégicos.
  */
 
 const allies = [
@@ -55,7 +55,7 @@ const allies = [
 	}
 ];
 
-// Duplicate list for seamless infinite scroll
+// Duplicado de lista para asegurar un desplazamiento infinito fluido (Sin cortes visuales)
 // const doubleAllies = [...allies, ...allies];
 ---
 
@@ -63,7 +63,7 @@ const allies = [
 	<Titles text="Nuestros Aliados Estratégicos" />
 
 	<div class="marquee">
-		<!-- First list -->
+		<!-- Primer bloque de contenido -->
 		<div class="marquee-content">
 			{
 				allies.map((ally) => (
@@ -88,7 +88,7 @@ const allies = [
 			}
 		</div>
 
-		<!-- Duplicate list for seamless infinite scroll -->
+		<!-- Bloque duplicado para el efecto de loop infinito (Oculto para lectores de pantalla) -->
 		<div class="marquee-content" aria-hidden="true">
 			{
 				allies.map((ally) => (
@@ -138,6 +138,7 @@ const allies = [
 			marquee.classList.add('is-dragging');
 		};
 
+		// Gestión del movimiento mediante gestos (Drag/Swipe) para mejorar la interactividad
 		const handleMove = (e: MouseEvent | TouchEvent) => {
 			if (!isDragging) return;
 			const x = 'touches' in e ? e.touches[0].pageX : (e as MouseEvent).pageX;

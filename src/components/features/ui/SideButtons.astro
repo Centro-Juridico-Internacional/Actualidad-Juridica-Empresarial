@@ -1,10 +1,10 @@
 ---
-// Component: Side Buttons
-// Description: Fixed buttons on the sides for desktop, and sticky bottom bar for mobile.
-// Updated: Premium subtle animations, rounded-b-2xl as per user request.
+// Componente: Botones Laterales y Barra Flotante
+// Descripción: Botones fijos en los laterales para escritorio y barra sticky inferior para móviles.
+// Actualización: Animaciones sutiles premium y bordes redondeados (rounded-b-2xl).
 ---
 
-<!-- Desktop Side Floating Tabs -->
+<!-- Pestañas Flotantes Laterales (Solo Escritorio) -->
 <div class="pointer-events-none fixed inset-0 z-[40000] hidden overflow-hidden lg:block">
 	<!-- Left Button: Pagos en Línea -->
 	<div class="absolute top-1/2 left-0 h-0 w-0">
@@ -83,8 +83,8 @@
 	</div>
 </div>
 
-<!-- Mobile Floating Dock -->
-<!-- Ensuring it stays below ScrollToTop which is at bottom-28 -->
+<!-- Barra de Acceso Rápido Flotante (Solo Móvil) -->
+<!-- Se asegura que permanezca debajo de ScrollToTop para evitar solapamientos -->
 <div
 	class="pointer-events-none fixed right-0 bottom-6 left-0 z-50 flex justify-center px-4 lg:hidden"
 >
@@ -150,8 +150,8 @@
 		text-rendering: optimizeLegibility;
 	}
 
-	/* TRANSFORM CLASSES */
-	/* No lateral movement on hover, only transition of internal properties */
+	/* CLASES DE TRANSFORMACIÓN Y POSICIONAMIENTO */
+	/* Se evita el movimiento lateral en hover para mantener la estabilidad del layout */
 
 	.left-btn-transform {
 		transform-origin: top left;

@@ -9,7 +9,8 @@ interface Category {
 }
 
 /**
- * Lista de categorías. Cache ISR por página (categorías, home, etc.).
+ * Listado de Categorías Legales.
+ * Se utiliza para la navegación y filtros principales.
  */
 export async function getCategories(): Promise<Category[]> {
 	const res = await query(

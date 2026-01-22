@@ -26,7 +26,7 @@ const AprendizajeCalculator = () => {
 		const m = Number(months);
 		const faltantes = Number(monthsLeft);
 
-		// Auxilios
+		// Cálculo de Auxilios según Fase Legal (Ley 789 de 2002)
 		const auxLectiva = SMMLV_2025 * 0.5;
 		const auxProductiva = SMMLV_2025 * 0.75;
 
@@ -34,7 +34,7 @@ const AprendizajeCalculator = () => {
 
 		const totalAuxilio = aux * m;
 
-		// Indemnización por terminación anticipada
+		// Indemnización por terminación anticipada (1 SMMLV por mes o fracción faltante)
 		const indemnizacion = faltantes <= 0 ? 0 : faltantes * SMMLV_2025;
 
 		setResult({
@@ -76,7 +76,7 @@ const AprendizajeCalculator = () => {
 			</h2>
 
 			<form className="space-y-6" onSubmit={calc}>
-				{/* Fase */}
+				{/* Selección de Fase del Contrato (Afecta el % del auxilio) */}
 				<div>
 					<label htmlFor="phase-select" className="font-medium text-gray-700">
 						Fase del contrato

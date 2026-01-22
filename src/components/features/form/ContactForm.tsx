@@ -12,19 +12,19 @@ const ContactForm = () => {
 
 		if (!form.current) return;
 
-		// Use environment variables for configuration
+		// Uso de variables de entorno para la configuración segura de EmailJS
 		const serviceId = import.meta.env.EMAILJS_SERVICE_ID;
 		const templateId = import.meta.env.EMAILJS_TEMPLATE_ID;
 		const publicKey = import.meta.env.EMAILJS_PUBLIC_KEY;
 
 		if (!serviceId || !templateId || !publicKey) {
-			console.error('EmailJS Environment Variables missing');
+			console.error('Faltan las variables de entorno de EmailJS (EMAILJS_SERVICE_ID, etc.)');
 			setStatus('error');
 			setLoading(false);
 			return;
 		}
 
-		// Add metadata hidden fields dynamically
+		// Inyectar campos ocultos con metadatos de auditoría dinámicamente
 		const currentForm = form.current;
 		const dateInput = document.createElement('input');
 		dateInput.type = 'hidden';
@@ -35,7 +35,7 @@ const ContactForm = () => {
 		const locationInput = document.createElement('input');
 		locationInput.type = 'hidden';
 		locationInput.name = 'user_location';
-		locationInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone; // Proxy for location
+		locationInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone; // Proxy para ubicación aproximada (Zona Horaria)
 		currentForm.appendChild(locationInput);
 
 		const urlInput = document.createElement('input');
@@ -48,23 +48,22 @@ const ContactForm = () => {
 			.sendForm(serviceId, templateId, currentForm, publicKey)
 			.then(
 				(result) => {
-					console.log(result.text);
 					setStatus('success');
 					if (form.current) form.current.reset();
 				},
 				(error) => {
-					console.log(error.text);
+					console.error('EmailJS Error:', error.text);
 					setStatus('error');
 				}
 			)
 			.finally(() => {
-				// Cleanup
+				// Limpieza de campos inyectados del DOM una vez enviado el correo
 				if (currentForm.contains(dateInput)) currentForm.removeChild(dateInput);
 				if (currentForm.contains(locationInput)) currentForm.removeChild(locationInput);
 				if (currentForm.contains(urlInput)) currentForm.removeChild(urlInput);
 
 				setLoading(false);
-				// Reset success message after 5 seconds
+				// Ocultar mensaje de éxito tras 5 segundos de cortesía visual
 				setTimeout(() => setStatus('idle'), 5000);
 			});
 	};

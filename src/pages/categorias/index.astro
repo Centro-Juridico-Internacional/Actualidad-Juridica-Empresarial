@@ -1,28 +1,43 @@
 ---
-// Internal API imports
+// Capa de Servicios e Integración con API de Categorías
 import { getCategories } from '@/lib/api/categories';
 
-// Astro components (layouts)
+// Componentes de Layout y UI
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// Fetch all categories
+// Obtención del listado completo de categorías desde Strapi
 const categories = await getCategories();
 ---
 
 <Layout title="Categorías" booleanLayout={true}>
 	<div class="min-h-screen to-white">
-		<!-- Hero Section -->
-		<section class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900 mb-12">
+		<!-- Sección Hero de Categorías -->
+		<section
+			class="relative mb-12 flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
+		>
 			<div class="absolute inset-0 opacity-20">
 				<!-- Pattern de fondo -->
-				<svg class="h-full w-full" width="100%" height="100%" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+				<svg
+					class="h-full w-full"
+					width="100%"
+					height="100%"
+					viewBox="0 0 800 800"
+					xmlns="http://www.w3.org/2000/svg"
+				>
 					<defs>
-						<pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-							<circle cx="2" cy="2" r="1" fill="white" />
+						<pattern
+							id="dotPattern"
+							x="0"
+							y="0"
+							width="20"
+							height="20"
+							patternUnits="userSpaceOnUse"
+						>
+							<circle cx="2" cy="2" r="1" fill="white"></circle>
 						</pattern>
 					</defs>
-					<rect width="800" height="800" fill="url(#dotPattern)" />
+					<rect width="800" height="800" fill="url(#dotPattern)"></rect>
 				</svg>
 			</div>
 			<div class="container-main relative z-10 text-center">

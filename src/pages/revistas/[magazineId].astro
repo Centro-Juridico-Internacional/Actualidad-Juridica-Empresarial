@@ -1,19 +1,19 @@
 ---
-// Internal API imports
-import { getMagazineBySlug, getMagazines } from '@/lib/api/magazines';
+// Capa de Servicios e Integración con API de Revistas
+import { getMagazineBySlug } from '@/lib/api/magazines';
 
-// Astro components (layouts)
+// Componentes de Layout y UI
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// React components
+// Componentes de Funcionalidad (Visualizador de PDF)
 import Magazine from '@/components/features/magazines/Magazine';
 
-// Get magazine ID from route params
+// Captura del ID de la revista desde los parámetros de la ruta dinâmica
 const { magazineId } = Astro.params as { magazineId: string };
 if (!magazineId) throw Astro.redirect('/404');
 
-// Fetch the specific magazine
+// Obtención de la edición digital específica mediante su slug
 const magazine = await getMagazineBySlug(magazineId);
 
 if (!magazine || !magazine.pdf) {
@@ -23,7 +23,7 @@ if (!magazine || !magazine.pdf) {
 
 <Layout title={magazine.title} booleanLayout={true}>
 	<div class="animate-fadeIn min-h-screen">
-		<!-- Hero Section -->
+		<!-- Sección Hero de Edición Digital -->
 		<section
 			class="relative flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
 		>
@@ -63,10 +63,10 @@ if (!magazine || !magazine.pdf) {
 			<Breadcrumb title={magazine.title} className="mb-8" />
 		</section>
 
-		<!-- Magazine Viewer -->
+		<!-- Visualizador de Revista (Procesamiento y Renderizado 3D) -->
 		<section class="w-full bg-white">
 			<Magazine client:only="react" pdfUrl={magazine.pdf} />
-			<!-- Navigation to other magazines -->
+			<!-- Navegación a ediciones anteriores -->
 			<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 				<a
 					href="/revistas"

@@ -10,6 +10,7 @@ export default function SocialShare({ url, title }: SocialShareProps) {
 	const encodedUrl = encodeURIComponent(url);
 	const encodedTitle = encodeURIComponent(title);
 
+	// Copiar URL al portapapeles y proporcionar feedback visual temporal
 	const handleCopy = () => {
 		navigator.clipboard.writeText(url);
 		setCopied(true);
@@ -135,7 +136,7 @@ export default function SocialShare({ url, title }: SocialShareProps) {
 					</svg>
 				)}
 
-				{/* Tooltip */}
+				{/* Burbuja informativa de confirmación (Tooltip) */}
 				<span
 					className={`pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 transform rounded bg-gray-800 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity duration-200 ${copied ? 'opacity-100' : ''}`}
 				>

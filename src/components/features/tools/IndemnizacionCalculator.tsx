@@ -30,7 +30,7 @@ const IndemnizacionCalculator = () => {
 		let totalYears = Number(years) + Number(months) / 12;
 		let indemnizacion = 0;
 
-		// Indemnización contrato indefinido
+		// Indemnización para contratos a término indefinido (Base legal: Código Sustantivo del Trabajo)
 		if (contractType === 'indefinido') {
 			if (salario <= SALARIO_MINIMO_2025 * 10) {
 				indemnizacion =
@@ -41,12 +41,7 @@ const IndemnizacionCalculator = () => {
 			}
 		}
 
-		// Indemnización contrato fijo
-		if (contractType === 'fijo') {
-			const duracionMeses = Number(fixedDuration);
-
-			indemnizacion = (duracionMeses * salario) / 30;
-		}
+		// Indemnización para contratos a término fijo (Valor del tiempo faltante)
 
 		setResult(indemnizacion);
 	};

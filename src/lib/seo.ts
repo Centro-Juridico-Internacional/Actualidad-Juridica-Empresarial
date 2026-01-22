@@ -1,6 +1,10 @@
 /**
- * SEO Helper para Open Graph, Twitter Cards y validación de metadatos
- * Especializado para Astro + Strapi news articles
+ * Utilidades para SEO (Search Engine Optimization)
+ * =========================================
+ * Helpers para validar, procesar y generar metadatos compatibles con
+ * Open Graph, Twitter Cards y estándares de Google.
+ *
+ * Especializado para arquitecturas Astro + Strapi (Headless CMS).
  */
 
 export interface SEOMetadata {
@@ -18,17 +22,18 @@ export interface SEOMetadata {
 }
 
 /**
- * Fallback de imagen si la noticia no tiene imagen
- * Debe ser URL ABSOLUTA accesible públicamente
+ * Imagen de respaldo (Default)
+ * Se usa cuando una noticia o página no tiene imagen destacada.
+ * Requisito: Debe ser una URL ABSOLUTA y pública.
  */
 const DEFAULT_IMAGE = 'https://actualidadfrontend.vercel.app/header/logo.svg';
 const DEFAULT_IMAGE_WIDTH = 1200;
 const DEFAULT_IMAGE_HEIGHT = 630;
 
 /**
- * Valida que una URL sea absoluta (no relativa)
- * @param url URL a validar
- * @returns true si es absoluta, false si es relativa
+ * Valida si una cadena de texto es una URL absoluta.
+ * @param url Cadena a evaluar.
+ * @returns true si comienza con protocolo http/https, false si es relativa.
  */
 export function isAbsoluteUrl(url: string): boolean {
 	try {
@@ -40,32 +45,34 @@ export function isAbsoluteUrl(url: string): boolean {
 }
 
 /**
- * Asegura que una URL sea absoluta
- * @param url URL que puede ser relativa o absoluta
- * @param origin Origin del sitio (ej: https://actualidadfrontend.vercel.app)
- * @returns URL absoluta garantizada
+ * Garantiza que una URL sea absoluta agregando el origen si es necesario.
+ * Vital para metadatos Open Graph que exigen URLs completas.
+ *
+ * @param url URL relativa o absoluta.
+ * @param origin Dominio base (ej: https://misitio.com).
  */
 export function ensureAbsoluteUrl(url: string, origin: string): string {
 	if (isAbsoluteUrl(url)) {
 		return url;
 	}
-	// Si es relativa, prepend origin
+	// Normalización de slash inicial para rutas relativas
 	const cleanUrl = url.startsWith('/') ? url : `/${url}`;
 	return `${origin}${cleanUrl}`;
 }
 
 /**
- * Genera un descripción SEO segura (max 160 caracteres para Google)
- * @param text Texto a truncar
- * @param maxLength Longitud máxima (default 160)
- * @returns Descripción truncada
+ * Genera una descripción optimizada para SEO.
+ * Trunca el texto respetando límites de caracteres de motores de búsqueda.
+ *
+ * @param text Texto fuente.
+ * @param maxLength Límite seguro (Default: 160 chars para Google SERP).
  */
 export function generateSEODescription(text: string, maxLength: number = 160): string {
 	if (!text) return '';
 	const trimmed = text.trim();
 	if (trimmed.length <= maxLength) return trimmed;
 
-	// Trunca y agrega elipsis, tratando de no cortar palabras
+	// Truncado inteligente: intenta no cortar palabras a la mitad
 	let truncated = trimmed.substring(0, maxLength);
 	const lastSpace = truncated.lastIndexOf(' ');
 	if (lastSpace > maxLength - 20) {
@@ -75,14 +82,13 @@ export function generateSEODescription(text: string, maxLength: number = 160): s
 }
 
 /**
- * Detecta dimensiones de imagen desde la URL (soporte básico para formatos comunes)
- * Para caso de uso con Strapi, retorna dimensiones estándar recomendadas
- * @param imageUrl URL de imagen
- * @returns Objeto con width y height
+ * Infiere dimensiones de imagen cuando no son provistas por el CMS.
+ * Retorna el estándar recomendado para redes sociales (1200x630).
+ *
+ * @param imageUrl URL de la imagen (referencia).
  */
 export function detectImageDimensions(imageUrl: string): { width: number; height: number } {
-	// Para imágenes desde Strapi, usar dimensiones estándar OG
-	// Recomendación: 1200x630 (16:9 ratio ideal para redes sociales)
+	// Estrategia: Asumir aspect ratio 1.91:1 (Estándar OG Image)
 	return {
 		width: 1200,
 		height: 630
@@ -90,10 +96,11 @@ export function detectImageDimensions(imageUrl: string): { width: number; height
 }
 
 /**
- * Procesa y valida metadatos de una noticia
- * @param metadata Metadatos parciales de entrada
- * @param origin URL origin (ej: https://actualidadfrontend.vercel.app)
- * @returns Metadatos completos y validados
+ * Procesa y sanea un objeto parcial de metadatos.
+ * Rellena valores faltantes con defaults seguros.
+ *
+ * @param metadata Datos crudos desde el CMS/Componente.
+ * @param origin Origen para resolución de URLs.
  */
 export function processSEOMetadata(
 	metadata: Partial<SEOMetadata> & { title: string; url: string },
@@ -119,9 +126,9 @@ export function processSEOMetadata(
 }
 
 /**
- * Genera objeto de context para Schema.org NewsArticle (DEPRECATED)
- * ⚠️ Usar schemaOrg.ts en su lugar para mejores resultados
- * @deprecated Usar generateNewsArticleSchema de @/lib/schemaOrg
+ * Generador Legacy de NewsArticle Schema.
+ * @deprecated Usar implementación robusta en `lib/schemaOrg.ts`.
+ * Mantenido por compatibilidad regresiva temporal.
  */
 export function generateNewsSchema(metadata: SEOMetadata, authorAvatarUrl?: string) {
 	return {
@@ -175,22 +182,21 @@ export function generateNewsSchema(metadata: SEOMetadata, authorAvatarUrl?: stri
 }
 
 /**
- * Valida que la imagen tenga al menos dimensiones mínimas recomendadas
- * @param width Ancho en pixeles
- * @param height Alto en pixeles
- * @returns true si cumple con mínimos (1200x630)
+ * Valida cumplemiento de requisitos mínimos de tamaño de imagen.
+ * Importante para asegurar que la imagen aparezca grande en Twitter/Facebook.
  */
 export function validateImageDimensions(width: number, height: number): boolean {
-	// Mínimo recomendado por Facebook, Twitter, LinkedIn
+	// 1200x630 es el estándar ideal para compartir en redes
 	return width >= 1200 && height >= 630;
 }
 
 /**
- * Tipo para el props de Layout.astro mejorado
+ * Props extendidas para el Layout Principal
+ * Define el contrato de datos necesarios para renderizar head tags correctamente.
  */
 export interface LayoutSEOProps {
 	title: string;
-	booleanLayout: boolean;
+	booleanLayout: boolean; // Controla modo inmersivo vs estándar
 	breadcrumbTitle?: string;
 	description?: string;
 	ogImage?: string;

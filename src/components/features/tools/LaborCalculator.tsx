@@ -37,7 +37,8 @@ const LaborCalculator = () => {
 
 	const [result, setResult] = useState<CalculationResult | null>(null);
 
-	// Cálculo oficial 30/360
+	// Cálculo oficial de días comerciales (Meses de 30 días / Año de 360 días)
+	// Estándar utilizado por el Ministerio del Trabajo en Colombia.
 	const commercialDays = useCallback((start: Date, end: Date) => {
 		return (
 			end.getDate() -

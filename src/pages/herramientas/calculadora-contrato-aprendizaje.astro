@@ -1,67 +1,77 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Breadcrumb from "@/components/ui/Breadcrumb.astro";
-import AprendizajeCalculator from "@/components/features/tools/AprendizajeCalculator.tsx";
+/**
+ * Herramienta: Calculadora de Contrato de Aprendizaje
+ * =================================================
+ * Permite a los usuarios estimar el auxilio de sostenimiento (Fase Lectiva vs Productiva)
+ * y las indemnizaciones por terminación anticipada según normativa SENA.
+ */
+import Layout from '@/layouts/Layout.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import AprendizajeCalculator from '@/components/features/tools/AprendizajeCalculator.tsx';
 
+// Captura de URL para esquemas de datos estructurados
 const { href } = Astro.url;
 
+/**
+ * Datos Estructurados (Schema.org)
+ * Optimiza la aparición de la herramienta en resultados de búsqueda (Rich Results).
+ */
 const schema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Calculadora Contrato de Aprendizaje",
-  "description": "Calcula el auxilio económico del aprendiz en fase lectiva o productiva y la indemnización por terminación anticipada.",
-  "applicationCategory": "BusinessApplication",
-  "url": href,
-  "provider": {
-    "@type": "Organization",
-    "name": "Centro Jurídico Internacional"
-  }
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'Calculadora Contrato de Aprendizaje',
+	description:
+		'Calcula el auxilio económico del aprendiz en fase lectiva o productiva y la indemnización por terminación anticipada.',
+	applicationCategory: 'BusinessApplication',
+	url: href,
+	provider: {
+		'@type': 'Organization',
+		name: 'Centro Jurídico Internacional'
+	}
 };
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title="Contrato de Aprendizaje" booleanLayout={true} breadcrumbTitle="Herramientas">
+	<!-- Hero -->
+	<section
+		class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-teal-700"
+	>
+		<div class="absolute inset-0 opacity-20">
+			<svg class="h-full w-full">
+				<defs>
+					<pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+						<circle cx="2" cy="2" r="1" fill="white"></circle>
+					</pattern>
+				</defs>
+				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
+			</svg>
+		</div>
 
-    <!-- Hero -->
-    <section class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-teal-700">
-        <div class="absolute inset-0 opacity-20">
-            <svg class="h-full w-full">
-                <defs>
-                    <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1" fill="white" />
-                    </pattern>
-                </defs>
-                <rect width="800" height="800" fill="url(#dotPattern)" />
-            </svg>
-        </div>
+		<div class="container-main relative z-10 text-center">
+			<h1 class="mb-3 text-4xl font-bold text-white">Calculadora de Contrato de Aprendizaje</h1>
+			<p class="mx-auto max-w-2xl text-lg text-teal-100">
+				Calcula auxilios económicos y sanciones por terminación anticipada según normativa del SENA.
+			</p>
+		</div>
+	</section>
 
-        <div class="container-main relative z-10 text-center">
-            <h1 class="text-4xl font-bold text-white mb-3">
-                Calculadora de Contrato de Aprendizaje
-            </h1>
-            <p class="text-teal-100 text-lg max-w-2xl mx-auto">
-                Calcula auxilios económicos y sanciones por terminación anticipada según normativa del SENA.
-            </p>
-        </div>
-    </section>
+	<section class="container-main py-12">
+		<Breadcrumb title="Herramientas" className="mb-8" />
 
-    <section class="container-main py-12">
-        <Breadcrumb title="Herramientas" className="mb-8" />
+		<div class="flex flex-col items-center">
+			<AprendizajeCalculator client:load />
 
-        <div class="flex flex-col items-center">
-            <AprendizajeCalculator client:load />
-
-            <div class="mt-12 prose prose-teal bg-gray-50 p-8 rounded-2xl max-w-3xl">
-                <h3>¿Cómo funciona esta herramienta?</h3>
-                <ul>
-                    <li><strong>Fase lectiva:</strong> Auxilio del 50% SMMLV</li>
-                    <li><strong>Fase productiva:</strong> Auxilio del 75% SMMLV</li>
-                    <li><strong>Indemnización:</strong> 1 SMMLV por cada mes o fracción faltante</li>
-                </ul>
-                <p>Resultados basados en normativa de apoyo SENA y Decreto 1072 de 2015.</p>
-            </div>
-        </div>
-    </section>
-
+			<div class="prose prose-teal mt-12 max-w-3xl rounded-2xl bg-gray-50 p-8">
+				<h3>¿Cómo funciona esta herramienta?</h3>
+				<ul>
+					<li><strong>Fase lectiva:</strong> Auxilio del 50% SMMLV</li>
+					<li><strong>Fase productiva:</strong> Auxilio del 75% SMMLV</li>
+					<li><strong>Indemnización:</strong> 1 SMMLV por cada mes o fracción faltante</li>
+				</ul>
+				<p>Resultados basados en normativa de apoyo SENA y Decreto 1072 de 2015.</p>
+			</div>
+		</div>
+	</section>
 </Layout>

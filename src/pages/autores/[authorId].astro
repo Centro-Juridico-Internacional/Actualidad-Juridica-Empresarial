@@ -1,23 +1,23 @@
 ---
-// Internal API imports
+// Capa de Servicios y API
 import { getNews } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
-// Astro components (layouts)
+// Componentes de Layout
 import Layout from '@/layouts/Layout.astro';
 
-// Astro components (UI)
+// Componentes de Interfaz de Usuario (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// Get author ID from route params
+// Captura del ID del autor desde los parámetros de la ruta dinâmica
 const { authorId } = Astro.params as { authorId: string };
 if (!authorId) throw Astro.redirect('/404');
 
-// Fetch all news articles
+// Obtención del listado de noticias para filtrado local (Optimización de autor)
 const { products }: { products: NewsArticle[] } = await getNews({ categoryId: '' });
 
-// Filter articles by author slug
+// Lógica de filtrado de artículos asociados al autor específico
 const authorNews: NewsArticle[] = products.filter((item: NewsArticle) => {
 	const slug: string = (item.authorName || '').toLowerCase().replace(/\s+/g, '_');
 	return slug === authorId;
@@ -25,7 +25,7 @@ const authorNews: NewsArticle[] = products.filter((item: NewsArticle) => {
 
 if (authorNews.length === 0) throw Astro.redirect('/404');
 
-// Utility function to capitalize each word
+// Función de utilidad para capitalizar cada palabra
 const capitalizeWords = (str: string): string => {
 	return str
 		.split(' ')
@@ -33,7 +33,7 @@ const capitalizeWords = (str: string): string => {
 		.join(' ');
 };
 
-// Generate readable author name from slug
+// Generar nombre de autor legible a partir del slug (guiones bajos a espacios)
 const authorName: string = capitalizeWords(authorId.replace(/_/g, ' '));
 
 // ISR maneja el cache automáticamente en modo hybrid

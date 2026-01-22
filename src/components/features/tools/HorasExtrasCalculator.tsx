@@ -72,7 +72,7 @@ const HorasExtrasCalculator = () => {
 			<h2 className="mb-6 text-3xl font-extrabold text-blue-700">Calculadora de Horas Extras</h2>
 
 			<form className="space-y-6" onSubmit={calculate}>
-				{/* Salario */}
+				{/* Ingreso de Salario Base */}
 				<div>
 					<label className="font-medium text-gray-700">Salario mensual</label>
 
@@ -98,7 +98,7 @@ const HorasExtrasCalculator = () => {
 					/>
 				</div>
 
-				{/* Horas */}
+				{/* Registro de Horas por Cantidad (Recargos aplicables) */}
 				<div className="grid grid-cols-2 gap-4">
 					<div>
 						<label>Extra Diurna (+25%)</label>

@@ -1,27 +1,26 @@
 ---
-// Styles
+// Estilos Globales y Fuentes
 import '@/styles/global.css';
 import '@fontsource-variable/noto-sans-jp';
 
-// External imports - Astro
+// Importaciones Externas - Core de Astro
 import { ClientRouter } from 'astro:transitions';
 
-// External imports - Vercel
+// Importaciones Externas - Vercel Analytics & Insights
 import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 
-// Astro components (layouts)
+// Componentes de Astro (Estructura de Layout)
 import Header from '@/layouts/Header.astro';
 import Footer from '@/layouts/Footer.astro';
 import ScrollToTop from '@/components/features/ui/ScrollToTop.tsx';
-import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import SideButtons from '@/components/features/ui/SideButtons.astro';
 
-// Import SEO helpers
+// Helpers de SEO
 import type { LayoutSEOProps } from '@/lib/seo';
 import { ensureAbsoluteUrl, processSEOMetadata } from '@/lib/seo';
 
-// Import Schema.org helpers
+// Helpers de Schema.org (Datos Estructurados JSON-LD)
 import {
 	generateOrganizationSchema,
 	generateWebSiteSchema,
@@ -30,17 +29,17 @@ import {
 } from '@/lib/schemaOrg';
 import WhatsApp from '@/components/ui/WhatsApp.astro';
 
-// Props interface
+// Interfaz de Propiedades (Contrato del Componente)
+// Extiende LayoutSEOProps para garantizar tipado estricto en SEO
 interface Props extends LayoutSEOProps {
+	/** Controla si se muestra el Header completo o versión simplificada */
 	booleanLayout: boolean;
-	breadcrumbTitle?: string;
 }
 
-// Destructure props with explicit typing
+// Desestructuración de propiedades con tipado explícito
 const {
 	title,
 	booleanLayout,
-	breadcrumbTitle,
 	description,
 	ogImage,
 	ogImageWidth,
@@ -52,10 +51,13 @@ const {
 	authorUrl
 }: Props = Astro.props;
 
-// Get dynamic URL for metadata and print
+// Lógica obtención de URL dinámica
+// - origin: dominio actual (para canonicals y OG:URL absolutas)
+// - href: URL completa de la página actual
 const { origin, href } = Astro.url;
 
-// Process SEO metadata with validation
+// Procesamiento de metadatos SEO con validación
+// Centraliza la lógica de respaldo (default images, truncado de descripciones)
 const seoData = processSEOMetadata(
 	{
 		title,
@@ -72,7 +74,8 @@ const seoData = processSEOMetadata(
 	origin
 );
 
-// Twitter Card specific
+// Lógica específica para Twitter Card
+// Asegura que la imagen de Twitter sea absoluta (requisito de la plataforma)
 const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 ---
 
@@ -85,7 +88,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<!-- 
       ___           ___                             
      /  /\         /__/\          ___       ___     
-    /  /:/         \  \:\        /  /\     /  /\    
+    /  /:/         \  \:\        /  /\     /  /:/    
    /  /:/           \  \:\      /  /:/    /  /:/    
   /  /:/  ___   ___  \  \:\    /  /:/    /__/::\    
  /__/:/  /  /\ /__/\  \__\:\  /  /::\    \__\/\:\__ 
@@ -94,13 +97,13 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
    \  \:\/:/     \  \:\/:/        \  \:\     /__/:/ 
     \  \::/       \  \::/          \__\/     \__\/  
      \__\/         \__\/                            
- -->
+		-->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="language" content="es" />
 		<meta name="robots" content="index, follow" />
 
-		<!-- SEO -->
+		<!-- SEO General -->
 		<title>{title.charAt(0).toUpperCase() + title.slice(1)} | Actualidad Jurídica</title>
 
 		<meta name="description" content={seoData.description} />
@@ -110,7 +113,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		/>
 		<meta name="author" content="Centro Jurídico Internacional" />
 
-		<!-- Open Graph - COMPLETO CON DIMENSIONES -->
+		<!-- Open Graph - Protocolo para Redes Sociales -->
 		<meta property="og:type" content={ogType} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={seoData.description} />
@@ -141,10 +144,10 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<meta name="twitter:image" content={twitterImage} />
 		<meta name="twitter:image:alt" content={title} />
 
-		<!-- Canonical -->
+		<!-- URL Canónica -->
 		<link rel="canonical" href={href} />
 
-		<!-- Schema.org JSON-LD Global (Organization + WebSite) -->
+		<!-- Schema.org JSON-LD Global (Identidad de Organización + Sitio Web) -->
 		<Fragment
 			set:html={getSchemaScript(
 				generateOrganizationSchema(
@@ -180,7 +183,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<!-- Preload crítico: logo del header -->
 		<link rel="preload" href="/header/logo.svg" as="image" />
 
-		<!-- Cache control -->
+		<!-- Control de Caché -->
 		<meta http-equiv="Cache-Control" content="max-age=31536000, immutable" />
 
 		<!-- Preconexiones -->
@@ -198,14 +201,14 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<!-- Header con animación suave -->
 		<Header booleanHeader={booleanLayout} />
 
-		<!-- Main content con animaciones de entrada -->
+		<!-- Contenido principal con animaciones de entrada -->
 		<main class="w-full flex-1">
 			<div class="animate-fadeIn">
 				<slot />
 			</div>
 		</main>
-<WhatsApp />
-		<!-- Scroll To Top (Root Level for Z-Index) -->
+		<WhatsApp />
+		<!-- Scroll To Top (Nivel raíz para manejo de Z-Index) -->
 		<ScrollToTop client:idle />
 		<SideButtons />
 
@@ -223,7 +226,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		main {
 			width: 100%;
 			height: 100%;
-			/* Add your background pattern here */
+			/* Agregar patrón de fondo personalizado aquí */
 			background-color: #ffffffea;
 			background-image: radial-gradient(rgba(0, 166, 61, 0.884) 1px, transparent 0);
 			background-size: 30px 30px;

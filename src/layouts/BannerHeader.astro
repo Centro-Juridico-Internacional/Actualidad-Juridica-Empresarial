@@ -1,41 +1,39 @@
 ---
-// Props interface
+// Interfaz de Propiedades
 interface Props {
 	booleanBanner: boolean;
 }
 
-// Internal API imports
+// API Interna y Componentes
 import { getBanner } from '@/lib/api/banner';
 import Carousel from '@/components/features/carousel/Carousel';
 
-// Destructure props with explicit typing
+// Desestructuración con tipado explícito
 const { booleanBanner }: Props = Astro.props;
 
-// Fetch unique banner (which now contains multiple images)
+// Obtención del Banner Único
+// Nota: La respuesta puede contener múltiples imágenes en un solo objeto banner
 const banner = await getBanner();
 
-// Convert multiple images to CarouselImage format
+// Transformación de datos para el Carrusel
+// Mapea las imágenes del CMS al formato requerido por CarouselImage
 const carouselData = (banner?.banners ?? []).map((imgUrl, index) => ({
 	id: `${banner.slug || 'main-banner'}-${index}`,
 	title: banner.nombre || 'Banner Principal',
 	image: imgUrl,
-	url: 'https://seminariojuridico.com/' // Persistent link
+	url: 'https://seminariojuridico.com/' // Enlace persistente definido por negocio
 }));
-
-if (carouselData.length === 0) {
-	console.log('[BannerHeader] No se encontraron banners para mostrar.');
-}
 ---
 
 {
 	carouselData.length > 0 && (
 		<div
 			class:list={[
-				'banner-header-container relative mx-auto w-full max-w-[1260px] overflow-hidden  transition-transform duration-300 hover:scale-[1.005]',
+				'banner-header-container relative mx-auto w-full max-w-[1260px] overflow-hidden transition-transform duration-300 hover:scale-[1.005]',
 				{ hidden: booleanBanner }
 			]}
 		>
-			<div class="mx-auto w-full h-full">
+			<div class="mx-auto h-full w-full">
 				<Carousel
 					width="w-full"
 					dotDuration={true}
@@ -68,7 +66,7 @@ if (carouselData.length === 0) {
 	.banner-header-container :global(img) {
 		height: 100%;
 		width: 100%;
-		
+
 		object-position: center;
 	}
 </style>

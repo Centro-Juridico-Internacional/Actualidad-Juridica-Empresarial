@@ -20,7 +20,7 @@ export default function ReadingProgressBar({ targetId }: ReadingProgressBarProps
 					const elementHeight = element.offsetHeight;
 					const windowHeight = window.innerHeight;
 
-					// Calculate progress relative to the specific element
+					// Calcular el progreso relativo al elemento contenedor específico (targetId)
 					const start = elementTop;
 					const end = elementHeight - windowHeight;
 					const current = scrollTop - start;
@@ -30,7 +30,7 @@ export default function ReadingProgressBar({ targetId }: ReadingProgressBarProps
 					}
 				}
 			} else {
-				// Fallback to global
+				// Si no hay targetId, calcular el progreso relativo a la altura total del documento (Global)
 				const scrollTop = window.scrollY;
 				const docHeight =
 					document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -43,7 +43,7 @@ export default function ReadingProgressBar({ targetId }: ReadingProgressBarProps
 		};
 
 		window.addEventListener('scroll', updateProgress, { passive: true });
-		// Trigger once on mount to set initial state
+		// Ejecutar una vez al montar para establecer el estado inicial de la barra
 		updateProgress();
 
 		return () => window.removeEventListener('scroll', updateProgress);

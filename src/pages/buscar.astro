@@ -1,33 +1,33 @@
 ---
-// Internal API imports
+// Capa de Servicios e Integración con API de Búsqueda
 import { searchNews } from '@/lib/api/search';
 import { getCategories } from '@/lib/api/categories';
 
-// Astro components (layouts)
+// Componentes de Layout y UI
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// React components (features)
+// Componentes de Funcionalidad (Features)
 import NewsComponent from '@/components/features/news/NewsComponent';
 
-// Get params
+// Captura de parámetros de búsqueda y navegación desde la URL
 const query: string | null = Astro.url.searchParams.get('q');
 const categoryFilter: string | null = Astro.url.searchParams.get('categoria');
 const currentPage: number = parseInt(Astro.url.searchParams.get('page') || '1');
 
-// Fetch categories for filter
+// Obtención de categorías disponibles para el filtrado lateral/superior
 const allCategories = await getCategories();
 
-// Initialize results structure with explicit types compatible with the return of searchNews
+// Inicialización de la estructura de estados para resultados (tipado explícito)
 let products: any[] = [];
 let pagination: any = undefined;
 let hasSearched: boolean = false;
 
-// Perform search logic
+// Ejecución de la lógica de búsqueda basada en criterios (query o categoría)
 if ((query && query.trim()) || categoryFilter) {
 	hasSearched = true;
 	try {
-		// searchNews returns { products: NewsArticle[], pagination: Pagination }
+		// Envío de petición al servicio de búsqueda con parámetros de paginación
 		const searchResults = await searchNews({
 			query: query?.trim() || '',
 			page: currentPage,
@@ -41,7 +41,7 @@ if ((query && query.trim()) || categoryFilter) {
 	}
 }
 
-// Stats
+// Resumen de estadísticas de búsqueda
 const totalResults: number = pagination?.total ?? 0;
 ---
 
@@ -50,7 +50,7 @@ const totalResults: number = pagination?.total ?? 0;
 	booleanLayout={true}
 	breadcrumbTitle="Búsqueda"
 >
-	<!-- Hero Section -->
+	<!-- Sección Hero de Búsqueda -->
 	<section
 		class="relative mb-8 flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
 	>

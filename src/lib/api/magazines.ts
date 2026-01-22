@@ -10,7 +10,8 @@ interface Magazine {
 }
 
 /**
- * Get a specific magazine by slug.
+ * Obtiene una revista específica por Slug.
+ * Recupera tanto el archivo PDF como la imagen de portada.
  */
 export async function getMagazineBySlug(slug: string): Promise<Magazine | null> {
 	const res = await query(
@@ -24,7 +25,7 @@ export async function getMagazineBySlug(slug: string): Promise<Magazine | null> 
 	const pdfUrl = a?.Revista?.data?.attributes?.url ?? a?.Revista?.url ?? null;
 	const coverUrl = a?.Portada?.data?.attributes?.url ?? a?.Portada?.url ?? null;
 
-	// Use default image if no cover
+	// Imagen de fallback si no hay portada
 	const finalCover = coverUrl ? withHost(coverUrl) : DEFAULT_CATEGORY_IMAGE;
 
 	return {
@@ -36,21 +37,12 @@ export async function getMagazineBySlug(slug: string): Promise<Magazine | null> 
 	};
 }
 
-interface MagazinePdf {
-	id: string;
-	title: string;
-	slug: string;
-	pdf: string | null;
-	cover: string | null;
-}
-
 /**
- * Get all magazine PDFs.
- * Supports one or multiple magazines.
- * Cached by ISR on the page that uses it.
- * Sorted by publication date (most recent first).
+ * Obtiene listado de todas las revistas (PDFs).
+ * Ordenadas por fecha de publicación descendente.
+ * Usado para el listado principal de ediciones anteriores.
  */
-export async function getMagazines(): Promise<MagazinePdf[]> {
+export async function getMagazines(): Promise<Magazine[]> {
 	const res = await query(
 		'revista-pdfs?populate[Revista][fields][0]=url&populate[Portada][fields][0]=url&sort[0]=publishedAt:desc'
 	);
@@ -62,7 +54,6 @@ export async function getMagazines(): Promise<MagazinePdf[]> {
 		const pdfUrl = a?.Revista?.data?.attributes?.url ?? a?.Revista?.url ?? null;
 		const coverUrl = a?.Portada?.data?.attributes?.url ?? a?.Portada?.url ?? null;
 
-		// Use default image if no cover
 		const finalCover = coverUrl ? withHost(coverUrl) : DEFAULT_CATEGORY_IMAGE;
 
 		return {
@@ -75,5 +66,4 @@ export async function getMagazines(): Promise<MagazinePdf[]> {
 	});
 }
 
-// Legacy export for backward compatibility
 export { getMagazineBySlug as getRevistaBySlug, getMagazines as getPdfs };

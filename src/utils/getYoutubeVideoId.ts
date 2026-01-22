@@ -1,3 +1,7 @@
+/**
+ * Extrae el ID de un video de YouTube a partir de una URL.
+ * Soporta formatos estándar y acortados (youtu.be).
+ */
 export function getYoutubeVideoId(url: string): string | null {
 	try {
 		const parsedUrl = new URL(url);

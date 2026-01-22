@@ -80,7 +80,7 @@ const IncapacidadCalculator = () => {
 			</h2>
 
 			<form className="space-y-6" onSubmit={calculate}>
-				{/* Salario */}
+				{/* Base Salarial para Liquidación */}
 				<div>
 					<label className="font-medium text-gray-700">
 						Salario mensual
@@ -112,7 +112,7 @@ const IncapacidadCalculator = () => {
 					/>
 				</div>
 
-				{/* Días */}
+				{/* Duración de la Excusa Médica */}
 				<div>
 					<label className="font-medium text-gray-700">Días de incapacidad</label>
 					<input
@@ -124,7 +124,7 @@ const IncapacidadCalculator = () => {
 					/>
 				</div>
 
-				{/* Tipo */}
+				{/* Origen de la Incapacidad (Afecta el % de pago) */}
 				<div>
 					<label htmlFor="incapacidad-type" className="font-medium">
 						Tipo de incapacidad

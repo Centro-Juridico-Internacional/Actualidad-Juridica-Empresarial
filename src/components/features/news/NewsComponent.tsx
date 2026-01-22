@@ -9,9 +9,9 @@ interface NewsComponentProps {
 	className?: string;
 	showContent?: boolean;
 	eagerImage?: boolean;
-	variant?: 'default' | 'compact'; // opcional, se autoajusta si no lo pasas
-	titleSize?: 'small' | 'default' | 'large'; // Nuevo: tamaño del título
-	highlightQuery?: string; // Nuevo: término a resaltar
+	variant?: 'default' | 'compact'; // Opcional: Se autoajusta dinámicamente según el contenedor si se omite.
+	titleSize?: 'small' | 'default' | 'large'; // Tamaño semántico del título para jerarquías visuales.
+	highlightQuery?: string; // Término para resaltado dinámico (útil en buscador).
 }
 
 const NewsComponent: React.FC<NewsComponentProps> = ({
@@ -21,8 +21,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 	className = '',
 	showContent = true,
 	eagerImage = false,
-	variant, // puede venir vacío
-	titleSize = 'default', // valor por defecto para retrocompatibilidad
+	variant, // Puede venir sin definir
+	titleSize = 'default', // Valor por defecto para retrocompatibilidad
 	highlightQuery = ''
 }) => {
 	if (!product) return null;
@@ -55,7 +55,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		? `/autores/${product.authorName.toLowerCase().replace(/\s+/g, '_')}`
 		: '#';
 
-	// 👇 Detección automática del tamaño del contenedor
+	// Detección automática del tamaño del contenedor (Responsive Inteligente)
+	// Activa el modo 'compacto' si el ancho o alto son insuficientes para el layout completo.
 	const ref = useRef<HTMLDivElement>(null);
 	const [isCompactAuto, setIsCompactAuto] = useState(false);
 
@@ -87,7 +88,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		return isCompact ? 'text-base sm:text-lg' : 'text-xl md:text-3xl';
 	};
 
-	// ---------- CONTENIDO ----------
+	// Renderizado del Contenido Principal (Molecula News)
 	const content = (
 		<div
 			ref={ref}
@@ -204,7 +205,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 		</div>
 	);
 
-	// ---------- WRAPPER ----------
+	// Envoltorio Principal (Atomo/Organismo) con soporte para Overlay de Imagen
 	if (bgOverlay) {
 		return (
 			<div className="relative h-full w-full overflow-hidden rounded-2xl">

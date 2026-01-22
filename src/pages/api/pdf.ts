@@ -5,7 +5,7 @@ export const GET: APIRoute = async ({ request }) => {
 	const target = url.searchParams.get('url');
 
 	if (!target) {
-		return new Response('Missing url param', { status: 400 });
+		return new Response('Falta el parámetro url', { status: 400 });
 	}
 
 	try {
@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ request }) => {
 		});
 
 		if (!upstream.ok) {
-			return new Response(`Upstream error: ${upstream.status} ${upstream.statusText}`, {
+			return new Response(`Error en el origen: ${upstream.status} ${upstream.statusText}`, {
 				status: upstream.status
 			});
 		}
@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ request }) => {
 			}
 		});
 	} catch (err: any) {
-		return new Response(`Proxy failed: ${String(err?.message ?? err)}`, {
+		return new Response(`Error en el Proxy PDF: ${String(err?.message ?? err)}`, {
 			status: 500
 		});
 	}

@@ -19,16 +19,23 @@ interface Banner {
 }
 
 /**
- * Banner principal del home (Single Type con múltiples imágenes).
+ * Obtiene el Banner Principal del home.
+ * Se trata de un Single Type en Strapi que puede contener múltiples imágenes
+ * (para slider) o una sola.
  */
 export async function getBanner(): Promise<Banner> {
-	// Populamos la imagen para obtener su URL
+	// Populamos la relación 'imagen' para obtener la media real
 	const res = await query('banner?populate=imagen');
 
 	const a = res.data?.attributes ?? res.data ?? {};
 
 	/**
-	 * Función recursiva para extraer URLs de imágenes de estructuras Strapi
+	 * Función recursiva para extraer URLs de imágenes de estructuras Strapi.
+	 *
+	 * IMPORTANTE:
+	 * Strapi 4 y 5 tienen estructuras de respuesta diferentes (con/sin 'attributes').
+	 * Además, los campos de medios pueden ser Single (objeto) o Multiple (array).
+	 * Esta función normaliza todos esos casos en un array plano de strings.
 	 */
 	const extractUrls = (media: StrapiMedia): string[] => {
 		if (!media) return [];

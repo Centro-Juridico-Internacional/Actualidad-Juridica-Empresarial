@@ -15,40 +15,43 @@ type Status = 'idle' | 'loading-pdf' | 'ready' | 'error';
 type FlipDir = 'next' | 'prev';
 
 type FlipState =
+	// Estados de animación y capas
 	| {
 			active: false;
 	  }
 	| {
 			active: true;
 			dir: FlipDir;
-			// páginas (números)
+			// Páginas involucradas en la transición (números)
 			fromLeft: number | null;
 			fromRight: number | null;
 			toLeft: number | null;
 			toRight: number | null;
 
-			// imágenes ya resueltas (dataURL o null)
-			// Base (debajo) durante el flip:
+			// Imágenes resueltas (DataURL en base64)
+			// Capa Base (estática debajo del giro):
 			baseLeftSrc: string | null;
 			baseRightSrc: string | null;
 
-			// Hoja que gira (arriba):
-			flipFrontSrc: string | null; // página que se va
-			flipBackSrc: string | null; // página que entra
+			// Hoja en movimiento (giro 3D):
+			flipFrontSrc: string | null; // Cara frontal (página saliente)
+			flipBackSrc: string | null; // Cara posterior (página entrante)
 
-			// Para forzar remount y evitar “reuso” de <img> por React
+			// Estado de la capa de superposición (Overlay)
 			flipKey: string;
 
-			// Control de fase visual
+			// Fase de la animación: 'prep' (preparación) | 'run' (ejecución)
 			phase: 'prep' | 'run';
 	  };
 
 /**
- * Magazine flipbook (robusto)
- * - Desktop: 2 páginas (spread) + animación tipo libro real con overlay (SIN duplicados)
- * - Mobile: 1 página (sin flip 3D agresivo aquí; queda estable)
- * - Renderiza PDF a imágenes (dataURL) con pdfjs
- * - Precarga por batches + cache
+ * Componente Magazine (Flipbook Interactivo)
+ *
+ * Características:
+ * - Escritorio: Spread de 2 páginas con animación 3D de libro real.
+ * - Móvil: Vista de 1 página optimizada para estabilidad.
+ * - Motor: Utiliza pdfjs-dist para renderizar PDF directamente a imágenes (DataURL).
+ * - Rendimiento: Implementa precarga por lotes (batches) y sistema de cache en memoria.
  */
 export default function Magazine({ pdfUrl }: Props) {
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -79,7 +82,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	// Tamaños
 	const [pageWidth, setPageWidth] = useState(520);
 
-	// Flip overlay state
+	// Estado de la capa de transición (Flip)
 	const [flip, setFlip] = useState<FlipState>({ active: false });
 	const animLockRef = useRef(false);
 
@@ -185,7 +188,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}, [pdfUrl]);
 
 	// ======================
-	// ✅ Desktop: spreads
+	// ✅ Escritorio: Pliegues (Spreads)
 	// ======================
 	const spreadCount = useMemo(() => {
 		if (numPages <= 0) return 0;
@@ -217,7 +220,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	);
 
 	// ======================
-	// ✅ Mobile single visible
+	// ✅ Móvil: Página única visible
 	// ======================
 	const mobileVisiblePage = useMemo(() => {
 		if (!numPages) return null;
@@ -225,7 +228,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}, [mobilePage, numPages]);
 
 	// ======================
-	// ✅ Label
+	// ✅ Etiqueta de navegação (Label)
 	// ======================
 	const label = useMemo(() => {
 		if (!numPages) return '—';
@@ -288,7 +291,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}
 
 	// ======================
-	// ✅ Precarga (batches)
+	// ✅ Precarga por lotes (Batches)
 	// ======================
 	useEffect(() => {
 		if (status !== 'ready' || !numPages) return;
@@ -341,7 +344,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}, [status, numPages]);
 
 	// ======================
-	// ✅ Imágenes visibles del “base layer”
+	// ✅ Imágenes visibles de la capa base (Base Layer)
 	// ======================
 	const [baseLeftSrc, setBaseLeftSrc] = useState<string | null>(null);
 	const [baseRightSrc, setBaseRightSrc] = useState<string | null>(null);
@@ -395,7 +398,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}, [status, isMobile, spreadPages, mobileVisiblePage, flip.active]);
 
 	// ======================
-	// ✅ Navegación (con FLIP estable en desktop)
+	// ✅ Navegación (con transición 3D estable en escritorio)
 	// ======================
 	const canPrev = useMemo(() => {
 		if (status !== 'ready') return false;
@@ -544,7 +547,7 @@ export default function Magazine({ pdfUrl }: Props) {
 	}, [flip.active, flip, spreadIndex, spreadCount]);
 
 	// ======================
-	// ✅ UI dims
+	// ✅ Dimensiones de Interfaz (UI)
 	// ======================
 	const pageHeight = useMemo(() => Math.round(pageWidth / pageRatio), [pageWidth, pageRatio]);
 
@@ -591,7 +594,7 @@ export default function Magazine({ pdfUrl }: Props) {
 						width: contentWidth + framePad * 2
 					}}
 				>
-					{/* ================= Base layer ================= */}
+					{/* Capa Base (Estática) - Renderiza las páginas debajo de la animación */}
 					{isMobile ? (
 						<div className="mag-single" style={{ height: pageHeight, width: pageWidth }}>
 							<PageSlot
@@ -622,14 +625,14 @@ export default function Magazine({ pdfUrl }: Props) {
 								<div className="mag-spine" />
 							</div>
 
-							{/* ================= Flip overlay (solo desktop) ================= */}
+							{/* Capa de Animación (Overlay) - Solo en Escritorio */}
 							{flip.active && (
 								<div
 									ref={flipLayerRef}
 									className="mag-flip-layer"
 									style={{ height: pageHeight, width: pageWidth * 2 }}
 								>
-									{/* Base “controlada” durante el flip */}
+									{/* Base "fantasma" controlada durante el giro para evitar saltos visuales */}
 									<div
 										className="mag-spread mag-spread--under"
 										style={{ height: pageHeight, width: pageWidth * 2 }}
@@ -651,7 +654,7 @@ export default function Magazine({ pdfUrl }: Props) {
 										<div className="mag-spine" />
 									</div>
 
-									{/* Hoja que gira */}
+									{/* Hoja física que realiza el giro 3D */}
 									<div
 										key={flip.flipKey}
 										className={[
@@ -665,10 +668,10 @@ export default function Magazine({ pdfUrl }: Props) {
 										}}
 									>
 										<div className="mag-face mag-face--front">
-											<FaceImage src={flip.flipFrontSrc} alt="front" />
+											<FaceImage src={flip.flipFrontSrc} alt="frente" />
 										</div>
 										<div className="mag-face mag-face--back">
-											<FaceImage src={flip.flipBackSrc} alt="back" />
+											<FaceImage src={flip.flipBackSrc} alt="dorso" />
 										</div>
 									</div>
 								</div>

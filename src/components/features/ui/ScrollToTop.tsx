@@ -4,6 +4,7 @@ export default function ScrollToTop() {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
+		// Alternar visibilidad basado en el umbral de scroll de 300px
 		const toggleVisibility = () => {
 			if (window.scrollY > 300) {
 				setIsVisible(true);
@@ -16,6 +17,7 @@ export default function ScrollToTop() {
 		return () => window.removeEventListener('scroll', toggleVisibility);
 	}, []);
 
+	// Ejecutar desplazamiento suave (smooth scroll) hacia la coordenada superior
 	const scrollToTop = () => {
 		window.scrollTo({
 			top: 0,

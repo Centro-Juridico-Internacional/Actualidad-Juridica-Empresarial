@@ -1,8 +1,8 @@
 ---
-// Astro components (layouts)
+// Componentes de Layout
 import Layout from '@/layouts/Layout.astro';
 
-// Astro components (sections)
+// Organismos de la Página de Inicio (Secciones)
 import ContainerInterviewMagazine from '@/components/sections/home/ContainerInterviewMagazine.astro';
 import InformationOfInterest from '@/components/sections/home/InformationOfInterest.astro';
 import MoreNews from '@/components/sections/home/MoreNews.astro';
@@ -10,22 +10,20 @@ import News from '@/components/sections/home/News.astro';
 import Podcast from '@/components/sections/home/Podcast.astro';
 import Magazine from '@/components/features/magazines/Magazine';
 
-// Internal API imports
+// Capa de Servicios y API (Acceso a Datos)
 import { getNews } from '@/lib/api/news';
 import { getPautas } from '@/lib/api/pautas';
 import { getInterviewsUrl } from '@/lib/api/interviews';
 import { getCapsulasUrl } from '@/lib/api/capsulas';
 import { getMagazines } from '@/lib/api/magazines';
 
-// Import responsive styles for magazine only for this page
-import '@/styles/revista-responsive.css';
 import UpcomingEvents from '@/components/sections/home/UpcomingEvents.astro';
 import Recognitions from '@/components/sections/home/Recognitions.astro';
 import SocialMedia from '@/components/sections/home/SocialMedia.astro';
 import AlliesCarousel from '@/components/sections/home/AlliesCarousel.astro';
 
-// Fetch all data once at page level to avoid redundant API calls
-// Fetch all data in parallel to reduce load time
+// Obtención centralizada de datos para optimizar el rendimiento y evitar "Waterfalls"
+// Se ejecutan todas las promesas en paralelo para reducir la latencia total de carga.
 const [newsData, pautas, interviews, capsulas, magazines] = await Promise.all([
 	getNews({ categoryId: '' }),
 	getPautas(),
@@ -35,7 +33,6 @@ const [newsData, pautas, interviews, capsulas, magazines] = await Promise.all([
 ]);
 
 const { products } = newsData;
-console.log(magazines);
 
 // ISR maneja el cache automáticamente en modo hybrid
 ---
@@ -48,7 +45,6 @@ console.log(magazines);
 	<Podcast capsulas={capsulas} />
 	<UpcomingEvents />
 	<Recognitions />
-	<!-- {magazines[0]?.pdf && <Magazine client:only="react" pdfUrl={magazines[0].pdf} />} -->
 	{
 		magazines[0]?.pdf && (
 			<Magazine

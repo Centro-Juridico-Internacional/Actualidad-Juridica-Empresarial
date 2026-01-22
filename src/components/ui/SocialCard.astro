@@ -1,13 +1,18 @@
 ---
+/**
+ * Componente SocialCard
+ * Renderiza una tarjeta visual atractiva para enlaces a redes sociales.
+ * Soporta gradientes personalizados y efectos de elevación.
+ */
 interface Props {
-	href: string;
-	platform: string;
-	title: string;
-	description: string;
-	actionText: string;
-	gradientClass: string;
-	hoverShadowClass: string;
-	className?: string;
+	href: string; // URL de destino
+	platform: string; // Nombre de la plataforma (ej: Facebook)
+	title: string; // Título principal
+	description: string; // Breve descripción del contenido
+	actionText: string; // Texto del botón/enlace de acción
+	gradientClass: string; // Clase de Tailwind para el fondo degrade
+	hoverShadowClass: string; // Clase de Tailwind para la sombra en hover
+	className?: string; // Clases adicionales opcionales
 }
 
 const {
@@ -26,6 +31,7 @@ const {
 	href={href}
 	target="_blank"
 	class:list={[
+		// Clases base: transiciones suaves y escala al presionar
 		'group relative overflow-hidden rounded-2xl p-6 text-white shadow-md transition-all duration-300 hover:-translate-y-1 active:scale-95',
 		gradientClass,
 		hoverShadowClass,

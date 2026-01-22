@@ -1,20 +1,28 @@
 ---
+/**
+ * Página de Error 404 (Recurso no encontrado)
+ * =========================================
+ * Se muestra cuando un usuario intenta acceder a una ruta inexistente.
+ * Mantiene la consistencia visual del sitio y ofrece un camino de retorno al inicio.
+ */
 import Layout from '@/layouts/Layout.astro';
 ---
 
 <Layout title="Página no encontrada" booleanLayout={false}>
-	<div class="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center bg-gray-50 px-4 text-center">
+	<!-- Contenedor principal centrado para el mensaje de error -->
+	<div
+		class="flex min-h-[calc(100vh-200px)] flex-col items-center justify-center bg-gray-50 px-4 text-center"
+	>
+		<!-- Código de error con efecto de opacidad -->
 		<h1 class="font-primary-font mb-4 text-9xl font-bold text-green-800 opacity-20">404</h1>
 		<h2 class="mb-6 text-3xl font-bold text-gray-800 md:text-4xl">¡Ups! Página no encontrada</h2>
 		<p class="mb-4 max-w-md text-lg text-gray-600">
 			Lo sentimos, la página que estás buscando no existe o ha sido movida.
 		</p>
-		<p class="mb-8 max-w-md text-gray-500">
-			Tal vez quieras volver al inicio o verificar la URL.
-		</p>
+		<p class="mb-8 max-w-md text-gray-500">Tal vez quieras volver al inicio o verificar la URL.</p>
 		<a
 			href="/"
-			class="rounded-full bg-green-700 px-8 py-3 text-lg font-semibold text-white transition-colors hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300"
+			class="rounded-full bg-green-700 px-8 py-3 text-lg font-semibold text-white transition-colors hover:bg-green-800 focus:ring-4 focus:ring-green-300 focus:outline-none"
 		>
 			Volver al Inicio
 		</a>

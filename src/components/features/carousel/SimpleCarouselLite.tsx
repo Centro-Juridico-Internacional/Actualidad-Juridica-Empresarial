@@ -1,5 +1,3 @@
-// ts-ignore
-
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
@@ -43,7 +41,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 			if (next >= len) next = infinite ? 0 : len - 1;
 			setIndex(next);
 			accumulatedTimeRef.current = 0;
-			// Reset progress in DOM immediately
+			// Resetear el progreso en el DOM inmediatamente para evitar parpadeos visuales
 			const activeDot = containerRef.current?.querySelector(
 				'.carousel-dot.is-active'
 			) as HTMLElement;
@@ -55,12 +53,13 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 	const nextSlide = useCallback(() => {
 		setIndex((i) => (i + 1) % len);
 		accumulatedTimeRef.current = 0;
-		// Reset progress in DOM immediately
+		// Resetear el progreso en el DOM inmediatamente
 		const activeDot = containerRef.current?.querySelector('.carousel-dot.is-active') as HTMLElement;
 		if (activeDot) activeDot.style.setProperty('--progress', '0%');
 	}, [len]);
 
-	// Main animation loop for progress bar and autoplay
+	// Loop principal de animación para la barra de progreso y autoplay
+	// Utiliza requestAnimationFrame para garantizar suavidad (60fps) sin saturar React.
 	const animate = useCallback(
 		(time: number) => {
 			if (lastTimeRef.current === 0) {
@@ -74,7 +73,8 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 				accumulatedTimeRef.current += deltaTime;
 				const newProgress = Math.min((accumulatedTimeRef.current / autoplaySpeed) * 100, 100);
 
-				// Direct DOM update for performance (60fps without React re-renders)
+				// Actualización directa de variables CSS en el DOM por rendimiento
+				// Evita ciclos de renderizado de React en cada frame de animación.
 				const activeDot = containerRef.current?.querySelector(
 					'.carousel-dot.is-active'
 				) as HTMLElement;
@@ -101,12 +101,12 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 		};
 	}, [animate]);
 
-	// Reset timer on slide change if manually navigated
+	// Reiniciar el temporizador al cambiar de diapositiva vía navegación manual
 	useEffect(() => {
 		lastTimeRef.current = 0;
 	}, [index]);
 
-	// Touch handlers for swipe support
+	// Manejadores de eventos táctiles para soporte de Swipe (Deslizar) en móviles
 	const touchStartX = useRef<number | null>(null);
 	const touchCurrentX = useRef<number | null>(null);
 	const minSwipeDistance = 50;
@@ -129,10 +129,10 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 
 		if (isSignificantSwipe) {
 			if (distance > 0) {
-				// Swiped left -> next
+				// Deslizamiento a la izquierda -> siguiente diapositiva
 				nextSlide();
 			} else {
-				// Swiped right -> prev
+				// Deslizamiento a la derecha -> anterior diapositiva
 				goTo(index - 1);
 			}
 		}
@@ -142,7 +142,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 		setIsPaused(false);
 	};
 
-	// Variables CSS for track movement
+	// Variables CSS para el movimiento del 'track' del carrusel y dimensiones del slide
 	useEffect(() => {
 		const root = containerRef.current;
 		if (root) {
@@ -166,7 +166,7 @@ const SimpleCarouselLite: React.FC<SimpleCarouselProps> = ({
 			onTouchMove={handleTouchMove}
 			onTouchEnd={handleTouchEnd}
 		>
-			{/* Progress Bar removed from here - now integrated into dots */}
+			{/* La barra de progreso se ha movido: ahora está integrada dentro de los puntos de navegación */}
 
 			<div className="carousel-track">
 				{slides.map((child, i) => (

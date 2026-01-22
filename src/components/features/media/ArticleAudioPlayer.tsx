@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 interface ArticleAudioPlayerProps {
 	title: string;
-	content: string; // Plain text
+	content: string; // Texto plano (Sin etiquetas HTML/Markdown)
 }
 
 const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5];
@@ -15,20 +15,21 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 	const [showStopTooltip, setShowStopTooltip] = useState(false);
 	const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
-	// Refs
+	// Referencias para control de estado y orquestación de voz
 	const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 	const charIndexRef = useRef<number>(0);
 	const fullTextRef = useRef<string>('');
 	const menuRef = useRef<HTMLDivElement>(null);
 	const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
 
-	// Initialize and cleanup
+	// Inicialización y limpieza del motor de síntesis
+	// Configura los listeners globales para detener la voz al navegar o cerrar la pestaña.
 	useEffect(() => {
 		if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 			setSupported(true);
 			fullTextRef.current = `${title}. ${content}`;
 
-			// Load voices
+			// Carga de voces disponibles en el navegador (Local y Online)
 			const loadVoices = () => {
 				voicesRef.current = window.speechSynthesis.getVoices();
 			};
@@ -38,7 +39,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 				window.speechSynthesis.onvoiceschanged = loadVoices;
 			}
 
-			// Global listeners for navigation
+			// Listeners globales para detectar navegación y evitar solapamiento de audio
 			const handleStopGlobal = () => {
 				if (window.speechSynthesis.speaking) {
 					window.speechSynthesis.cancel();
@@ -49,7 +50,8 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			window.addEventListener('pagehide', handleStopGlobal);
 			window.addEventListener('visibilitychange', () => {
 				if (document.visibilityState === 'hidden') {
-					// Optional: could pause instead of stop, but user asked to stop
+					// Opcional: Se podría pausar en lugar de detener,
+					// pero se prefiere detener por privacidad del usuario.
 					// handleStopGlobal();
 				}
 			});
@@ -65,7 +67,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		}
 	}, [title, content]);
 
-	// Close menu on click outside
+	// Cerrar el menú de velocidad al hacer clic fuera del componente
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -80,7 +82,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		const voices = voicesRef.current;
 		if (voices.length === 0) return null;
 
-		// 1. Prioritize Colombian Spanish (es-CO)
+		// 1. Prioridad: Español de Colombia (es-CO)
 		const colombianVoices = voices.filter((v) => v.lang.includes('es-CO'));
 		if (colombianVoices.length > 0) {
 			const naturalColombian = colombianVoices.find(
@@ -89,7 +91,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			return naturalColombian || colombianVoices[0];
 		}
 
-		// 2. Fallback to Natural/Google/Microsoft Online voices for any Spanish
+		// 2. Respaldo (Fallback): Voces de Google/Microsoft Online para cualquier variante de español
 		const preferredVoices = voices.filter(
 			(v) =>
 				v.lang.includes('es') &&
@@ -97,7 +99,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		);
 		if (preferredVoices.length > 0) return preferredVoices[0];
 
-		// 3. Last fallback: any Spanish voice
+		// 3. Última opción: Cualquier voz disponible en español
 		const spanishVoices = voices.filter((v) => v.lang.includes('es'));
 		return spanishVoices.length > 0 ? spanishVoices[0] : null;
 	};
@@ -105,7 +107,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 	const speak = (startIndex: number, rate: number) => {
 		if (!supported) return;
 
-		// Ensure everything is clean before starting new speech
+		// Asegurar una limpieza total antes de iniciar una nueva locución
 		if (utteranceRef.current) {
 			utteranceRef.current.onend = null;
 			utteranceRef.current.onboundary = null;
@@ -119,7 +121,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			return;
 		}
 
-		// Small timeout to allow the browser engine to fully reset
+		// Pequeño retardo (timeout) para permitir que el motor del navegador se reinicie por completo
 		setTimeout(() => {
 			const utterance = new SpeechSynthesisUtterance(textToSpeak);
 			const voice = getBestVoice();
@@ -140,8 +142,8 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			};
 
 			utterance.onend = () => {
-				// Avoid reset if we are just switching speed (indicated by a flag if needed,
-				// but cancel() usually suffices)
+				// Evitar reset si solo estamos cambiando la velocidad
+				// (cancel() suele ser suficiente para disparar onend)
 				if (!window.speechSynthesis.speaking) {
 					handleReset();
 				}
@@ -203,7 +205,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		setShowSpeedMenu(false);
 
 		if (isPlaying || isPaused) {
-			// Restart from current index with new speed
+			// Reiniciar desde el índice actual con la nueva velocidad de lectura
 			speak(charIndexRef.current, newSpeed);
 		}
 	};
@@ -212,7 +214,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 		<div
 			className={`relative flex w-fit items-center gap-2 rounded-full border border-green-100 bg-white p-1.5 pr-4 shadow-sm transition-all hover:shadow-md ${!supported ? 'opacity-50 grayscale' : ''}`}
 		>
-			{/* Play/Pause Button - Increased Size (h-11 w-11) */}
+			{/* Botón Play/Pause - Tamaño incrementado para mejor accesibilidad (Fitts's Law) */}
 			<button
 				onClick={handlePlay}
 				disabled={!supported}
@@ -310,7 +312,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 				)}
 			</div>
 
-			{/* Status Text */}
+			{/* Texto de Estado y Feedback Visual */}
 			<div className="ml-1 flex min-w-[70px] flex-col">
 				<span className="text-[11px] leading-none font-bold text-gray-800">
 					{isPlaying ? 'Leyendo...' : isPaused ? 'Pausado' : 'Escuchar'}

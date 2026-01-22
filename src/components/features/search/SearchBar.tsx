@@ -14,11 +14,11 @@ interface Suggestion {
 }
 
 /**
- * SearchBar component with Autocomplete / Smart Suggestions
+ * Componente SearchBar con Autocompletado y Sugerencias Inteligentes
  *
- * ✔ Navegación HTML nativa (sin window.location)
- * ✔ Compatible con Astro ClientRouter
- * ✔ UX mejorado: "Ver resultados para {query}"
+ * ✔ Navegación HTML nativa (Integración con Astro)
+ * ✔ Soporte para reducción de carga (Debounce)
+ * ✔ Interfaz de usuario optimizada con resultados instantáneos
  */
 const SearchBar: React.FC<SearchBarProps> = ({
 	placeholder = 'Buscar artículos...',
@@ -31,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const wrapperRef = useRef<HTMLFormElement>(null);
 
-	// Fetch suggestions with debounce
+	// Obtener sugerencias de búsqueda con Debounce (Espera 300ms tras la última pulsación)
 	useEffect(() => {
 		const timer = setTimeout(async () => {
 			if (searchQuery.trim().length >= 3) {
@@ -57,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 		return () => clearTimeout(timer);
 	}, [searchQuery]);
 
-	// Close dropdown on outside click
+	// Cerrar el menú desplegable al hacer clic fuera del componente (Clic Externo)
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -124,7 +124,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				)}
 			</button>
 
-			{/* Suggestions */}
+			{/* Panel de Sugerencias Dinámicas */}
 			{showSuggestions && suggestions.length > 0 && (
 				<div className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-xl border border-transparent bg-white shadow-xl">
 					<ul className="max-h-72 overflow-y-auto">

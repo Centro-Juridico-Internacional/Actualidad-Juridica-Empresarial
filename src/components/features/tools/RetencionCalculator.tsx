@@ -26,27 +26,27 @@ const RetencionCalculator = () => {
 
 		const bruto = Number(salary);
 
-		// ▼ Deducciones legales
+		// Procesamiento de Deducciones Legales (Art. 387 E.T.)
 		const ds = Number(dedSalud) || 0;
 		const dp = Number(dedPension) || 0;
 		const dedIntereses = Number(intereses) || 0;
 
-		// Dependientes (32 UVT máx)
+		// Deducción por Dependientes Económicos (Máximo 32 UVT mensuales)
 		const dedDependientes = dependientes ? 32 * UVT_2025 : 0;
 
 		// TOTAL deducciones
 		const totalDeducciones = ds + dp + dedDependientes + dedIntereses;
 
-		// ▼ 25% Renta exenta
+		// Cálculo de la Renta Exenta del 25% (Límite legal mensual aplicado)
 		const rentaExenta25 = Math.min(bruto * 0.25, 240 * UVT_2025);
 
-		// ▼ Renta líquida
+		// Base de Renta Líquida Gravable para aplicación de tabla UVT
 		const rentaLiquida = Math.max(bruto - totalDeducciones - rentaExenta25, 0);
 
-		// Conversión a UVT
+		// Conversión de pesos colombianos (COP) a Unidad de Valor Tributario (UVT)
 		const baseUVT = rentaLiquida / UVT_2025;
 
-		// ▼ Tabla progresiva DIAN
+		// Aplicación de la Tabla Progresiva de Retención (Tarifa 2025)
 		let retencion = 0;
 
 		if (baseUVT <= 0) retencion = 0;

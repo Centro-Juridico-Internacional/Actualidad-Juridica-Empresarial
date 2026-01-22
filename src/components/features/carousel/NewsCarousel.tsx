@@ -14,9 +14,12 @@ const carouselStyle = {
 } as const;
 
 /**
- * Carousel component for displaying latest news articles
+ * Componente NewsCarousel
+ * Presenta las noticias destacadas en la parte superior del home mediante un carrusel.
+ * Las noticias se renderizan sobre un fondo de imagen con overlay degrade para legibilidad.
  */
 const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
+	// Seleccionar solo las primeras 3 noticias para mantener el carrusel ágil y relevante
 	const topNews = products.slice(0, 3);
 
 	return (
@@ -55,6 +58,7 @@ const NewsCarousel: React.FC<NewsCarouselProps> = ({ products }) => {
 };
 
 export default React.memo(NewsCarousel, (prevProps, nextProps) => {
-	// Only re-render if products array reference changes
+	// Solo re-renderizar si la referencia del array de noticias cambia.
+	// Optimización vital para evitar lag durante el desplazamiento de página.
 	return prevProps.products === nextProps.products;
 });

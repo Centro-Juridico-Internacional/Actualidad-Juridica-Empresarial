@@ -13,14 +13,16 @@ const carouselStyle = {
 	margin: 'auto'
 } as const;
 
-// Define a type for interviews with non-null url and title
+// Definición de tipo para entrevistas con URL y Título garantizados (no nulos)
 type ValidInterview = Interview & { url: string; title: string };
 
 /**
- * Carousel component for displaying YouTube interview videos
+ * Componente InterviewCarousel
+ * Especializado en renderizar videos de YouTube en un formato de carrusel rotativo.
  */
 const InterviewCarousel: React.FC<InterviewCarouselProps> = ({ interviews = [] }) => {
-	// Filter out interviews with null url or title, then take the latest 8 and reverse
+	// Filtrar entrevistas inválidas y tomar las últimas 8 para asegurar contenido fresco.
+	// Se aplica .reverse() porque el CMS suele entregar primero las más antiguas.
 	const latestInterviews = interviews
 		.filter(
 			(interview): interview is ValidInterview => interview.url !== null && interview.title !== null
@@ -47,6 +49,6 @@ const InterviewCarousel: React.FC<InterviewCarouselProps> = ({ interviews = [] }
 };
 
 export default React.memo(InterviewCarousel, (prevProps, nextProps) => {
-	// Only re-render if interviews array reference changes
+	// Evitar re-renderizados innecesarios si la referencia del array no ha cambiado.
 	return prevProps.interviews === nextProps.interviews;
 });

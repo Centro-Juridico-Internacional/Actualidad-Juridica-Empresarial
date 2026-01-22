@@ -1,76 +1,90 @@
 ---
+/**
+ * Herramienta: Calculadora de Indemnización por Despido
+ * ====================================================
+ * Calcula el monto compensatorio según el Código Sustantivo del Trabajo (CST).
+ * Soporta contratos a término fijo e indefinido con diferentes rangos salariales.
+ */
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import IndemnizacionCalculator from '@/components/features/tools/IndemnizacionCalculator.tsx';
 
+// Captura de URL absoluta para metadatos SEO
 const { href } = Astro.url;
 
+/**
+ * Schema.org - WebApplication
+ * Categorización como servicio legal para Google Search.
+ */
 const schema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Calculadora de Indemnización por Despido",
-  "applicationCategory": "LegalService",
-  "operatingSystem": "All",
-  "url": href,
-  "description": "Calculadora oficial basada en la legislación laboral colombiana para estimar la indemnización por despido sin justa causa.",
-  "provider": {
-    "@type": "Organization",
-    "name": "Centro Jurídico Internacional",
-    "url": Astro.url.origin
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "COP"
-  }
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: 'Calculadora de Indemnización por Despido',
+	applicationCategory: 'LegalService',
+	operatingSystem: 'All',
+	url: href,
+	description:
+		'Calculadora oficial basada en la legislación laboral colombiana para estimar la indemnización por despido sin justa causa.',
+	provider: {
+		'@type': 'Organization',
+		name: 'Centro Jurídico Internacional',
+		url: Astro.url.origin
+	},
+	offers: {
+		'@type': 'Offer',
+		price: '0',
+		priceCurrency: 'COP'
+	}
 };
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title="Indemnización por Despido" booleanLayout={true} breadcrumbTitle="Herramientas">
-    
-    <!-- Hero Section -->
-    <section class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-red-700">
-        <div class="absolute inset-0 opacity-25">
-            <svg class="h-full w-full" width="100%" height="100%" viewBox="0 0 800 800">
-                <defs>
-                    <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1" fill="white" />
-                    </pattern>
-                </defs>
-                <rect width="800" height="800" fill="url(#dotPattern)" />
-            </svg>
-        </div>
+	<!-- Hero Section -->
+	<section
+		class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-red-700"
+	>
+		<div class="absolute inset-0 opacity-25">
+			<svg class="h-full w-full" width="100%" height="100%" viewBox="0 0 800 800">
+				<defs>
+					<pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+						<circle cx="2" cy="2" r="1" fill="white"></circle>
+					</pattern>
+				</defs>
+				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
+			</svg>
+		</div>
 
-        <div class="container-main relative z-10 text-center">
-            <h1 class="mb-4 text-4xl font-bold text-white">
-                Calculadora de Indemnización por Despido
-            </h1>
-            <p class="text-lg text-red-100 max-w-2xl mx-auto">
-                Calcula fácilmente la indemnización que te corresponde según las leyes laborales colombianas.
-            </p>
-        </div>
-    </section>
+		<div class="container-main relative z-10 text-center">
+			<h1 class="mb-4 text-4xl font-bold text-white">Calculadora de Indemnización por Despido</h1>
+			<p class="mx-auto max-w-2xl text-lg text-red-100">
+				Calcula fácilmente la indemnización que te corresponde según las leyes laborales
+				colombianas.
+			</p>
+		</div>
+	</section>
 
-    <section class="container-main py-12">
-        <Breadcrumb title="Herramientas" className="mb-8" />
+	<section class="container-main py-12">
+		<Breadcrumb title="Herramientas" className="mb-8" />
 
-        <div class="flex flex-col items-center">
-            <IndemnizacionCalculator client:load />
+		<div class="flex flex-col items-center">
+			<IndemnizacionCalculator client:load />
 
-            <div class="mt-12 max-w-3xl text-gray-600 prose prose-red bg-gray-50 p-8 rounded-2xl">
-                <h3>¿Cómo funciona esta calculadora?</h3>
-                <p>
-                    Esta herramienta está basada en el <strong>Código Sustantivo del Trabajo Colombiano</strong> y permite calcular:
-                </p>
-                <ul>
-                    <li>Indemnización por despido en contrato a término indefinido</li>
-                    <li>Indemnización para contratos a término fijo</li>
-                    <li>Cálculo proporcional de salarios superiores e inferiores a 10 SMMLV</li>
-                </ul>
-                <p>Los valores son aproximados según la normativa vigente.</p>
-            </div>
-        </div>
-    </section>
+			<div class="prose prose-red mt-12 max-w-3xl rounded-2xl bg-gray-50 p-8 text-gray-600">
+				<h3>¿Cómo funciona esta calculadora?</h3>
+				<p>
+					Esta herramienta está basada en el <strong
+						>Código Sustantivo del Trabajo Colombiano</strong
+					> y permite calcular:
+				</p>
+				<ul>
+					<li>Indemnización por despido en contrato a término indefinido</li>
+					<li>Indemnización para contratos a término fijo</li>
+					<li>Cálculo proporcional de salarios superiores e inferiores a 10 SMMLV</li>
+				</ul>
+				<p>Los valores son aproximados según la normativa vigente.</p>
+			</div>
+		</div>
+	</section>
 </Layout>

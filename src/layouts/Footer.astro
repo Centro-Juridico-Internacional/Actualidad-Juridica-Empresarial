@@ -1,23 +1,30 @@
 ---
 /**
- * FOOTER REDIRECT/LOADER
- * This project (ACTUALIDAD) now consumes the centralized footer from PaginaMainCJI.
+ * REDIRECCIÓN Y CARGA DEL FOOTER
+ * ==============================
+ * Estrategia: Micro-Frontend (Integración en Runtime)
+ * Este proyecto consume el footer centralizado desde 'PaginaMainCJI'.
+ *
+ * Motivo: Mantener consistencia legal y de marca en todos los subdominios
+ * sin duplicar código ni mantenimiento.
+ *
+ * Riesgos:
+ * - Dependencia de disponibilidad de 'pagina-principal-cji.vercel.app'.
+ * - Latencia en carga del script (async).
  */
 ---
 
-<!-- El contenedor donde se cargará el footer compartido -->
+<!-- El contenedor donde se inyectará el footer compartido -->
 <div id="cji-shared-footer-container"></div>
 
-<!-- El script de carga (Cambiado a la URL del puerto de la Página Main) -->
-<!-- Suponiendo que la página main corre en el 4322 si este es el 4321, 
-     o simplemente usando la URL local por ahora -->
+<!-- Script de carga remoto -->
 <script src="https://pagina-principal-cji.vercel.app/footer-loader.js"></script>
 
 <style>
-    /* Aseguramos que el contenedor no tenga espacios raros */
-    #cji-shared-footer-container {
-        width: 100%;
-        min-height: 100px;
-        background-color: #042501; /* Fondo institucional para evitar flashes blancos */
-    }
+	/* Estilos base para evitar CLS (Cumulative Layout Shift) mientras carga */
+	#cji-shared-footer-container {
+		width: 100%;
+		min-height: 100px; /* Altura mínima reservada */
+		background-color: #042501; /* Fondo institucional para evitar flashes blancos */
+	}
 </style>

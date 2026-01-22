@@ -2,10 +2,8 @@ import { query, withHost } from '../strapi';
 import { DEFAULT_NEWS_IMAGE, DEFAULT_AUTHOR_AVATAR } from './_mediaDefaults';
 
 /**
- * Type para contenido rich text de Strapi
- */
-/**
- * Type para contenido rich text de Strapi
+ * Tipo para contenido rich text de Strapi
+ * Puede ser string (Markdown) o array de bloques (Rich Text V2)
  */
 type StrapiBlockContent = string | any[];
 
@@ -17,6 +15,10 @@ interface GetNewsParams {
 	categoryId: string;
 }
 
+/**
+ * Modelo de Dominio: Artículo de Noticia
+ * Unifica la respuesta de Strapi en una estructura limpia para el frontend.
+ */
 export interface NewsArticle {
 	title: string;
 	content: StrapiBlockContent;
@@ -46,16 +48,21 @@ interface NewsResult {
 }
 
 /**
- * Transforma un item de Strapi a NewsArticle
+ * Transforma un item crudo de Strapi a NewsArticle
+ * Maneja la complejidad de extraer atributos anidados (data.attributes vs flatted).
+ *
+ * @param item Objeto JSON crudo de Strapi
  */
 function transformNewsItem(item: any): NewsArticle {
 	const a = item.attributes ?? item;
 
+	// Resolución segura de imágenes anidadas
 	const imageRel = a.imagenes?.data?.attributes?.url ?? a.imagenes?.url ?? null;
 
 	const autor = a.autor?.data?.attributes ?? a.autor ?? {};
 	const avatarRel = autor?.avatar?.data?.attributes?.url ?? autor?.avatar?.url ?? null;
 
+	// Normalización de categorías (array de relaciones)
 	const categoriasRaw = a.categorias;
 	const categoriasArr =
 		categoriasRaw && 'data' in categoriasRaw
@@ -71,7 +78,7 @@ function transformNewsItem(item: any): NewsArticle {
 
 	return {
 		title: a.titulo ?? '',
-		content: a.contenido ?? '', // Default to empty string for RichText
+		content: a.contenido ?? '', // RichText o Markdown
 		slug: a.slug ?? '',
 		image: imageRel ? withHost(imageRel) : DEFAULT_NEWS_IMAGE,
 		day: date.toLocaleDateString(DEFAULT_LOCALE, {
@@ -96,12 +103,15 @@ function transformNewsItem(item: any): NewsArticle {
 }
 
 /**
- * Noticias filtradas por categoría.
- * Cache a nivel de página mediante ISR.
+ * Obtiene noticias filtradas por categoría.
+ * Construye una query compleja con 'populate' profundo para traer imágenes y autores.
+ *
+ * @param categoryId Slug de la categoría (ej: 'laboral').
  */
 export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult> {
 	const normalized = categoryId?.toLowerCase().trim();
 
+	// Construcción manual de query string (performance optimizada vs SDK)
 	const qs =
 		`news?filters[categorias][slug][$contains]=${encodeURIComponent(normalized)}` +
 		`&populate[imagenes][fields][0]=url` +
@@ -121,7 +131,7 @@ export async function getNews({ categoryId }: GetNewsParams): Promise<NewsResult
 }
 
 /**
- * Noticia individual por slug.
+ * Busca una noticia individual por su Slug único.
  */
 export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
 	const qs =
@@ -141,13 +151,19 @@ export async function getNewsBySlug(slug: string): Promise<NewsArticle | null> {
 }
 
 /**
- * Últimas noticias (para sidebar, secciones, etc.).
+ * Obtiene las últimas noticias generales.
+ * Útil para secciones de "Recientes" o Sidebar.
+ *
+ * @param limit Cantidad máxima de items.
+ * @param excludeSlug (Opcional) Slug de noticia a excluir (para no repetirla en relaciones).
+ * @param categorySlugs (Opcional) Array de categorías para filtrar.
  */
 export async function getLatestNews(
 	limit = 4,
 	excludeSlug?: string,
 	categorySlugs?: string[]
 ): Promise<NewsArticle[]> {
+	// Pedimos limit + 1 para tener buffer si excluimos una
 	let qs = `news?sort=updatedAt:desc&pagination[limit]=${limit + 1}`;
 
 	if (categorySlugs?.length) {

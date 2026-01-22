@@ -3,15 +3,15 @@ import { query, withHost } from '@/lib/strapi';
 import { DEFAULT_NEWS_IMAGE } from '@/lib/api/_mediaDefaults';
 
 /**
- * Search suggestions API
+ * API de Sugerencias de Búsqueda
  *
- * ✔ Búsqueda inteligente:
- *   - título
- *   - autor (name)
- *   - cargo
- *   - categoría (name)
- * ✔ Query ligera
- * ✔ Ideal para autocomplete
+ * ✔ Búsqueda inteligente en:
+ *   - Título de la noticia
+ *   - Nombre del autor
+ *   - Cargo profesional
+ *   - Nombre de la categoría
+ * ✔ Consulta optimizada (Lite)
+ * ✔ Diseñado para componentes de Autocompletado
  */
 export const GET: APIRoute = async ({ request }) => {
 	const url = new URL(request.url);
@@ -65,8 +65,8 @@ export const GET: APIRoute = async ({ request }) => {
 			headers: { 'Content-Type': 'application/json' }
 		});
 	} catch (error) {
-		console.error('Error in search-suggestions API:', error);
-		return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+		console.error('Error en API de sugerencias:', error);
+		return new Response(JSON.stringify({ error: 'Error interno del servidor' }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' }
 		});

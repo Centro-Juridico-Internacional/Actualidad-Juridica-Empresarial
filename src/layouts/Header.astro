@@ -1,26 +1,32 @@
 ---
-// Astro components (layouts)
+// Componentes de Astro (Layouts)
 import BannerHeader from './BannerHeader.astro';
 
-// React components (features)
+// Componentes React (Features interactivas)
+// Requisito: client:load para hidratación inmediata de la barra de búsqueda
 import SearchBar from '@/components/features/search/SearchBar';
-import ThemeToggle from '@/components/features/ui/ThemeToggle';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
+	/**
+	 * Controla la visualización del Banner superior de imágenes.
+	 * - true: Muestra banner (Home).
+	 * - false: Oculta banner (Páginas internas).
+	 */
 	booleanHeader: boolean;
 }
 
-// Header section item interface
+// Interfaz para elementos de sección del header
 interface HeaderSection {
 	nombre: string;
 	url: string;
 }
 
-// Destructure props with explicit typing
+// Desestructuración de props con tipado explícito
 const { booleanHeader }: Props = Astro.props;
 
-// Navigation sections data
+// Datos de secciones de navegación
+// Estructura principal: Modificar aquí impacta Escritorio y Menú Lateral Móvil
 const dataHeaderSections: HeaderSection[] = [
 	{ nombre: 'Revistas', url: '/revistas' },
 	{ nombre: 'Laboral', url: '/categorias/laboral' },
@@ -36,7 +42,7 @@ const dataHeaderSections: HeaderSection[] = [
 <BannerHeader booleanBanner={booleanHeader} />
 <header class="sticky top-0 z-50 w-full bg-green-700 shadow-sm" transition:name="header">
 	<div class="container-main">
-		<!-- Desktop & Mobile Main Row -->
+		<!-- Fila Principal (Escritorio y Móvil) -->
 		<div class="flex h-20 items-center justify-between md:h-24">
 			<a href="/" class="flex items-center">
 				<img
@@ -49,13 +55,13 @@ const dataHeaderSections: HeaderSection[] = [
 				/>
 			</a>
 
-			<!-- Desktop Actions -->
+			<!-- Acciones de Escritorio -->
 			<div class="hidden items-center gap-4 md:flex">
 				<SearchBar client:load placeholder="Buscar artículos..." />
 				<a href="/contacto" class="btn btn-primary text-gray-50"> Contactar </a>
 			</div>
 
-			<!-- Mobile Actions -->
+			<!-- Acciones Móviles -->
 			<div class="flex items-center md:hidden">
 				<button
 					id="mobile-search-trigger"
@@ -95,12 +101,12 @@ const dataHeaderSections: HeaderSection[] = [
 			</div>
 		</div>
 
-		<!-- Mobile Search Overlay (Controlled via JS) -->
+		<!-- Barra de Búsqueda Móvil (Controlada vía JS) -->
 		<div id="mobile-search-bar" class="hidden pb-4 md:hidden">
 			<SearchBar client:load placeholder="Buscar artículos..." className="w-full" />
 		</div>
 
-		<!-- Desktop Navigation -->
+		<!-- Navegación de Escritorio -->
 		<nav class="hidden border-t border-white/10 md:block">
 			<ul class="flex items-center justify-between space-x-1 py-1">
 				{
@@ -119,20 +125,20 @@ const dataHeaderSections: HeaderSection[] = [
 		</nav>
 	</div>
 
-	<!-- Mobile Drawer Overlay -->
+	<!-- Overlay de Menú Lateral Móvil -->
 	<div
 		id="mobile-menu"
 		class="fixed inset-0 z-50 translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden"
 		aria-hidden="true"
 	>
-		<!-- Backdrop -->
+		<!-- Fondo Oscuro (Backdrop) -->
 		<div
 			id="menu-backdrop"
 			class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-500"
 		>
 		</div>
 
-		<!-- Drawer Content -->
+		<!-- Contenido del Panel Lateral -->
 		<div
 			class="absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col bg-green-800 p-8 shadow-2xl"
 		>
@@ -195,7 +201,7 @@ const dataHeaderSections: HeaderSection[] = [
 	</div>
 
 	<script>
-		// Use astro:page-load to handle ViewTransitions correctly
+		// Uso de astro:page-load para manejar correctamente las transiciones de vista (ViewTransitions)
 		document.addEventListener('astro:page-load', () => {
 			const menuToggle = document.getElementById('menu-toggle');
 			const menuClose = document.getElementById('menu-close');
@@ -205,7 +211,7 @@ const dataHeaderSections: HeaderSection[] = [
 			const mobileSearchBar = document.getElementById('mobile-search-bar');
 			const menuItems = document.querySelectorAll('.menu-item');
 
-			// Hamburger lines for animation
+			// Líneas del icono hamburguesa para animación
 			const line1 = document.getElementById('hamburger-line-1');
 			const line2 = document.getElementById('hamburger-line-2');
 			const line3 = document.getElementById('hamburger-line-3');
@@ -216,11 +222,11 @@ const dataHeaderSections: HeaderSection[] = [
 				isOpen = forceClose ? false : !isOpen;
 
 				if (isOpen) {
-					// Open
+					// Abrir Menú
 					mobileMenu?.classList.replace('translate-x-full', 'translate-x-0');
 					menuBackdrop?.classList.replace('opacity-0', 'opacity-100');
 
-					// Animate Hamburger to X
+					// Animar icono a 'X'
 					line1?.classList.replace('-translate-y-2', 'rotate-45');
 					line2?.classList.add('opacity-0', 'scale-0');
 					line3?.classList.replace('translate-y-2', '-rotate-45');
@@ -229,17 +235,17 @@ const dataHeaderSections: HeaderSection[] = [
 					mobileMenu?.setAttribute('aria-hidden', 'false');
 					menuToggle?.setAttribute('aria-expanded', 'true');
 
-					// Staggered items entry
+					// Entrada escalonada de items
 					menuItems.forEach((item) => {
 						item.classList.remove('opacity-0', '-translate-x-4');
 						item.classList.add('opacity-100', 'translate-x-0');
 					});
 				} else {
-					// Close
+					// Cerrar Menú
 					mobileMenu?.classList.replace('translate-x-0', 'translate-x-full');
 					menuBackdrop?.classList.replace('opacity-100', 'opacity-0');
 
-					// Animate X to Hamburger
+					// Animar 'X' a icono hamburguesa
 					line1?.classList.replace('rotate-45', '-translate-y-2');
 					line2?.classList.remove('opacity-0', 'scale-0');
 					line3?.classList.replace('-rotate-45', 'translate-y-2');
@@ -248,7 +254,7 @@ const dataHeaderSections: HeaderSection[] = [
 					mobileMenu?.setAttribute('aria-hidden', 'true');
 					menuToggle?.setAttribute('aria-expanded', 'false');
 
-					// Reset items
+					// Resetear estado de items
 					menuItems.forEach((item) => {
 						item.classList.add('opacity-0', '-translate-x-4');
 						item.classList.remove('opacity-100', 'translate-x-0');
@@ -267,7 +273,7 @@ const dataHeaderSections: HeaderSection[] = [
 				}
 			});
 
-			// Close menu on link click
+			// Cerrar menú al hacer click en un enlace
 			mobileMenu?.querySelectorAll('a').forEach((link) => {
 				link.addEventListener('click', () => toggleMenu(true));
 			});
@@ -296,7 +302,7 @@ const dataHeaderSections: HeaderSection[] = [
 			transform: scaleX(1);
 		}
 
-		/* Mobile menu transition fixes */
+		/* Correcciones de transición para menú móvil */
 		#mobile-menu {
 			visibility: hidden;
 		}
@@ -314,7 +320,7 @@ const dataHeaderSections: HeaderSection[] = [
 			transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
-		/* Menu item entry animation */
+		/* Animación de entrada de items de menú */
 		.menu-item {
 			transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		}

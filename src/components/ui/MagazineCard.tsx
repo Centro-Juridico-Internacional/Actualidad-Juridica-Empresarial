@@ -40,7 +40,7 @@ export default function MagazineCard({ title, slug, cover, className = '' }: Mag
 					</a>
 				</h3>
 
-				{/* CTA Button */}
+				{/* Botón de Acción (CTA) */}
 				<div className="mt-auto flex items-center justify-between">
 					<a
 						href={`/revistas/${slug}`}

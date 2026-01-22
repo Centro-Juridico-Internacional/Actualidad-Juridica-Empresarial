@@ -1,12 +1,12 @@
 ---
-// Internal API imports
+// Importación de servicios de API interna
 import { getAuthors } from '@/lib/api/authors';
 
-// Astro components (layouts)
+// Componentes de Astro (Layouts)
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 
-// Fetch all authors
+// Obtención de la lista completa de autores
 const authors = await getAuthors();
 ---
 

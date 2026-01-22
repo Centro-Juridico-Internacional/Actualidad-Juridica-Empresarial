@@ -5,7 +5,10 @@ const STRAPI_HOST: string = process.env.STRAPI_HOST ?? import.meta.env.STRAPI_HO
 const STRAPI_TOKEN: string = process.env.STRAPI_TOKEN ?? import.meta.env.STRAPI_TOKEN;
 
 /**
- * Cache en memoria para evitar fetch duplicados en SSR
+ * Caché en memoria (Singleton)
+ * ----------------------------
+ * Evita peticiones duplicadas idénticas durante el mismo ciclo de vida del servidor (o build).
+ * Útil para SSR donde múltiples componentes pueden pedir el mismo recurso simultáneamente.
  */
 const memoryCache = new Map<string, { data: any; expires: number }>();
 const CACHE_TTL = 60_000; // 1 minuto
@@ -18,7 +21,9 @@ function isAbsoluteUrl(url?: string | null): boolean {
 }
 
 /**
- * Convierte una URL relativa en absoluta agregando el host de Strapi
+ * Normaliza URLs relativas de Strapi
+ * Si la URL ya es absoluta, la devuelve tal cual.
+ * Si es relativa, le prepende el STRAPI_HOST.
  */
 function withHost(url?: string | null): string | null {
 	if (!url) return null;
@@ -26,16 +31,19 @@ function withHost(url?: string | null): string | null {
 }
 
 /**
- * Consulta básica a la API de Strapi.
+ * Cliente HTTP Base para Strapi
+ * =============================
+ * Realiza peticiones FETCH a la API Headless.
  *
- * ⚠️ IMPORTANTE:
- * - Siempre hace `cache: 'no-store'` → los datos vienen frescos del backend.
- * - El cache real lo maneja Vercel ISR a nivel de página (HTML cacheado en Edge).
- * - El cache en memoria SOLO evita fetch duplicados en el mismo render SSR.
+ * Estrategia de Caché:
+ * 1. Nivel Fetch: `cache: 'no-store'` (Siempre fresco desde origen).
+ * 2. Nivel Aplicación: `memoryCache` (Deduplicación de corto plazo).
+ * 3. Nivel Infraestructura (Vercel): ISR maneja el caché real de las páginas generadas.
  */
 export async function query(path: string): Promise<any> {
 	const url = `${STRAPI_HOST}/api/${path}`;
 
+	// Comprobar caché en memoria para evitar llamadas redundantes inmediatas
 	const cached = memoryCache.get(url);
 	if (cached && Date.now() < cached.expires) {
 		return cached.data;
@@ -46,6 +54,7 @@ export async function query(path: string): Promise<any> {
 		'Content-Type': 'application/json'
 	};
 
+	// 'no-store' delega la responsabilidad del caché a Vercel ISR o al cliente
 	const res = await fetch(url, { headers, cache: 'no-store' });
 
 	if (!res.ok) {
@@ -53,6 +62,7 @@ export async function query(path: string): Promise<any> {
 	}
 
 	const json = await res.json();
+	// Guardar en caché volátil
 	memoryCache.set(url, { data: json, expires: Date.now() + CACHE_TTL });
 
 	return json;

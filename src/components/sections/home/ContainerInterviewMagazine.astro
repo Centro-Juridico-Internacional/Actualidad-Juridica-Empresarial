@@ -11,18 +11,18 @@ import type { Interview } from '@/lib/api/interviews';
 // Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
-	/** Array of promotional content (pautas) to display */
+	/** Contenido promocional (pautas) para carrusel */
 	pautas: Pauta[];
-	/** Array of interviews to display */
+	/** Entrevistas destacadas en formato video/capsula */
 	interviews: Interview[];
 }
 
-// Destructure props
+// Desestructuración de propiedades
 const { pautas, interviews }: Props = Astro.props;
 
-// Transform pautas to CarouselImage format (add id field and filter nulls)
+// Transformar pautas al formato requerido por CarouselImage (manejo de nulos)
 const pautasForCarousel = pautas
 	.filter((pauta) => pauta.image !== null)
 	.map((pauta, index) => ({
@@ -32,90 +32,68 @@ const pautasForCarousel = pautas
 	}));
 ---
 
-<section class="w-full h-fit py-1 containerInterviewMagazine">
-<section id="ContainerInterview-Magazine" class="container-main my-20">
-	<Titles text="Entrevista y pautas del mes" white={true} />
+<section class="containerInterviewMagazine h-fit w-full py-1">
+	<section id="ContainerInterview-Magazine" class="container-main my-20">
+		<Titles text="Entrevista y pautas del mes" white={true} />
 
-	<div class="grid gap-8 md:grid-cols-2">
-		<!-- Entrevistas -->
-		<div
-			class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-green-700 to-emerald-900 shadow-2xl transition-all duration-300"
-		>
-			<CarouselInterview interviews={interviews} client:visible />
-
+		<div class="grid gap-8 md:grid-cols-2">
+			<!-- Columna: Entrevistas -->
 			<div
-				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
+				class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-green-700 to-emerald-900 shadow-2xl transition-all duration-300"
 			>
-				<div class="space-y-0.5">
-					<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
-						Entrevistas Destacadas
-					</h3>
-					<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
-						Conversaciones con expertos del derecho
-					</p>
+				<CarouselInterview interviews={interviews} client:visible />
+
+				<div
+					class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
+				>
+					<div class="space-y-0.5">
+						<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
+							Entrevistas Destacadas
+						</h3>
+						<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
+							Conversaciones con expertos del derecho
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Columna: Pautas Publicitarias -->
+			<div
+				class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-green-700 to-green-800 shadow-2xl transition-all duration-300"
+			>
+				<Carousel
+					width="w-full"
+					autoplaySpeed={5000}
+					dotDuration={true}
+					data={pautasForCarousel}
+					client:visible
+				/>
+
+				<!-- Texto ARRIBA -->
+				<div
+					class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
+				>
+					<div class="space-y-0.5">
+						<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
+							Pautas Destacadas
+						</h3>
+						<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
+							Mensajes de nuestros aliados y patrocinadores
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- Pautas -->
-		<div
-			class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-green-700 to-green-800 shadow-2xl transition-all duration-300"
-		>
-			<Carousel
-				width="w-full"
-				autoplaySpeed={5000}
-				dotDuration={true}
-				data={pautasForCarousel}
-				client:visible
-			/>
-
-			<!-- Texto ARRIBA -->
-			<div
-				class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
-			>
-				<div class="space-y-0.5">
-					<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">Pautas Destacadas</h3>
-					<p class="line-clamp-1 text-[10px] text-gray-100/90 md:text-xs">
-						Mensajes de nuestros aliados y patrocinadores
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-
+	</section>
 </section>
 
 <style>
-	.container-main {
-		margin-left: auto;
-		margin-right: auto;
-		max-width: 80rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
+	.containerInterviewMagazine {
+		width: 100%;
+		height: 100%;
+		background-color: #008531e1;
+		background-image: radial-gradient(rgba(255, 255, 255, 0.918) 1px, transparent 0);
+		background-size: 30px 30px;
+		background-position: -3px -3px;
 	}
-
-	@media (min-width: 640px) {
-		.container-main {
-			padding-left: 1.5rem;
-			padding-right: 1.5rem;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.container-main {
-			padding-left: 2rem;
-			padding-right: 2rem;
-		}
-	}
-
-
-.containerInterviewMagazine {
-	width: 100%;
-	height: 100%;
-	background-color: #008531e1;
-	background-image: radial-gradient(rgba(255, 255, 255, 0.918) 1px, transparent 0);
-	background-size: 30px 30px;
-	background-position: -3px -3px;
-}
 </style>

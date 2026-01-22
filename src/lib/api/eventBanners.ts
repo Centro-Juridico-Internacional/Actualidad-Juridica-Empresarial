@@ -7,11 +7,13 @@ export interface EventBanner {
 	image: string | null;
 	urlEvento: string;
 	slug: string;
+	// El slug a veces se usa como título en este modelo específico
 }
 
 /**
- * Banners de eventos
- * Petición pública sin cache (cachea ISR)
+ * Banners de Eventos Especiales.
+ * Realiza fetch directo (sin wrapper 'query') para asegurar 'no-store' explícito
+ * en casos donde este recurso cambie frecuentemente.
  */
 export async function getEventBanners(): Promise<EventBanner[]> {
 	const res = await fetch(`${STRAPI_HOST}/api/banners-eventos?populate[Banners][fields][0]=url`, {

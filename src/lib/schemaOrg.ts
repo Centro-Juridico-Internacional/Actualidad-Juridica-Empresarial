@@ -1,13 +1,13 @@
 /**
- * SCHEMA.ORG JSON-LD Helper
+ * Utilidades para la generación de JSON-LD (Schema.org)
  * Especializado para noticias jurídicas con Astro + Strapi
  *
  * Implementa:
- * - NewsArticle (artículos de noticias)
- * - Organization (datos de la organización)
- * - WebSite (metadata del sitio)
- * - BreadcrumbList (navegación estruturada)
- * - FAQPage (opcional, para preguntas frecuentes)
+ * - NewsArticle (Artículos de noticias)
+ * - Organization (Datos de la organización)
+ * - WebSite (Metadata del sitio)
+ * - BreadcrumbList (Navegación estructurada)
+ * - FAQPage (Opcional, para preguntas frecuentes)
  */
 
 /**
@@ -311,7 +311,7 @@ export function generateBreadcrumbSchema(breadcrumbs: SchemaBreadcrumb[], origin
 }
 
 /**
- * Genera schema para Video (si hay YouTube URL)
+ * Genera esquema para Video (si hay URL de YouTube)
  */
 export function generateVideoSchema(
 	data: {
@@ -347,8 +347,8 @@ export function generateVideoSchema(
 }
 
 /**
- * Genera schema agregado (múltiples esquemas en uno)
- * Útil para evitar múltiples tags <script type="application/ld+json">
+ * Genera esquema agregado (múltiples esquemas en uno)
+ * Útil para evitar múltiples etiquetas <script type="application/ld+json">
  */
 export function generateAggregateSchema(schemas: any[], origin: string): any {
 	return {

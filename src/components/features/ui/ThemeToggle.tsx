@@ -4,7 +4,8 @@ export default function ThemeToggle() {
 	const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
 	useEffect(() => {
-		// Check local storage or system preference
+		// Verificar el almacenamiento local o la preferencia del sistema operativo
+		// Esto garantiza que el tema se mantenga consistente entre sesiones.
 		if (
 			localStorage.getItem('theme') === 'dark' ||
 			(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)

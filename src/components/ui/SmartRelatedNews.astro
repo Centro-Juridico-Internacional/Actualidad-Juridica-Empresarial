@@ -1,10 +1,10 @@
 ---
-// Internal API imports
+// Importaciones de API Interna
 import { searchNews } from '@/lib/api/search';
 import { getLatestNews } from '@/lib/api/news';
 import type { NewsArticle } from '@/lib/api/news';
 
-// Props
+// Propiedades
 interface Props {
 	currentSlug: string;
 	currentTitle: string;
@@ -14,7 +14,7 @@ interface Props {
 
 const { currentSlug, currentTitle, categorySlugs = [], limit = 4 } = Astro.props;
 
-// 1. Extract keywords from title (remove stopwords)
+// 1. Extraer palabras clave del título (eliminando palabras vacías/stopwords)
 const stopWords = [
 	'de',
 	'la',
@@ -83,36 +83,36 @@ const stopWords = [
 const getKeywords = (text: string) => {
 	return text
 		.toLowerCase()
-		.replace(/[^\w\s\u00C0-\u00FF]/g, '') // Remove punctuation
+		.replace(/[^\w\s\u00C0-\u00FF]/g, '') // Eliminar puntuación
 		.split(/\s+/)
 		.filter((w) => w.length > 3 && !stopWords.includes(w))
-		.slice(0, 3) // Take top 3 keywords
+		.slice(0, 3) // Tomar las top 3 palabras clave
 		.join(' ');
 };
 
 const keywords = getKeywords(currentTitle);
 
-// 2. Search for related news by keywords
+// 2. Buscar noticias relacionadas por palabras clave
 let relatedNews: NewsArticle[] = [];
 
 try {
 	if (keywords) {
-		const results = await searchNews({ query: keywords, pageSize: limit + 2 }); // Request more to filter current
+		const results = await searchNews({ query: keywords, pageSize: limit + 2 }); // Pedir extra para filtrar actual
 		relatedNews = results.products.filter((n) => n.slug !== currentSlug).slice(0, limit);
 	}
 } catch (e) {
 	console.error('Error matching keywords relation:', e);
 }
 
-// 3. If not enough results, fill with Category matches (Fallback)
+// 3. Si no hay suficientes resultados, rellenar con coincidencias de Categoría (Respaldo)
 if (relatedNews.length < limit) {
 	try {
 		const moreNeeded = limit - relatedNews.length;
-		// Don't exclude currentSlug here again in fetch if we handle it in filter,
-		// but getLatestNews handles exclusion param.
+		// No excluimos currentSlug aquí en el fetch si lo manejamos en el filtro,
+		// pero getLatestNews maneja el parámetro de exclusión.
 		const categoryNews = await getLatestNews(moreNeeded + 2, currentSlug, categorySlugs);
 
-		// Merge without duplicates
+		// Mezclar sin duplicados
 		const existingSlugs = new Set(relatedNews.map((n) => n.slug));
 		for (const news of categoryNews) {
 			if (!existingSlugs.has(news.slug) && relatedNews.length < limit) {

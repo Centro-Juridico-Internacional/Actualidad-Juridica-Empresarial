@@ -6,20 +6,20 @@ import NewsComponent from '@/components/features/news/NewsComponent';
 // Types
 import type { NewsArticle } from '@/lib/api/news';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
-	/** Array of news articles to display */
+	/** Array de artículos de noticias para mostrar en el grid */
 	products: NewsArticle[];
 }
 
-// Destructure props
+// Desestructuración de propiedades para acceso directo
 const { products }: Props = Astro.props;
 ---
 
 <section id="newsSectionContainer" class="container-main mt-8 mb-24">
-	<!-- Grid layout: 5 columns on md+ with auto rows of ~240px -->
+	<!-- Layout de Cuadrícula (Grid): 5 columnas en escritorio con filas automáticas de ~240px -->
 	<div class="grid gap-6 md:auto-rows-[240px] md:grid-cols-5">
-		<!-- Main carousel: 3 columns and 2 rows -->
+		<!-- Carrusel Principal: Ocupa 3 columnas y 2 filas (Área destacada) -->
 		<div
 			class="group relative col-span-5 h-full overflow-hidden rounded-2xl md:col-span-3 md:row-span-2"
 		>
@@ -79,26 +79,3 @@ const { products }: Props = Astro.props;
 		</div>
 	</div>
 </section>
-
-<style>
-	.container-main {
-		margin-left: auto;
-		margin-right: auto;
-		width: 100%;
-		max-width: 80rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
-	}
-	@media (min-width: 640px) {
-		.container-main {
-			padding-left: 1.5rem;
-			padding-right: 1.5rem;
-		}
-	}
-	@media (min-width: 1024px) {
-		.container-main {
-			padding-left: 2rem;
-			padding-right: 2rem;
-		}
-	}
-</style>

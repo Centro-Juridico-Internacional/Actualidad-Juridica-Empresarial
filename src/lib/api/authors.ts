@@ -2,7 +2,8 @@ import { query, withHost } from '../strapi';
 import { DEFAULT_AUTHOR_AVATAR } from './_mediaDefaults';
 
 /**
- * Representa un autor de contenido
+ * Modelo de Autor.
+ * Incluye nombre, cargo profesional y avatar normalizado.
  */
 interface Author {
 	name: string;
@@ -11,8 +12,8 @@ interface Author {
 }
 
 /**
- * Obtiene la lista de autores desde Strapi.
- * Los datos se cachean en Vercel ISR a nivel de página, no aquí.
+ * Obtiene la lista completa de autores.
+ * Ordenados por fecha de creación descendente.
  */
 export async function getAuthors(): Promise<Author[]> {
 	const res = await query('authors?populate[avatar][fields][0]=url&sort=createdAt:desc');

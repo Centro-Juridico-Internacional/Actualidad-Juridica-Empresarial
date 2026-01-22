@@ -1,4 +1,6 @@
-/* Magazine base */
+/* =========================================
+   ESTILOS BASE REVISTA (FLIPBOOK)
+   ========================================= */
 .mag-root {
 	padding: 48px 16px 64px;
 }
@@ -76,7 +78,7 @@
 	opacity: 0.75;
 }
 
-/* ✅ Stage: centrado y sin overflow */
+/* ✅ Stage: Centrado absoluto y prevención de desbordamiento */
 .mag-stage {
 	display: flex;
 	justify-content: center;
@@ -85,7 +87,7 @@
 	max-width: 1400px;
 }
 
-/* Frame */
+/* Marco Principal */
 .mag-frame {
 	border-radius: 22px;
 	background: linear-gradient(180deg, rgba(16, 185, 129, 0.09), rgba(255, 255, 255, 0.85));
@@ -102,13 +104,13 @@
 	will-change: transform;
 }
 
-/* Book container */
+/* Contenedor del Libro */
 .mag-book {
 	position: relative;
 	perspective: 1400px;
 }
 
-/* Spread base (NO gap) */
+/* Base de Pliegue (SIN separación) */
 .mag-spread {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -136,7 +138,7 @@
 	opacity: 0.35;
 }
 
-/* Flip layer */
+/* Capa de Volteo (Flip) */
 .mag-flip-layer {
 	position: absolute;
 	left: 0;
@@ -146,14 +148,14 @@
 	pointer-events: none;
 }
 
-/* Under spread during animation */
+/* Página inferior durante animación */
 .mag-spread--under {
 	position: absolute;
 	left: 0;
 	top: 0;
 }
 
-/* Page slot */
+/* Ranura de Página */
 .mag-page {
 	background: #ffffff;
 	border-radius: 0px; /* ✅ sin rounded */
@@ -172,7 +174,7 @@
 	background: #ffffff;
 }
 
-/* Placeholder */
+/* Marcador de posición (Placeholder) */
 .mag-page--placeholder {
 	background: radial-gradient(
 		circle at 30% 30%,
@@ -209,7 +211,7 @@
 	opacity: 0.75;
 }
 
-/* Skeleton */
+/* Esqueleto de Carga (Skeleton) */
 .mag-skeleton {
 	height: 100%;
 	display: grid;
@@ -256,7 +258,7 @@
 	font-weight: 700;
 }
 
-/* Mobile single container */
+/* Contenedor Vista Móvil */
 .mag-single {
 	display: flex;
 	align-items: stretch;
@@ -264,7 +266,7 @@
 }
 
 /* =========================
-   FLIP SHEET (3D)
+   HOJA 3D (FLIP)
    ========================= */
 .mag-sheet {
 	position: absolute;
@@ -324,7 +326,7 @@
 	background: #ffffff;
 }
 
-/* Mobile tweaks */
+/* Ajustes para Móvil */
 @media (max-width: 768px) {
 	.mag-root {
 		padding: 26px 12px 44px;

@@ -6,8 +6,8 @@ export interface Capsula {
 }
 
 /**
- * URLs de Capsulas Legales (embeds, etc.).
- * Cache ISR en las páginas que las usen.
+ * URLs de Cápsulas Legales (Videos cortos informativos).
+ * Se usan para carruseles de multimedia o secciones de interés.
  */
 export async function getCapsulasUrl(): Promise<Capsula[]> {
 	const res = await query(

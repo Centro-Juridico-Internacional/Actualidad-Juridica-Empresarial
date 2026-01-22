@@ -6,8 +6,9 @@ export interface Interview {
 }
 
 /**
- * URLs de entrevistas (embeds, etc.).
- * Cache ISR en las páginas que las usen.
+ * URLs de entrevistas en video.
+ * Generalmente URLs de YouTube u otros proveedores de embed.
+ * Orden: Más antiguas primero (ascendente) según updatedAt.
  */
 export async function getInterviewsUrl(): Promise<Interview[]> {
 	const res = await query(

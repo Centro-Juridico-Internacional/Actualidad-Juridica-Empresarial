@@ -8,21 +8,21 @@ import type { NewsArticle } from '@/lib/api/news';
 // Astro components (UI)
 import Titles from '@/components/ui/Titles.astro';
 
-// Props interface
+// Interfaz de Propiedades
 interface Props {
-	/** Array of news articles to display */
+	/** Artículos de noticias seleccionados para información de interés */
 	products: NewsArticle[];
 }
 
-// Destructure props
+// Desestructuración de propiedades
 const { products }: Props = Astro.props;
 ---
 
 <section id="InformationOfInterestSection" class="container-main my-24">
-	<!-- Section title -->
+	<!-- Título de la Sección -->
 	<Titles text="Información de interés" />
 
-	<!-- Featured news grid -->
+	<!-- Cuadrícula de Noticias Destacadas -->
 	<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 		<div
 			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"

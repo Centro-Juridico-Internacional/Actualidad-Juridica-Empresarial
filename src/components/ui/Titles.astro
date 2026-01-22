@@ -1,11 +1,13 @@
 ---
-// Props interface
+// Interfaz de Propiedades
+// Define el contrato de entrada para los encabezados de sección.
 interface Props {
 	text: string;
 	white?: boolean;
 }
 
-// Destructure props with explicit typing
+// Desestructuración de propiedades con tipado explícito
+// Se extrae 'text' para el contenido y 'white' para el esquema de color.
 const { text, white = false }: Props = Astro.props;
 ---
 
@@ -13,14 +15,14 @@ const { text, white = false }: Props = Astro.props;
 	<h2
 		class:list={[
 			'animate-title inline-block text-4xl font-bold tracking-tight',
-			white ? 'text-gray-50' : 'text-gray-900',
+			white ? 'text-gray-50' : 'text-gray-900'
 		]}
 	>
 		{text}
 		<span
 			class:list={[
 				'absolute bottom-[-8px] left-0 h-1 w-full transform transition-all duration-300',
-				white ? 'bg-transparent' : 'bg-green-600',
+				white ? 'bg-transparent' : 'bg-green-600'
 			]}
 			style="transform-origin: center;"></span>
 	</h2>

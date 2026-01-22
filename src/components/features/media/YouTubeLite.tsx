@@ -41,7 +41,7 @@ function YouTubeLite({ videoid, title }: YouTubeLiteProps) {
 				console.error('Error loading YouTube component');
 			});
 
-		// Cleanup
+		// Limpieza del estado al desmontar el componente
 		return () => {
 			setLoaded(false);
 			setError(false);
