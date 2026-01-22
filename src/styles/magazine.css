@@ -22,11 +22,6 @@
 	font-weight: 800;
 	color: rgb(17 24 39);
 }
-.mag-subtitle {
-	margin-top: 10px;
-	font-size: 13px;
-	color: rgb(75 85 99);
-}
 
 .mag-controls {
 	display: flex;
@@ -66,16 +61,6 @@
 	font-weight: 800;
 	color: rgb(55 65 81);
 	font-size: 13px;
-}
-
-.mag-preload {
-	text-align: center;
-	font-size: 12px;
-	color: rgb(75 85 99);
-	margin-bottom: 18px;
-}
-.mag-preload-meta {
-	opacity: 0.75;
 }
 
 /* ✅ Stage: Centrado absoluto y prevención de desbordamiento */
@@ -311,10 +296,6 @@
 	transform: translateZ(1px);
 }
 
-.mag-face--front {
-	/* normal */
-}
-
 .mag-face--back {
 	transform: rotateY(180deg) translateZ(1px);
 }
@@ -339,4 +320,14 @@
 	.mag-frame {
 		max-width: calc(100vw - 18px);
 	}
+}
+
+/* Fullscreen styles */
+.mag-fullscreen {
+	transform: scale(1.4);
+	background: white;
+	background-image:
+		radial-gradient(circle at 25% 25%, rgba(22, 163, 74, 0.1) 2px, transparent 2px),
+		radial-gradient(circle at 75% 75%, rgba(22, 163, 74, 0.1) 2px, transparent 2px);
+	background-size: 20px 20px;
 }

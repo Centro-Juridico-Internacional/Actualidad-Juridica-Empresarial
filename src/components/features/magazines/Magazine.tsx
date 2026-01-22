@@ -4,6 +4,17 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import '../../../styles/magazine.css';
 
+// Fullscreen toggle function
+const toggleFullscreen = async (element: HTMLElement | null) => {
+	if (!document.fullscreenElement) {
+		if (element) {
+			await element.requestFullscreen();
+		}
+	} else {
+		await document.exitFullscreen();
+	}
+};
+
 type Props = {
 	pdfUrl: string; // ej: /api/pdf?url=...
 };
@@ -66,12 +77,6 @@ export default function Magazine({ pdfUrl }: Props) {
 	// Cache de renders: pageNumber -> dataURL
 	const cacheRef = useRef<Map<number, string>>(new Map());
 
-	// Precarga
-	const [preloadedCount, setPreloadedCount] = useState(0);
-	const [preloadInfo, setPreloadInfo] = useState<{ batch: number; ms: number }>({
-		batch: 0,
-		ms: 0
-	});
 	const preloadRunId = useRef(0);
 
 	// Índices
@@ -85,6 +90,21 @@ export default function Magazine({ pdfUrl }: Props) {
 	// Estado de la capa de transición (Flip)
 	const [flip, setFlip] = useState<FlipState>({ active: false });
 	const animLockRef = useRef(false);
+
+	// Fullscreen state
+	const [isFullscreen, setIsFullscreen] = useState(false);
+
+	// Fullscreen effect
+	useEffect(() => {
+		const handleFullscreenChange = () => {
+			setIsFullscreen(!!document.fullscreenElement);
+		};
+
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+		};
+	}, []);
 
 	// ======================
 	// ✅ Sizing (sin overflow)
@@ -144,8 +164,7 @@ export default function Magazine({ pdfUrl }: Props) {
 				setError(null);
 
 				cacheRef.current.clear();
-				setPreloadedCount(0);
-				setPreloadInfo({ batch: 0, ms: 0 });
+
 				setNumPages(0);
 				setSpreadIndex(0);
 				setMobilePage(1);
@@ -313,7 +332,6 @@ export default function Magazine({ pdfUrl }: Props) {
 				if (cancelled || preloadRunId.current !== runId) return;
 
 				batch += 1;
-				setPreloadInfo((s) => ({ ...s, batch }));
 
 				const chunk = order.slice(i, i + batchSize);
 
@@ -322,7 +340,6 @@ export default function Magazine({ pdfUrl }: Props) {
 						try {
 							await renderPageToDataUrl(pageNumber);
 							rendered += 1;
-							setPreloadedCount(rendered);
 						} catch {
 							// ignore
 						}
@@ -333,7 +350,6 @@ export default function Magazine({ pdfUrl }: Props) {
 			}
 
 			const ms = Math.round(performance.now() - t0);
-			setPreloadInfo((s) => ({ ...s, ms }));
 		}
 
 		preloadAll();
@@ -555,11 +571,10 @@ export default function Magazine({ pdfUrl }: Props) {
 	const contentWidth = isMobile ? pageWidth : pageWidth * 2; // ✅ sin gap
 
 	return (
-		<div ref={containerRef} className="mag-root">
+		<div ref={containerRef} className={`mag-root ${isFullscreen ? 'mag-fullscreen' : ''}`}>
 			<div className="mag-header">
 				<span className="mag-kicker">EDICIÓN DIGITAL</span>
 				<h2 className="mag-title">Nuestra Revista</h2>
-				<p className="mag-subtitle">Portada 1 hoja → Interior 2 hojas → Contraportada 1 hoja</p>
 			</div>
 
 			<div className="mag-controls">
@@ -569,21 +584,13 @@ export default function Magazine({ pdfUrl }: Props) {
 
 				<div className="mag-pill">{label}</div>
 
+				<button className="mag-btn" onClick={() => toggleFullscreen(containerRef.current)}>
+					{isFullscreen ? 'Salir Pantalla Completa' : 'Pantalla Completa'}
+				</button>
+
 				<button className="mag-btn" onClick={next} disabled={!canNext}>
 					Siguiente →
 				</button>
-			</div>
-
-			<div className="mag-preload">
-				Precarga:{' '}
-				<b>
-					{preloadedCount}/{numPages || '—'}
-				</b>{' '}
-				<span className="mag-preload-meta">
-					{numPages
-						? `(batch ${preloadInfo.batch}${preloadInfo.ms ? `, ~${preloadInfo.ms}ms` : ''})`
-						: ''}
-				</span>
 			</div>
 
 			<div className="mag-stage">
