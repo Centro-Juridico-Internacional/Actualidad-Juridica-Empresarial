@@ -107,7 +107,7 @@ export default defineConfig({
     ssr: {
       // Dependencias que NO deben externarse en SSR (se bundlean)
       // Necesario para librerías que usan 'window' o formatos ESM puros
-      noExternal: ["@fontsource-variable/*", "@jaymanyoo/pdf-book-viewer"],
+      noExternal: ["@fontsource-variable/*", "@jaymanyoo/pdf-book-viewer", "@emailjs/browser"],
     },
   },
 
