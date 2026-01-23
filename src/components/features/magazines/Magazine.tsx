@@ -91,6 +91,9 @@ export default function Magazine({ pdfUrl }: Props) {
 	const [flip, setFlip] = useState<FlipState>({ active: false });
 	const animLockRef = useRef(false);
 
+	// Touch and Click navigation for mobile
+	const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
 	// Fullscreen state
 	const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -531,6 +534,44 @@ export default function Magazine({ pdfUrl }: Props) {
 		startFlip('next');
 	}
 
+	// ======================
+	// ✅ Interacción Táctil y Clic (Mobile)
+	// ======================
+	const handleTouchStart = (e: React.TouchEvent) => {
+		if (!isMobile) return;
+		const touch = e.touches[0];
+		touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+	};
+
+	const handleTouchEnd = (e: React.TouchEvent) => {
+		if (!isMobile || !touchStartRef.current) return;
+		const touch = e.changedTouches[0];
+		const deltaX = touch.clientX - touchStartRef.current.x;
+		const deltaY = touch.clientY - touchStartRef.current.y;
+		touchStartRef.current = null;
+
+		// Umbral para considerar swipe (50px) y evitar swipes verticales accidentales
+		if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+			if (deltaX > 0) {
+				if (canPrev) prev();
+			} else {
+				if (canNext) next();
+			}
+		}
+	};
+
+	const handleStageClick = (e: React.MouseEvent) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const clickX = e.clientX - rect.left;
+		const midpoint = rect.width / 2;
+
+		if (clickX < midpoint) {
+			if (canPrev) prev();
+		} else {
+			if (canNext) next();
+		}
+	};
+
 	// Cuando termina la animación, conmutamos el spread REAL
 	useEffect(() => {
 		if (!flip.active) return;
@@ -593,7 +634,12 @@ export default function Magazine({ pdfUrl }: Props) {
 				</button>
 			</div>
 
-			<div className="mag-stage">
+			<div
+				className="mag-stage"
+				onTouchStart={handleTouchStart}
+				onTouchEnd={handleTouchEnd}
+				onClick={handleStageClick}
+			>
 				<div
 					className={`mag-frame ${flip.active ? 'mag-frame--animating' : ''}`}
 					style={{
