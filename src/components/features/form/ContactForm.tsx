@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 
 const ContactForm = () => {
+	console.log('🚀 ContactForm montado en el cliente');
 	const form = useRef<HTMLFormElement>(null);
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -13,12 +14,15 @@ const ContactForm = () => {
 		if (!form.current) return;
 
 		// Uso de variables de entorno para la configuración segura de EmailJS
-		const serviceId = import.meta.env.EMAILJS_SERVICE_ID;
-		const templateId = import.meta.env.EMAILJS_TEMPLATE_ID;
-		const publicKey = import.meta.env.EMAILJS_PUBLIC_KEY;
+		const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+		const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+		const publicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY;
 
 		if (!serviceId || !templateId || !publicKey) {
-			console.error('Faltan las variables de entorno de EmailJS (EMAILJS_SERVICE_ID, etc.)');
+			console.error('Faltan las variables de entorno de EmailJS');
+			console.log('serviceId:', serviceId);
+			console.log('templateId:', templateId);
+			console.log('publicKey:', publicKey);
 			setStatus('error');
 			setLoading(false);
 			return;
