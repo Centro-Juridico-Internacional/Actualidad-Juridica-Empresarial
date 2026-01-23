@@ -2,22 +2,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 const ContactForm = () => {
-	console.log('🚀 ContactForm montado en el cliente');
 	const form = useRef<HTMLFormElement>(null);
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-	useEffect(() => {
-		console.log('✅ ContactForm hidratado');
-		console.log('Variables:', {
-			serviceId: import.meta.env.PUBLIC_EMAILJS_SERVICE_ID,
-			templateId: import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID,
-			publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY
-		});
-	}, []);
-
 	const sendEmail = (e: React.FormEvent) => {
-		console.log('🔥 Formulario enviado - preventDefault ejecutado');
+		console.log('Formulario enviado');
 		e.preventDefault();
 		setLoading(true);
 
