@@ -5,13 +5,26 @@ const ContactForm = () => {
 	const form = useRef<HTMLFormElement>(null);
 	const [loading, setLoading] = useState(false);
 	const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+	const [isHydrated, setIsHydrated] = useState(false);
+
+	useEffect(() => {
+		setIsHydrated(true);
+		console.log('✅ ContactForm hidratado');
+	}, []);
 
 	const sendEmail = (e: React.FormEvent) => {
-		console.log('Formulario enviado');
 		e.preventDefault();
+		e.stopPropagation();
+		console.log('🔥 Formulario enviado - preventDefault ejecutado');
+
+		if (!isHydrated) {
+			console.error('❌ Componente no hidratado aún');
+			return false;
+		}
+
 		setLoading(true);
 
-		if (!form.current) return;
+		if (!form.current) return false;
 
 		// Uso de variables de entorno para la configuración segura de EmailJS
 		const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
@@ -25,7 +38,7 @@ const ContactForm = () => {
 			console.log('publicKey:', publicKey);
 			setStatus('error');
 			setLoading(false);
-			return;
+			return false;
 		}
 
 		// Inyectar campos ocultos con metadatos de auditoría dinámicamente
@@ -52,6 +65,7 @@ const ContactForm = () => {
 			.sendForm(serviceId, templateId, currentForm, publicKey)
 			.then(
 				(result) => {
+					console.log('✅ Email enviado correctamente');
 					setStatus('success');
 					if (form.current) form.current.reset();
 				},
@@ -70,6 +84,8 @@ const ContactForm = () => {
 				// Ocultar mensaje de éxito tras 5 segundos de cortesía visual
 				setTimeout(() => setStatus('idle'), 5000);
 			});
+
+		return false;
 	};
 
 	return (
@@ -89,7 +105,7 @@ const ContactForm = () => {
 				</div>
 			)}
 
-			<form ref={form} onSubmit={sendEmail} className="space-y-4">
+			<form ref={form} onSubmit={sendEmail} action="javascript:void(0);" className="space-y-4">
 				<div>
 					<label htmlFor="user_name" className="mb-1 block text-sm font-medium text-gray-700">
 						Nombre Completo
@@ -164,6 +180,14 @@ const ContactForm = () => {
 				<button
 					type="submit"
 					disabled={loading}
+					onClick={(e) => {
+						if (!isHydrated) {
+							e.preventDefault();
+							e.stopPropagation();
+							console.error('❌ Botón clickeado antes de hidratar');
+							return false;
+						}
+					}}
 					className={`w-full rounded-lg px-6 py-3 font-bold text-white transition-all duration-300 ${
 						loading
 							? 'cursor-not-allowed bg-gray-400'
