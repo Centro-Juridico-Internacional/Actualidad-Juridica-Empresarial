@@ -21,8 +21,6 @@ const ContactForm = () => {
 		const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
 		const publicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY;
 
-		console.log('Enviando con:', { serviceId, templateId, publicKey });
-
 		if (!serviceId || !templateId || !publicKey) {
 			console.error('Faltan las variables de entorno de EmailJS');
 			setStatus('error');
