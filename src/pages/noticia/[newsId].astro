@@ -249,7 +249,7 @@ if (product.youtubeUrl) {
 					<!-- Contenido -->
 					<div
 						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 break-words sm:px-6"
-						set:html={marked.parse(product.content as string)}
+						set:html={marked.parse(product.content as string, { gfm: true, breaks: true })}
 					/>
 
 					<!-- Video de YouTube -->
@@ -339,9 +339,13 @@ if (product.youtubeUrl) {
 		overflow-x: hidden;
 	}
 
-	:global(.prose img, .prose video, .prose iframe) {
+	:global(.prose img, .prose video) {
 		max-width: 100% !important;
 		height: auto !important;
+	}
+	:global(.prose iframe) {
+		max-width: 100% !important;
+		height: 300px !important;
 	}
 
 	:global(.prose table) {

@@ -33,23 +33,27 @@ const { products }: Props = Astro.props;
 			<div
 				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
 			>
-				<img
-					src={products[3].image}
-					alt={products[3].title}
-					class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
-					loading="lazy"
-					decoding="async"
-				/>
+				{products[3] && (
+					<img
+						src={products[3].image || ''}
+						alt={products[3].title || ''}
+						class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+						loading="lazy"
+						decoding="async"
+					/>
+				)}
 				<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
 				</div>
-				<NewsComponent
-					product={products[3]}
-					truncateWords={30}
-					bgOverlay={true}
-					className="relative h-full"
-					showContent={false}
-					variant="compact"
-				/>
+				{products[3] && (
+					<NewsComponent
+						product={products[3]}
+						truncateWords={30}
+						bgOverlay={true}
+						className="relative h-full"
+						showContent={false}
+						variant="compact"
+					/>
+				)}
 			</div>
 		</div>
 
@@ -58,23 +62,27 @@ const { products }: Props = Astro.props;
 			<div
 				class="group relative h-full overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
 			>
-				<img
-					src={products[4].image}
-					alt={products[4].title}
-					class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
-					loading="lazy"
-					decoding="async"
-				/>
+				{products[4] && (
+					<img
+						src={products[4].image || ''}
+						alt={products[4].title || ''}
+						class="absolute inset-0 h-full w-full scale-[1.001] object-cover object-center transition-transform duration-700 ease-out will-change-transform group-hover:scale-105"
+						loading="lazy"
+						decoding="async"
+					/>
+				)}
 				<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
 				</div>
-				<NewsComponent
-					product={products[4]}
-					truncateWords={30}
-					bgOverlay={true}
-					className="relative h-full"
-					showContent={false}
-					variant="compact"
-				/>
+				{products[4] && (
+					<NewsComponent
+						product={products[4]}
+						truncateWords={30}
+						bgOverlay={true}
+						className="relative h-full"
+						showContent={false}
+						variant="compact"
+					/>
+				)}
 			</div>
 		</div>
 	</div>

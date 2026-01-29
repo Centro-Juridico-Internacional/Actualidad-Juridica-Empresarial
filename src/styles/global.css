@@ -327,9 +327,107 @@ body {
 	word-break: break-all !important;
 }
 
+/* Listas */
+.prose ul {
+	list-style-type: disc !important;
+	padding-left: 1.5rem !important;
+	margin-top: 1rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.prose ol {
+	list-style-type: decimal !important;
+	padding-left: 1.5rem !important;
+	margin-top: 1rem !important;
+	margin-bottom: 1rem !important;
+}
+
+.prose li {
+	margin-top: 0.5rem !important;
+	margin-bottom: 0.5rem !important;
+}
+
+/* Citas (Blockquotes) */
+.prose blockquote {
+	border-left: 4px solid #16a34a !important; /* Green-600 */
+	padding-left: 1rem !important;
+	font-style: italic !important;
+	color: #4b5563 !important; /* Gray-600 */
+	background-color: #f0fdf4 !important; /* Green-50 */
+	padding: 1rem !important;
+	border-radius: 0.5rem !important;
+	margin-top: 1.5rem !important;
+	margin-bottom: 1.5rem !important;
+}
+
+/* Tablas */
 .prose table {
+	width: 100% !important;
+	border-collapse: collapse !important;
+	margin-top: 1.5rem !important;
+	margin-bottom: 1.5rem !important;
+	display: table !important; /* Override display: block if needed */
+	overflow-x: auto !important;
+}
+
+.prose th,
+.prose td {
+	border: 1px solid #e5e7eb !important; /* Gray-200 */
+	padding: 0.75rem !important;
+	text-align: left !important;
+}
+
+.prose th {
+	background-color: #f9fafb !important; /* Gray-50 */
+	font-weight: 600 !important;
+	color: #111827 !important; /* Gray-900 */
+}
+
+/* Zebra striping for rows */
+.prose tr:nth-child(even) {
+	background-color: #f9fafb !important;
+}
+
+.prose tr:hover {
+	background-color: #f0fdf4 !important; /* Green-50 on hover */
+}
+
+/* Imágenes, Iframes y Video */
+.prose img,
+.prose iframe,
+.prose video {
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+	/* Centrado por defecto (amenos que Strapi traiga alineación inline) */
+	max-width: 100%;
+	height: auto;
 	display: block;
-	width: 100%;
-	overflow-x: auto; /* Scroll horizontal si la tabla es ancha */
-	-webkit-overflow-scrolling: touch;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Figures (Contenedores de imagen + caption) */
+.prose figure {
+	display: block;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+/* Figcaptions (Leyendas de imagen) */
+.prose figcaption {
+	display: inline-block;
+	margin-top: 0.75rem;
+	padding: 0.5rem 1rem;
+	background-color: #f0fdf4; /* Green-50 */
+	color: #15803d; /* Green-700 */
+	font-size: 0.875rem; /* text-sm */
+	font-weight: 500;
+	font-style: italic;
+	border-radius: 9999px; /* Pill shape para un look moderno */
+	border: 1px solid #dcfce7; /* Green-100 */
 }

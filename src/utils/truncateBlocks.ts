@@ -27,8 +27,14 @@ export function truncateBlocks(content: any, maxWords: number): TruncateResult {
 		return { text: '', truncated: false };
 	}
 
-	// 1. Remover imágenes Markdown: ![alt](url)
-	let cleanText = content.replace(/!\[.*?\]\(.*?\)/g, '');
+	// 1. Remover etiquetas HTML: <tag>...</tag> (solo el tag, mantiene el contenido si es texto plano útil fuera de tags complejos)
+	// Pero para oembed y figure, queremos borrar todo el bloque si es posible, o al menos el tag.
+	// La solicitud es "solo y unicamente texto".
+	// Primero removemos etiquetas HTML completas
+	let cleanText = content.replace(/<[^>]*>/g, '');
+
+	// 2. Remover imágenes Markdown: ![alt](url)
+	cleanText = cleanText.replace(/!\[.*?\]\(.*?\)/g, '');
 
 	// 2. Remover enlaces Markdown: [text](url) -> text
 	cleanText = cleanText.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
