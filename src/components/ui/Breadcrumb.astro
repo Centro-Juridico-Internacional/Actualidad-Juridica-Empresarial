@@ -64,7 +64,7 @@ const breadcrumbItems = pathSegments.map((segment, index) => {
 				<li class="inline-flex items-center">
 					<a
 						href="/"
-						class="inline-flex items-center font-medium transition-colors hover:text-[#084A00]"
+						class="hover:text-secondary-800 inline-flex items-center font-medium transition-colors"
 					>
 						<svg
 							class="me-1 h-3 w-3 md:me-2"
@@ -99,13 +99,13 @@ const breadcrumbItems = pathSegments.map((segment, index) => {
 							</svg>
 
 							{item.isLast ? (
-								<span class="ms-1 max-w-[150px] truncate font-semibold text-gray-700 sm:max-w-none md:ms-2 dark:text-gray-400">
+								<span class="ms-1 max-w-37.5 truncate font-semibold text-gray-700 sm:max-w-none md:ms-2 dark:text-gray-400">
 									{item.name}
 								</span>
 							) : (
 								<a
 									href={item.href}
-									class="ms-1 font-medium transition-colors hover:text-[#084A00] md:ms-2 dark:text-gray-400 dark:hover:text-white"
+									class="hover:text-secondary-800 ms-1 font-medium transition-colors md:ms-2 dark:text-gray-400 dark:hover:text-white"
 								>
 									{item.name}
 								</a>

@@ -26,7 +26,7 @@ export default function SocialShare({ url, title }: SocialShareProps) {
 				href={`https://wa.me/?text=${encodedTitle}%20${encodedUrl}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600 transition-all duration-300 hover:bg-green-600 hover:text-white"
+				className="bg-primary-100 text-primary-600 hover:bg-primary-600 flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 hover:text-white"
 				aria-label="Compartir en WhatsApp"
 			>
 				<svg
@@ -115,7 +115,7 @@ export default function SocialShare({ url, title }: SocialShareProps) {
 						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						className="text-green-600"
+						className="text-primary-600"
 					>
 						<polyline points="20 6 9 17 4 12" />
 					</svg>

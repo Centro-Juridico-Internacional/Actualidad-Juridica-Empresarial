@@ -74,18 +74,18 @@ const PautaContactForm = () => {
 	};
 
 	return (
-		<div className="mx-auto flex max-h-[90dvh] w-full max-w-3xl flex-col rounded-2xl border border-green-500 bg-gradient-to-br from-green-800 to-green-900 shadow-xl ring-2 ring-green-400">
-			<div className="flex-shrink-0 p-2 sm:p-4 md:p-6">
+		<div className="border-primary-500 from-primary-800 to-primary-900 ring-primary-400 mx-auto flex max-h-[90dvh] w-full max-w-3xl flex-col rounded-2xl border bg-linear-to-br shadow-xl ring-2">
+			<div className="shrink-0 p-2 sm:p-4 md:p-6">
 				<h2 className="text-center text-xl font-bold text-white sm:text-2xl md:text-3xl">
 					Contacto para Pautas Publicitarias
 				</h2>
-				<p className="text-center text-sm text-green-100 sm:text-base md:text-lg">
+				<p className="text-primary-100 text-center text-sm sm:text-base md:text-lg">
 					¿Interesado en anunciarte con nosotros? Completa el formulario y te contactaremos con
 					información sobre tarifas y opciones disponibles.
 				</p>
 
 				{status === 'success' && (
-					<div className="mb-4 rounded-lg border border-green-300 bg-green-100 p-3 text-sm text-green-800">
+					<div className="border-primary-300 bg-primary-100 text-primary-800 mb-4 rounded-lg border p-3 text-sm">
 						¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto para discutir las
 						opciones de publicidad.
 					</div>
@@ -99,7 +99,7 @@ const PautaContactForm = () => {
 				)}
 			</div>
 
-			<div className="flex-grow overflow-y-auto px-4 pb-4 sm:px-6 sm:pb-6 md:px-8 md:pb-8">
+			<div className="grow overflow-y-auto px-4 pb-4 sm:px-6 sm:pb-6 md:px-8 md:pb-8">
 				<form ref={form} onSubmit={sendEmail} className="space-y-3 sm:space-y-4">
 					<div>
 						<label
@@ -113,7 +113,7 @@ const PautaContactForm = () => {
 							name="client"
 							id="client"
 							required
-							className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 							placeholder="Juan Pérez"
 						/>
 					</div>
@@ -131,7 +131,7 @@ const PautaContactForm = () => {
 								name="email"
 								id="email"
 								required
-								className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+								className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 								placeholder="empresa@ejemplo.com"
 							/>
 						</div>
@@ -147,7 +147,7 @@ const PautaContactForm = () => {
 								name="phone"
 								id="phone"
 								required
-								className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+								className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 								placeholder="300 123 4567"
 							/>
 						</div>
@@ -165,7 +165,7 @@ const PautaContactForm = () => {
 							name="company_name"
 							id="company_name"
 							required
-							className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 							placeholder="Empresa S.A.S."
 						/>
 					</div>
@@ -181,7 +181,7 @@ const PautaContactForm = () => {
 							name="affiliate"
 							id="affiliate"
 							required
-							className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 						>
 							<option value="">Selecciona una opción</option>
 							<option value="afiliado">Sí, soy afiliado a CJI</option>
@@ -200,7 +200,7 @@ const PautaContactForm = () => {
 							name="subject"
 							id="subject"
 							required
-							className="w-full rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full resize-none rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 						>
 							<option value="">Selecciona el tipo de publicidad</option>
 							<option value="banner_web">Banner en sitio web</option>
@@ -224,14 +224,14 @@ const PautaContactForm = () => {
 							id="message"
 							required
 							rows={3}
-							className="w-full resize-none rounded-lg border-2 border-green-300 bg-white px-3 py-2 text-sm transition-all outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="border-primary-300 focus:border-primary-500 focus:ring-primary-500 w-full resize-none rounded-lg border-2 bg-white px-3 py-2 text-sm transition-all outline-none focus:ring-2"
 							placeholder="Describe tu campaña publicitaria, presupuesto aproximado, duración deseada, etc."
 						></textarea>
 					</div>
 				</form>
 			</div>
 
-			<div className="flex-shrink-0 p-4 pt-0 sm:p-6 md:p-8">
+			<div className="shrink-0 p-4 pt-0 sm:p-6 md:p-8">
 				<button
 					type="submit"
 					disabled={loading}
@@ -242,7 +242,7 @@ const PautaContactForm = () => {
 					className={`w-full rounded-lg px-4 py-3 text-base font-bold text-white transition-all duration-300 ${
 						loading
 							? 'cursor-not-allowed bg-gray-400'
-							: 'bg-[#c5a03f] hover:bg-[#b8943a] hover:shadow-xl'
+							: 'bg-secondary-600 hover:bg-secondary-700 hover:shadow-xl'
 					}`}
 				>
 					{loading ? 'Enviando Solicitud...' : 'Enviar Solicitud de Pauta'}

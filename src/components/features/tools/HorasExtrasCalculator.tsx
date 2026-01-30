@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 const SALARIO_MINIMO_2025 = 1423500;
 
 const Tooltip = ({ text }: { text: string }) => (
-	<span className="group relative ml-1 cursor-pointer rounded-full bg-blue-100 px-[6px] py-[1px] text-xs font-bold text-blue-700">
+	<span className="group relative ml-1 cursor-pointer rounded-full bg-blue-100 px-1.5 py-px text-xs font-bold text-blue-700">
 		?
 		<span className="absolute top-5 left-0 hidden w-64 scale-95 rounded-lg border border-blue-200 bg-white/90 p-3 text-xs text-gray-700 opacity-0 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:block group-hover:scale-100 group-hover:opacity-100">
 			{text}

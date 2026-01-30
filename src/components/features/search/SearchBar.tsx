@@ -99,13 +99,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				placeholder={placeholder}
 				autoFocus={autoFocus}
 				autoComplete="off"
-				className="w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:outline-none"
+				className="focus:ring-primary-500/20 w-64 rounded-full bg-gray-100 py-2 pr-10 pl-4 text-sm text-black placeholder:text-gray-500 focus:bg-white focus:ring-2 focus:outline-none"
 				aria-label="Buscar noticias"
 			/>
 
 			<button
 				type="submit"
-				className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-green-600"
+				className="hover:text-primary-600 absolute top-1/2 right-3 -translate-y-1/2 text-gray-400"
 				aria-label="Buscar"
 			>
 				{isLoading ? (
@@ -132,7 +132,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 							<li key={index} className="border-b last:border-0">
 								<a
 									href={`/noticia/${item.slug}`}
-									className="flex items-center gap-3 p-3 hover:bg-green-50"
+									className="hover:bg-primary-50 flex items-center gap-3 p-3"
 									onClick={() => setShowSuggestions(false)}
 								>
 									{item.image && (
@@ -144,7 +144,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 											dangerouslySetInnerHTML={{
 												__html: item.title.replace(
 													new RegExp(`(${searchQuery})`, 'gi'),
-													'<span class="text-green-600 font-bold">$1</span>'
+													'<span class="text-primary-600 font-bold">$1</span>'
 												)
 											}}
 										/>
@@ -158,10 +158,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
 					</ul>
 
 					{/* CTA FINAL */}
-					<div className="cursor-pointer border-t border-green-300 bg-gray-50 p-2 text-center hover:bg-green-50">
+					<div className="border-primary-300 hover:bg-primary-50 cursor-pointer border-t bg-gray-50 p-2 text-center">
 						<button
 							type="submit"
-							className="cursor-pointer text-xs font-semibold text-green-700 hover:text-green-800"
+							className="text-primary-700 hover:text-primary-800 cursor-pointer text-xs font-semibold"
 						>
 							Ver todos los resultados para “{searchQuery}”
 						</button>

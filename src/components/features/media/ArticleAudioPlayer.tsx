@@ -27,7 +27,16 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 	useEffect(() => {
 		if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 			setSupported(true);
-			fullTextRef.current = `${title}. ${content}`;
+
+			// Función para limpiar etiquetas HTML
+			const stripHtml = (html: string) => {
+				const doc = new DOMParser().parseFromString(html, 'text/html');
+				return doc.body.textContent || '';
+			};
+
+			const cleanTitle = stripHtml(title);
+			const cleanContent = stripHtml(content);
+			fullTextRef.current = `${cleanTitle}. ${cleanContent}`;
 
 			// Carga de voces disponibles en el navegador (Local y Online)
 			const loadVoices = () => {
@@ -212,13 +221,13 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 
 	return (
 		<div
-			className={`relative flex w-fit items-center gap-2 rounded-full border border-green-100 bg-white p-1.5 pr-4 shadow-sm transition-all hover:shadow-md ${!supported ? 'opacity-50 grayscale' : ''}`}
+			className={`border-primary-100 relative flex w-fit items-center gap-2 rounded-full border bg-white p-1.5 pr-4 shadow-sm transition-all hover:shadow-md ${!supported ? 'opacity-50 grayscale' : ''}`}
 		>
 			{/* Botón Play/Pause - Tamaño incrementado para mejor accesibilidad (Fitts's Law) */}
 			<button
 				onClick={handlePlay}
 				disabled={!supported}
-				className={`flex h-11 w-11 items-center justify-center rounded-full bg-green-600 text-white shadow-sm transition-all hover:bg-green-700 active:scale-95 ${!supported ? 'cursor-not-allowed' : ''}`}
+				className={`bg-primary-600 hover:bg-primary-700 flex h-11 w-11 items-center justify-center rounded-full text-white shadow-sm transition-all active:scale-95 ${!supported ? 'cursor-not-allowed' : ''}`}
 				title={isPlaying ? 'Pausar' : isPaused ? 'Reanudar' : 'Escuchar noticia'}
 			>
 				{isPlaying ? (
@@ -282,7 +291,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 				<button
 					onClick={() => setShowSpeedMenu(!showSpeedMenu)}
 					disabled={!supported}
-					className="flex h-7 min-w-[3rem] items-center justify-center gap-0.5 rounded-md border border-gray-100 bg-gray-50 text-[11px] font-bold text-gray-700 transition-colors hover:bg-green-50 hover:text-green-700"
+					className="hover:bg-primary-50 hover:text-primary-700 flex h-7 min-w-12 items-center justify-center gap-0.5 rounded-md border border-gray-100 bg-gray-50 text-[11px] font-bold text-gray-700 transition-colors"
 					title="Velocidad de lectura"
 				>
 					{speed}x
@@ -303,7 +312,7 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 							<button
 								key={s}
 								onClick={() => handleSpeedChange(s)}
-								className={`px-3 py-2 text-center text-xs font-medium transition-colors hover:bg-green-50 ${speed === s ? 'bg-green-100 font-bold text-green-800' : 'text-gray-600'}`}
+								className={`hover:bg-primary-50 px-3 py-2 text-center text-xs font-medium transition-colors ${speed === s ? 'bg-primary-100 text-primary-800 font-bold' : 'text-gray-600'}`}
 							>
 								{s}x {s === 1 && '(Normal)'}
 							</button>
@@ -313,12 +322,12 @@ const ArticleAudioPlayer: React.FC<ArticleAudioPlayerProps> = ({ title, content 
 			</div>
 
 			{/* Texto de Estado y Feedback Visual */}
-			<div className="ml-1 flex min-w-[70px] flex-col">
+			<div className="ml-1 flex min-w-17.5 flex-col">
 				<span className="text-[11px] leading-none font-bold text-gray-800">
 					{isPlaying ? 'Leyendo...' : isPaused ? 'Pausado' : 'Escuchar'}
 				</span>
-				<div className="mt-1 h-[2px] w-full overflow-hidden rounded-full bg-gray-100">
-					{isPlaying && <div className="h-full w-full animate-pulse bg-green-500"></div>}
+				<div className="mt-1 h-0.5 w-full overflow-hidden rounded-full bg-gray-100">
+					{isPlaying && <div className="bg-primary-500 h-full w-full animate-pulse"></div>}
 				</div>
 			</div>
 		</div>

@@ -13,7 +13,7 @@
 	font-size: 11px;
 	letter-spacing: 0.14em;
 	font-weight: 700;
-	color: rgb(4 120 87);
+	color: var(--color-primary-700);
 }
 .mag-title {
 	margin-top: 8px;
@@ -75,7 +75,7 @@
 /* Marco Principal */
 .mag-frame {
 	border-radius: 22px;
-	background: linear-gradient(180deg, rgba(16, 185, 129, 0.09), rgba(255, 255, 255, 0.85));
+	background: linear-gradient(180deg, rgba(73, 180, 132, 0.09), rgba(255, 255, 255, 0.85));
 	border: 1px solid rgba(229, 231, 235, 0.9);
 	box-shadow: 0 24px 70px rgba(2, 6, 23, 0.1);
 
@@ -163,7 +163,7 @@
 .mag-page--placeholder {
 	background: radial-gradient(
 		circle at 30% 30%,
-		rgba(16, 185, 129, 0.1),
+		rgba(73, 180, 132, 0.1),
 		rgba(255, 255, 255, 0.95)
 	);
 }
@@ -187,7 +187,7 @@
 	width: 10px;
 	height: 10px;
 	border-radius: 999px;
-	background: rgba(16, 185, 129, 0.35);
+	background: rgba(73, 180, 132, 0.35);
 }
 
 .mag-placeholder-text {
@@ -208,8 +208,8 @@
 	width: 28px;
 	height: 28px;
 	border-radius: 999px;
-	border: 3px solid rgba(16, 185, 129, 0.18);
-	border-top-color: rgba(16, 185, 129, 0.8);
+	border: 3px solid rgba(73, 180, 132, 0.18);
+	border-top-color: rgba(73, 180, 132, 0.8);
 	animation: magspin 700ms linear infinite;
 }
 .mag-skeleton-text {
@@ -327,7 +327,7 @@
 	transform: scale(1.4);
 	background: white;
 	background-image:
-		radial-gradient(circle at 25% 25%, rgba(22, 163, 74, 0.1) 2px, transparent 2px),
-		radial-gradient(circle at 75% 75%, rgba(22, 163, 74, 0.1) 2px, transparent 2px);
+		radial-gradient(circle at 25% 25%, rgba(73, 180, 132, 0.1) 2px, transparent 2px),
+		radial-gradient(circle at 75% 75%, rgba(73, 180, 132, 0.1) 2px, transparent 2px);
 	background-size: 20px 20px;
 }

@@ -21,20 +21,20 @@ export default function MagazineCard({ title, slug, cover, className = '' }: Mag
 			className={`group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${className}`}
 		>
 			{/* Imagen con overlay gradual */}
-			<a href={`/revistas/${slug}`} className="relative aspect-[16/9] w-full overflow-hidden">
+			<a href={`/revistas/${slug}`} className="relative aspect-video w-full overflow-hidden">
 				<img
 					src={imageSrc}
 					alt={`${title} portada`}
 					onError={handleImageError}
 					className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+				<div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 			</a>
 
 			{/* Contenido */}
 			<div className="flex min-h-0 flex-1 flex-col p-6">
 				{/* Título */}
-				<h3 className="mb-3 text-xl font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:text-green-600 group-hover:underline">
+				<h3 className="decoration-secondary-500 group-hover:text-secondary-600 mb-3 text-xl font-bold text-gray-900 decoration-2 group-hover:underline">
 					<a href={`/revistas/${slug}`} className="after:absolute after:inset-0 after:z-10">
 						{title}
 					</a>
@@ -44,7 +44,7 @@ export default function MagazineCard({ title, slug, cover, className = '' }: Mag
 				<div className="mt-auto flex items-center justify-between">
 					<a
 						href={`/revistas/${slug}`}
-						className="inline-flex items-center rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-800 transition-colors group-hover:bg-green-200"
+						className="bg-secondary-100 text-secondary-800 group-hover:bg-secondary-200 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
 					>
 						Leer Revista
 						<svg

@@ -24,6 +24,8 @@ export interface CarouselProps {
 	dotDuration: boolean;
 	/** Velocidad de reproducción automática en milisegundos */
 	autoplaySpeed?: number;
+	/** Indica si el carrusel y sus imágenes deben tener bordes redondeados */
+	rounded?: boolean;
 	/** Array de imágenes a mostrar en el carrusel */
 	data: CarouselImage[];
 }

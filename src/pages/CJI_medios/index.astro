@@ -8,6 +8,7 @@ import { getInterviewsUrl } from '@/lib/api/interviews';
 // Componentes de Layout y UI
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import PautaContactForm from '@/components/features/form/PautaContactForm.tsx';
 import Magazine from '@/components/features/magazines/Magazine.tsx';
 import CarouselInterview from '@/components/features/carousel/InterviewCarousel';
@@ -48,44 +49,14 @@ const pautasForCarousel2 = pautasSecondHalf
 
 <Layout title="Categorías" booleanLayout={true}>
 	<div class="min-h-screen to-white">
-		<!-- Sección Hero de Categorías -->
-		<section
-			class="relative mb-12 flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
-		>
-			<div class="absolute inset-0 opacity-20">
-				<!-- Pattern de fondo -->
-				<svg
-					class="h-full w-full"
-					width="100%"
-					height="100%"
-					viewBox="0 0 800 800"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<defs>
-						<pattern
-							id="dotPattern"
-							x="0"
-							y="0"
-							width="20"
-							height="20"
-							patternUnits="userSpaceOnUse"
-						>
-							<circle cx="2" cy="2" r="1" fill="white"></circle>
-						</pattern>
-					</defs>
-					<rect width="800" height="800" fill="url(#dotPattern)"></rect>
-				</svg>
-			</div>
-			<div class="container-main relative z-10 text-center">
-				<h1 class="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">CJI Medios</h1>
-				<p class="mx-auto max-w-2xl text-lg text-green-100">
-					Contacto para pautas y colaboraciones.
-				</p>
-			</div>
-		</section>
+		<PageHero
+			title="Actualidad Jurídica Empresarial Medios"
+			subtitle="Contacto para pautas y colaboraciones."
+			className="mb-12"
+		/>
 
 		<section class="container-main py-16">
-			<Breadcrumb title="CJI - Medios" className="mb-8" />
+			<Breadcrumb title="Actualidad Jurídica Empresarial - Medios" className="mb-8" />
 			<div class="space-y-12">
 				<!-- Sección de Pautas Publicitarias -->
 				<section>
@@ -93,7 +64,7 @@ const pautasForCarousel2 = pautasSecondHalf
 					<div class="grid gap-8 md:grid-cols-2">
 						<!-- Carrusel 1: Primera mitad de pautas -->
 						<div
-							class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-green-600 via-green-700 to-emerald-900 shadow-2xl transition-all duration-300"
+							class="group from-secondary-600 via-secondary-700 to-secondary-950 relative aspect-video overflow-hidden rounded-3xl bg-linear-to-br shadow-2xl transition-all duration-300"
 						>
 							<Carousel
 								width="w-full"
@@ -104,7 +75,7 @@ const pautasForCarousel2 = pautasSecondHalf
 							/>
 
 							<div
-								class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
+								class="pointer-events-none absolute inset-x-0 top-0 bg-linear-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
 							>
 								<div class="space-y-0.5">
 									<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
@@ -119,7 +90,7 @@ const pautasForCarousel2 = pautasSecondHalf
 
 						<!-- Carrusel 2: Segunda mitad de pautas -->
 						<div
-							class="group relative aspect-video overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-green-700 to-green-800 shadow-2xl transition-all duration-300"
+							class="group from-secondary-600 via-secondary-700 to-secondary-800 relative aspect-video overflow-hidden rounded-3xl bg-linear-to-br shadow-2xl transition-all duration-300"
 						>
 							<Carousel
 								width="w-full"
@@ -130,7 +101,7 @@ const pautasForCarousel2 = pautasSecondHalf
 							/>
 
 							<div
-								class="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
+								class="pointer-events-none absolute inset-x-0 top-0 bg-linear-to-b from-black/60 via-black/20 to-transparent p-6 pb-12"
 							>
 								<div class="space-y-0.5">
 									<h3 class="line-clamp-1 text-base font-bold text-white md:text-lg">
@@ -146,16 +117,17 @@ const pautasForCarousel2 = pautasSecondHalf
 				</section>
 				<!-- Sección Call to Action -->
 				<section
-					class="rounded-2xl bg-gradient-to-r from-green-900 to-green-800 p-8 text-center text-white shadow-xl"
+					class="from-primary-900 to-primary-800 rounded-2xl bg-linear-to-r p-8 text-center text-white shadow-xl"
 				>
 					<h2 class="mb-4 text-3xl font-bold">¿Listo para aumentar tu visibilidad?</h2>
-					<p class="mb-6 text-lg text-green-100">
-						Únete a las empresas que confían en CJI para su publicidad y marketing digital.
+					<p class="text-secondary-100 mb-6 text-lg">
+						Únete a las empresas que confían en Actualidad Jurídica Empresarial para su publicidad y
+						marketing digital.
 					</p>
 					<div class="flex flex-col gap-4 sm:flex-row sm:justify-center">
 						<a
 							href="#contacto"
-							class="inline-flex items-center justify-center rounded-lg bg-[#c5a03f] px-8 py-4 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-[#b8943a] hover:shadow-xl"
+							class="bg-secondary-600 hover:bg-secondary-700 inline-flex items-center justify-center rounded-lg px-8 py-4 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
 						>
 							Contactar Ahora
 							<svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +141,7 @@ const pautasForCarousel2 = pautasSecondHalf
 						</a>
 						<a
 							href="tel:+573001234567"
-							class="inline-flex items-center justify-center rounded-lg border-2 border-white px-8 py-4 font-bold text-white transition-all duration-300 hover:bg-white hover:text-green-900"
+							class="hover:text-secondary-900 inline-flex items-center justify-center rounded-lg border-2 border-white px-8 py-4 font-bold text-white transition-all duration-300 hover:bg-white"
 						>
 							Llamar Ahora
 							<svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,7 +170,7 @@ const pautasForCarousel2 = pautasSecondHalf
 					<div class="mt-6 text-center">
 						<a
 							href="/revistas"
-							class="inline-flex items-center rounded-lg bg-green-700 px-6 py-3 font-semibold text-white shadow-md transition-colors duration-300 hover:bg-green-800 hover:shadow-lg"
+							class="bg-secondary-700 hover:bg-secondary-800 inline-flex items-center rounded-lg px-6 py-3 font-semibold text-white shadow-md transition-colors duration-300 hover:shadow-lg"
 						>
 							Ver Todas las Revistas
 							<svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,19 +189,19 @@ const pautasForCarousel2 = pautasSecondHalf
 					<h2 class="mb-6 text-center text-3xl font-bold text-gray-900">Nuestro Alcance</h2>
 					<div class="grid grid-cols-2 gap-6 md:grid-cols-4">
 						<div class="text-center">
-							<div class="mb-2 text-4xl font-bold text-green-900">50K+</div>
+							<div class="text-secondary-900 mb-2 text-4xl font-bold">50K+</div>
 							<div class="text-gray-600">Lectores Mensuales</div>
 						</div>
 						<div class="text-center">
-							<div class="mb-2 text-4xl font-bold text-green-900">25K+</div>
+							<div class="text-secondary-900 mb-2 text-4xl font-bold">25K+</div>
 							<div class="text-gray-600">Seguidores en Redes</div>
 						</div>
 						<div class="text-center">
-							<div class="mb-2 text-4xl font-bold text-green-900">100+</div>
+							<div class="text-secondary-900 mb-2 text-4xl font-bold">100+</div>
 							<div class="text-gray-600">Empresas Anunciantes</div>
 						</div>
 						<div class="text-center">
-							<div class="mb-2 text-4xl font-bold text-green-900">95%</div>
+							<div class="text-secondary-900 mb-2 text-4xl font-bold">95%</div>
 							<div class="text-gray-600">Satisfacción Cliente</div>
 						</div>
 					</div>
@@ -239,7 +211,7 @@ const pautasForCarousel2 = pautasSecondHalf
 				<section>
 					<h2 class="mb-6 text-3xl font-bold text-gray-900">Todas las Entrevistas</h2>
 					<div
-						class="rounded-3xl bg-gradient-to-br from-green-600 via-green-700 to-emerald-900 p-8 shadow-2xl"
+						class="from-secondary-600 via-secondary-700 to-secondary-950 rounded-3xl bg-linear-to-br p-8 shadow-2xl"
 					>
 						<CarouselInterview interviews={interviews} client:load />
 					</div>
@@ -249,26 +221,26 @@ const pautasForCarousel2 = pautasSecondHalf
 				<section>
 					<h2 class="mb-6 text-3xl font-bold text-gray-900">Casos de Éxito</h2>
 					<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-						<div class="rounded-lg border-l-4 border-green-500 bg-white p-6 shadow-md">
-							<h3 class="mb-3 text-xl font-bold text-green-900">Empresa Legal ABC</h3>
+						<div class="border-secondary-500 rounded-lg border-l-4 bg-white p-6 shadow-md">
+							<h3 class="text-secondary-900 mb-3 text-xl font-bold">Empresa Legal ABC</h3>
 							<p class="mb-4 text-gray-600">
-								"Después de 3 meses de publicidad con CJI, aumentamos nuestros clientes potenciales
-								en un 150%."
+								"Después de 3 meses de publicidad con Actualidad Jurídica Empresarial, aumentamos
+								nuestros clientes potenciales en un 150%."
 							</p>
 							<div class="flex items-center justify-between">
 								<div class="text-sm text-gray-500">Campaña: 3 meses</div>
-								<div class="text-sm font-semibold text-green-600">+150% leads</div>
+								<div class="text-secondary-600 text-sm font-semibold">+150% leads</div>
 							</div>
 						</div>
-						<div class="rounded-lg border-l-4 border-green-500 bg-white p-6 shadow-md">
-							<h3 class="mb-3 text-xl font-bold text-green-900">Consultoría XYZ</h3>
+						<div class="border-secondary-500 rounded-lg border-l-4 bg-white p-6 shadow-md">
+							<h3 class="text-secondary-900 mb-3 text-xl font-bold">Consultoría XYZ</h3>
 							<p class="mb-4 text-gray-600">
 								"La visibilidad en redes sociales se incrementó exponencialmente, generando más
 								consultas diarias."
 							</p>
 							<div class="flex items-center justify-between">
 								<div class="text-sm text-gray-500">Campaña: 6 meses</div>
-								<div class="text-sm font-semibold text-green-600">+300% engagement</div>
+								<div class="text-secondary-600 text-sm font-semibold">+300% engagement</div>
 							</div>
 						</div>
 					</div>
@@ -277,15 +249,15 @@ const pautasForCarousel2 = pautasSecondHalf
 				<!-- Sección de Por Qué Elegirnos -->
 				<section class="rounded-lg bg-white p-8 shadow-md">
 					<h2 class="mb-6 text-center text-3xl font-bold text-gray-900">
-						¿Por Qué Elegir CJI Medios?
+						¿Por Qué Elegir Actualidad Jurídica Empresarial Medios?
 					</h2>
 					<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
 						<div class="text-center">
 							<div
-								class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100"
+								class="bg-secondary-100 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
 							>
 								<svg
-									class="h-8 w-8 text-green-600"
+									class="text-secondary-600 h-8 w-8"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -304,10 +276,10 @@ const pautasForCarousel2 = pautasSecondHalf
 						</div>
 						<div class="text-center">
 							<div
-								class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100"
+								class="bg-secondary-100 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
 							>
 								<svg
-									class="h-8 w-8 text-green-600"
+									class="text-secondary-600 h-8 w-8"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -327,10 +299,10 @@ const pautasForCarousel2 = pautasSecondHalf
 						</div>
 						<div class="text-center">
 							<div
-								class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100"
+								class="bg-secondary-100 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
 							>
 								<svg
-									class="h-8 w-8 text-green-600"
+									class="text-secondary-600 h-8 w-8"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -355,8 +327,8 @@ const pautasForCarousel2 = pautasSecondHalf
 					<h2 class="mb-6 text-3xl font-bold text-gray-900">Contacto para Pautar</h2>
 					<p class="mb-6 text-lg text-gray-700">
 						¿Interesado en publicitar con nosotros? Contáctanos y obtén información sobre nuestras
-						tarifas y opciones disponibles. Tenemos diferentes planes para afiliados a CJI y para
-						empresas no afiliadas.
+						tarifas y opciones disponibles. Tenemos diferentes planes para afiliados a Actualidad
+						Jurídica Empresarial y para empresas no afiliadas.
 					</p>
 					<PautaContactForm client:load />
 				</section>

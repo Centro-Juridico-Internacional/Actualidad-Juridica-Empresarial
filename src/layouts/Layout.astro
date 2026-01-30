@@ -104,14 +104,16 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<meta name="robots" content="index, follow" />
 
 		<!-- SEO General -->
-		<title>{title.charAt(0).toUpperCase() + title.slice(1)} | AC Colombia Lawyers</title>
+		<title>
+			{title.charAt(0).toUpperCase() + title.slice(1)} | Actualidad Juridica Empresarial
+		</title>
 
 		<meta name="description" content={seoData.description} />
 		<meta
 			name="keywords"
-			content="abogados en Colombia, firma de abogados, recaudo de cartera, asesoría legal, servicios jurídicos, bufete de abogados, Centro Jurídico Internacional, CJI, protección legal empresas"
+			content="abogados en Colombia, firma de abogados, recaudo de cartera, asesoría legal, servicios jurídicos, bufete de abogados, Actualidad Jurídica Empresarial, protección legal empresas"
 		/>
-		<meta name="author" content="Centro Jurídico Internacional" />
+		<meta name="author" content="Actualidad Jurídica Empresarial" />
 
 		<!-- Open Graph - Protocolo para Redes Sociales -->
 		<meta property="og:type" content={ogType} />
@@ -123,7 +125,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<meta property="og:image:type" content="image/png" />
 		<meta property="og:image:alt" content={title} />
 		<meta property="og:url" content={href} />
-		<meta property="og:site_name" content="Centro Jurídico Internacional" />
+		<meta property="og:site_name" content="Actualidad Jurídica Empresarial" />
 		{
 			ogType === 'article' && publishedAt && (
 				<meta property="article:published_time" content={publishedAt} />
@@ -218,7 +220,8 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 		<!-- Elemento invisible en pantalla, visible solo al imprimir (fixed footer) -->
 		<div class="print-footer-container hidden">
 			<p>
-				© Centro Jurídico Internacional - Documento Confidencial y Protegido por Derechos de Autor.
+				© Actualidad Jurídica Empresarial - Documento Confidencial y Protegido por Derechos de
+				Autor.
 			</p>
 			<p>Generado desde: {origin}</p>
 		</div>
@@ -228,7 +231,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 			height: 100%;
 			/* Agregar patrón de fondo personalizado aquí */
 			background-color: #ffffffea;
-			background-image: radial-gradient(rgba(0, 166, 61, 0.884) 1px, transparent 0);
+			background-image: radial-gradient(var(--color-primary-400) 1px, transparent 0);
 			background-size: 30px 30px;
 			background-position: -3px -3px;
 		}
@@ -261,8 +264,8 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 
 		/* Estilo de selección personalizado */
 		:global(::selection) {
-			background-color: rgb(187 247 208);
-			color: rgb(20 83 45);
+			background-color: var(--color-primary-200);
+			color: var(--color-primary-950);
 		}
 
 		/* Mejora del scrollbar */
@@ -273,14 +276,16 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 
 		:global(::-webkit-scrollbar-thumb) {
 			border-radius: 9999px;
-			background-color: rgb(22 163 74 / 0.2);
+			background-color: var(--color-primary-400);
+			opacity: 0.2;
 			transition-property: color, background-color, border-color;
 			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 			transition-duration: 200ms;
 		}
 
 		:global(::-webkit-scrollbar-thumb:hover) {
-			background-color: rgb(22 163 74 / 0.3);
+			background-color: var(--color-primary-400);
+			opacity: 0.3;
 		}
 
 		/* Mejoras de enfoque para accesibilidad */
@@ -292,7 +297,7 @@ const twitterImage = ensureAbsoluteUrl(ogImage || seoData.image, origin);
 			--tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width))
 				var(--tw-ring-color);
 			box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow);
-			--tw-ring-color: rgb(34 197 94);
+			--tw-ring-color: var(--color-primary-500);
 			--tw-ring-offset-width: 2px;
 			--tw-ring-offset-color: white;
 		}

@@ -26,9 +26,9 @@
 
 <style>
 	:root {
-		--wa-color: #25d366;
-		--wa-color-dark: #128c7e;
-		--wa-gradient: linear-gradient(45deg, #25d366, #128c7e);
+		--wa-color: var(--color-primary-500);
+		--wa-color-dark: var(--color-primary-700);
+		--wa-gradient: linear-gradient(45deg, var(--color-primary-500), var(--color-primary-700));
 		--entry-delay: 1s;
 	}
 
@@ -55,7 +55,7 @@
 		overflow: hidden;
 		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		box-shadow:
-			0 4px 15px rgba(37, 211, 102, 0.3),
+			0 4px 15px rgba(73, 180, 132, 0.3),
 			0 10px 30px rgba(0, 0, 0, 0.1);
 		position: relative;
 	}
@@ -105,7 +105,7 @@
 		.whatsapp-btn:hover {
 			width: 160px;
 			box-shadow:
-				0 8px 25px rgba(37, 211, 102, 0.4),
+				0 8px 25px rgba(73, 180, 132, 0.4),
 				0 15px 40px rgba(0, 0, 0, 0.15);
 		}
 

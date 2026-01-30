@@ -21,8 +21,8 @@ const { text, white = false }: Props = Astro.props;
 		{text}
 		<span
 			class:list={[
-				'absolute bottom-[-8px] left-0 h-1 w-full transform transition-all duration-300',
-				white ? 'bg-transparent' : 'bg-green-600'
+				'absolute -bottom-2 left-0 h-1 w-full transform transition-all duration-300',
+				white ? 'bg-transparent' : 'bg-primary-600'
 			]}
 			style="transform-origin: center;"></span>
 	</h2>
@@ -57,7 +57,7 @@ const { text, white = false }: Props = Astro.props;
 		left: 50%;
 		height: 4px;
 		width: 0;
-		background-color: rgb(22 163 74);
+		background-color: var(--color-primary-600);
 		transition: all 0.5s;
 		transform: translateX(-50%);
 	}

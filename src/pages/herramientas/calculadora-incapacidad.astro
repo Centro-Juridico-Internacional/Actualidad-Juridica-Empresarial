@@ -8,6 +8,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import IncapacidadCalculator from '@/components/features/tools/IncapacidadCalculator.tsx';
+import PageHero from '@/components/ui/PageHero.astro';
 
 // URL absoluta para el generador de esquemas
 const { href } = Astro.url;
@@ -40,29 +41,10 @@ const schema = {
 <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 <Layout title="Incapacidad Médica" booleanLayout={true} breadcrumbTitle="Herramientas">
-	<!-- Hero -->
-	<section
-		class="relative flex h-[25vh] min-h-[220px] items-center justify-center overflow-hidden bg-yellow-600"
-	>
-		<div class="absolute inset-0 opacity-25">
-			<svg class="h-full w-full" viewBox="0 0 800 800">
-				<defs>
-					<pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-						<circle cx="2" cy="2" r="1" fill="white"></circle>
-					</pattern>
-				</defs>
-				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
-			</svg>
-		</div>
-
-		<div class="container-main relative z-10 text-center">
-			<h1 class="mb-3 text-4xl font-bold text-white">Calculadora de Incapacidad Médica</h1>
-			<p class="mx-auto max-w-2xl text-lg text-yellow-100">
-				Conoce cuánto te deben pagar por incapacidad según EPS o ARL, de acuerdo con la normativa
-				colombiana.
-			</p>
-		</div>
-	</section>
+	<PageHero
+		title="Calculadora de Incapacidad Médica"
+		subtitle="Conoce cuánto te deben pagar por incapacidad según EPS o ARL, de acuerdo con la normativa colombiana."
+	/>
 
 	<section class="container-main py-12">
 		<Breadcrumb title="Herramientas" className="mb-8" />
@@ -70,7 +52,7 @@ const schema = {
 		<div class="flex flex-col items-center">
 			<IncapacidadCalculator client:load />
 
-			<div class="prose prose-yellow mt-12 max-w-3xl rounded-2xl bg-gray-50 p-8 text-gray-700">
+			<div class="prose prose-secondary mt-12 max-w-3xl rounded-2xl bg-gray-50 p-8 text-gray-700">
 				<h3>¿Cómo funciona esta herramienta?</h3>
 				<p>Incluye cálculos oficiales para:</p>
 				<ul>

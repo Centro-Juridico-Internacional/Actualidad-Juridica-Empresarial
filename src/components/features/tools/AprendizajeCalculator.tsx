@@ -5,7 +5,7 @@ const SMMLV_2025 = 1423500;
 const AUX_TRANSPORTE_2025 = 200000;
 
 const Tooltip = ({ text }: { text: string }) => (
-	<span className="group relative ml-1 cursor-pointer rounded-full bg-teal-100 px-[6px] py-[1px] text-xs font-bold text-teal-700">
+	<span className="group relative ml-1 cursor-pointer rounded-full bg-teal-100 px-1.5 py-px text-xs font-bold text-teal-700">
 		?
 		<span className="absolute top-5 left-0 hidden w-64 scale-95 rounded-lg border border-teal-200 bg-white/90 p-3 text-xs text-gray-700 opacity-0 shadow-xl backdrop-blur-md transition group-hover:block group-hover:scale-100 group-hover:opacity-100">
 			{text}

@@ -36,7 +36,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 			<span>
 				{parts.map((part, i) =>
 					part.toLowerCase() === highlight.toLowerCase() ? (
-						<mark key={i} className="rounded-sm bg-yellow-200 px-0.5 text-gray-900">
+						<mark key={i} className="bg-secondary-200 rounded-sm px-0.5 text-gray-900">
 							{part}
 						</mark>
 					) : (
@@ -103,11 +103,11 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 						key={cat + idx}
 						href={`/categorias/${cat.toLowerCase().replace(/\s+/g, '_')}`}
 						className={`inline-block items-center rounded-full font-semibold tracking-wide shadow-sm transition-transform duration-200 first-letter:uppercase hover:scale-[1.03] ${
-							isCompact ? 'px-2 py-[2px] text-[10.5px]' : 'px-3 py-1.5 text-xs'
+							isCompact ? 'px-2 py-0.5 text-[10.5px]' : 'px-3 py-1.5 text-xs'
 						} ${
 							bgOverlay
-								? 'bg-green-600/90 text-white hover:bg-green-500'
-								: 'bg-green-100 text-green-700 hover:bg-green-200'
+								? 'bg-secondary-600/90 hover:bg-secondary-500 text-white'
+								: 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
 						}`}
 					>
 						{cat}
@@ -116,11 +116,11 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 			</div>
 
 			{/* Título + Contenido */}
-			<div className={`flex-grow ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
+			<div className={`grow ${isCompact ? 'space-y-2' : 'space-y-4'}`}>
 				<a href={`/noticia/${product.slug}`} className="block">
 					<h3
 						className={`leading-snug font-bold tracking-tight ${
-							bgOverlay ? 'text-white' : 'text-gray-900 hover:text-green-700'
+							bgOverlay ? 'text-white' : 'hover:text-secondary-700 text-gray-900'
 						} ${getTitleSizeClasses()}`}
 					>
 						{getHighlightedText(product.title, highlightQuery)}
@@ -142,8 +142,8 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 								href={`/noticia/${product.slug}`}
 								className={`mt-2 inline-flex items-center gap-1.5 font-medium ${
 									bgOverlay
-										? 'text-green-300 hover:text-white'
-										: 'text-green-700 hover:text-green-800'
+										? 'text-secondary-300 hover:text-white'
+										: 'text-secondary-700 hover:text-secondary-800'
 								} ${isCompact ? 'text-[13px]' : 'text-sm'}`}
 							>
 								Leer más
@@ -170,7 +170,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					<a
 						href={authorSlug}
 						title={product.authorName}
-						className="relative shrink-0 overflow-hidden rounded-full ring-2 ring-green-600/20 transition-transform hover:scale-105"
+						className="ring-secondary-600/40 relative shrink-0 overflow-hidden rounded-full ring-2 transition-transform hover:scale-105"
 					>
 						<img
 							src={product.authorAvatar}
@@ -188,7 +188,9 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					<a
 						href={authorSlug}
 						className={`truncate font-medium ${
-							bgOverlay ? 'text-white hover:text-green-300' : 'text-gray-900 hover:text-green-700'
+							bgOverlay
+								? 'hover:text-secondary-300 text-white'
+								: 'hover:text-secondary-700 text-gray-900'
 						} ${isCompact ? 'text-[13px]' : 'text-sm md:text-base'}`}
 					>
 						{product.authorName}
@@ -218,7 +220,7 @@ const NewsComponent: React.FC<NewsComponentProps> = ({
 					loading={eagerImage ? 'eager' : 'lazy'}
 					decoding="async"
 				/>
-				<div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
+				<div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/50 to-black/80" />
 
 				{/* Enlace principal que cubre toda la tarjeta (pero debajo del contenido interactivo) */}
 				<a

@@ -497,8 +497,9 @@ function isValidRFC3339(dateString: string): boolean {
  * Configuración recomendada para Centro Jurídico Internacional
  */
 export const SITE_CONFIG = {
-	name: 'Centro Jurídico Internacional',
-	description: 'Noticias, análisis y herramientas especializadas en derecho laboral y jurídico',
+	name: 'Actualidad Jurídica Empresarial',
+	description:
+		'Noticias, análisis y herramientas especializadas en el mundo empresarial y jurídico',
 	url: 'https://actualidadfrontend.vercel.app',
 	logo: {
 		url: 'https://actualidadfrontend.vercel.app/header/logo.svg',

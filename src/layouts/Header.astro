@@ -40,15 +40,15 @@ const dataHeaderSections: HeaderSection[] = [
 ---
 
 <BannerHeader booleanBanner={booleanHeader} />
-<header class="sticky top-0 z-50 w-full bg-green-700 shadow-sm" transition:name="header">
+<header class="bg-primary-700 sticky top-0 z-50 w-full shadow-sm" transition:name="header">
 	<div class="container-main">
 		<!-- Fila Principal (Escritorio y Móvil) -->
 		<div class="flex h-20 items-center justify-between md:h-24">
 			<a href="/" class="flex items-center">
 				<img
 					src="/header/logo.svg"
-					alt="Centro Jurídico Internacional"
-					class="h-12 w-auto md:h-16"
+					alt="Actualidad Jurídica Empresarial"
+					class="h-18 w-auto md:ml-4 md:h-22"
 					loading="eager"
 					decoding="async"
 					fetchpriority="high"
@@ -128,7 +128,7 @@ const dataHeaderSections: HeaderSection[] = [
 	<!-- Overlay de Menú Lateral Móvil -->
 	<div
 		id="mobile-menu"
-		class="fixed inset-0 z-50 translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] md:hidden"
+		class="fixed inset-0 z-50 translate-x-full transition-transform duration-500 ease-in-out md:hidden"
 		aria-hidden="true"
 	>
 		<!-- Fondo Oscuro (Backdrop) -->
@@ -140,7 +140,7 @@ const dataHeaderSections: HeaderSection[] = [
 
 		<!-- Contenido del Panel Lateral -->
 		<div
-			class="absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col bg-green-800 p-8 shadow-2xl"
+			class="bg-primary-800 absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col p-8 shadow-2xl"
 		>
 			<div class="mb-10 flex items-center justify-between">
 				<h2 class="text-2xl font-bold tracking-tight text-white">Explorar</h2>
@@ -167,7 +167,7 @@ const dataHeaderSections: HeaderSection[] = [
 							class="menu-item flex -translate-x-4 items-center gap-4 rounded-xl px-5 py-4 text-xl font-semibold text-white/90 opacity-0 transition-all hover:bg-white/10 hover:pl-7 active:scale-[0.98]"
 							style={`transition-delay: ${index * 50 + 100}ms`}
 						>
-							<span class="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+							<span class="bg-primary-400 h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(73,180,132,0.5)]" />
 							{section.nombre}
 						</a>
 					))
@@ -178,7 +178,7 @@ const dataHeaderSections: HeaderSection[] = [
 				>
 					<a
 						href="/contacto"
-						class="flex w-full transform items-center justify-center gap-2 rounded-2xl bg-white px-6 py-5 text-center text-lg font-bold text-green-800 shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-[0.98]"
+						class="text-primary-800 flex w-full transform items-center justify-center gap-2 rounded-2xl bg-white px-6 py-5 text-center text-lg font-bold shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-[0.98]"
 					>
 						<span>Contactar ahora</span>
 						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,7 +194,7 @@ const dataHeaderSections: HeaderSection[] = [
 
 			<div class="mt-auto pt-8">
 				<p class="text-center text-sm font-medium text-white/40">
-					&copy; {new Date().getFullYear()} AC Colombia Lawyers
+					&copy; {new Date().getFullYear()} Actualidad Jurídica Empresarial
 				</p>
 			</div>
 		</div>

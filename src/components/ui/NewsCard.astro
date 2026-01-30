@@ -30,7 +30,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 
 <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md">
 	<!-- Imagen con overlay gradual (altura consistente) -->
-	<div class="relative aspect-[16/9] w-full overflow-hidden">
+	<div class="relative aspect-video w-full overflow-hidden">
 		<Image
 			src={product.image || '/news-default.png'}
 			alt={`${product.title} imagen`}
@@ -41,7 +41,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 			decoding="async"
 		/>
 		<div
-			class="pointer-events-none absolute inset-0 bg-gradient-to-t from-green-200/45 via-transparent to-transparent opacity-0 transition-opacity duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:opacity-100 after:absolute after:inset-x-6 after:bottom-4 after:h-4 after:translate-y-6 after:transform-gpu after:rounded-full after:bg-black/20 after:opacity-0 after:blur-md after:transition-all after:delay-[150ms] after:duration-[900ms] after:ease-[cubic-bezier(.22,1,.36,1)] after:will-change-transform after:content-[''] group-hover:after:translate-y-0 group-hover:after:opacity-100"
+			class="from-secondary-200/45 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent opacity-0 transition-opacity duration-900 ease-[cubic-bezier(.22,1,.36,1)] group-hover:opacity-100 after:absolute after:inset-x-6 after:bottom-4 after:h-4 after:translate-y-6 after:transform-gpu after:rounded-full after:bg-black/20 after:opacity-0 after:blur-md after:transition-all after:delay-150 after:duration-900 after:ease-[cubic-bezier(.22,1,.36,1)] after:will-change-transform after:content-[''] group-hover:after:translate-y-0 group-hover:after:opacity-100"
 		>
 		</div>
 	</div>
@@ -51,7 +51,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 		<!-- Categorías y Fecha -->
 		<div class="mb-4 flex flex-wrap items-center gap-2">
 			<span
-				class="relative z-20 inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700"
+				class="bg-secondary-50 text-secondary-700 relative z-20 inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
 			>
 				{product.day} • {product.time}
 			</span>
@@ -59,7 +59,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 				product.categories.map((item: any) => (
 					<a
 						href={`/categorias/${item.toLowerCase()}`}
-						class="relative z-20 inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase hover:bg-green-50 hover:text-green-700"
+						class="hover:bg-secondary-50 hover:text-secondary-700 relative z-20 inline-block items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 transition-colors first-letter:uppercase"
 					>
 						{item}
 					</a>
@@ -69,7 +69,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 
 		<!-- Título -->
 		<h3
-			class="mb-2 text-xl leading-tight font-bold text-gray-900 decoration-green-500 decoration-2 group-hover:underline"
+			class="decoration-secondary-500 mb-2 text-xl leading-tight font-bold text-gray-900 decoration-2 group-hover:underline"
 		>
 			<a
 				href={`/noticia/${product.slug}`}
@@ -107,7 +107,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 			<a
 				href={authorSlug}
 				title={product.authorName}
-				class="relative z-20 overflow-hidden rounded-full ring-2 ring-gray-100 transition-all hover:ring-green-200"
+				class="hover:ring-secondary-200 relative z-20 overflow-hidden rounded-full ring-2 ring-gray-100 transition-all"
 			>
 				<Image
 					src={product.authorAvatar || '/avatar-default.png'}
@@ -120,7 +120,7 @@ const { text: contentText, truncated } = truncateBlocks(product.content, truncat
 				/>
 			</a>
 			<div class="relative z-20 flex flex-col">
-				<a href={authorSlug} class="text-sm font-medium text-gray-900 hover:text-green-600">
+				<a href={authorSlug} class="hover:text-secondary-600 text-sm font-medium text-gray-900">
 					{product.authorName}
 				</a>
 				<span class="text-xs text-gray-500">{product.authorRole ?? 'Autor'}</span>

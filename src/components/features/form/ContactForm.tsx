@@ -78,7 +78,7 @@ const ContactForm = () => {
 			<h2 className="mb-6 text-2xl font-bold text-gray-900">Envíanos un mensaje</h2>
 
 			{status === 'success' && (
-				<div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-green-700">
+				<div className="border-primary-200 bg-primary-50 text-primary-700 mb-6 rounded-lg border p-4">
 					¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.
 				</div>
 			)}
@@ -100,7 +100,7 @@ const ContactForm = () => {
 						name="user_name"
 						id="user_name"
 						required
-						className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+						className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:ring-2"
 						placeholder="Juan Pérez"
 					/>
 				</div>
@@ -115,7 +115,7 @@ const ContactForm = () => {
 							name="user_email"
 							id="user_email"
 							required
-							className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:ring-2"
 							placeholder="centrojuridico@ejemplo.com"
 						/>
 					</div>
@@ -128,7 +128,7 @@ const ContactForm = () => {
 							name="phone"
 							id="phone"
 							required
-							className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+							className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:ring-2"
 							placeholder="300 123 4567"
 						/>
 					</div>
@@ -143,7 +143,7 @@ const ContactForm = () => {
 						name="subject"
 						id="subject"
 						required
-						className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+						className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:ring-2"
 						placeholder="Consulta Jurídica..."
 					/>
 				</div>
@@ -157,7 +157,7 @@ const ContactForm = () => {
 						id="message"
 						required
 						rows={4}
-						className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
+						className="focus:border-primary-500 focus:ring-primary-500 w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors outline-none focus:ring-2"
 						placeholder="Escribe tu mensaje aquí..."
 					></textarea>
 				</div>
@@ -168,7 +168,7 @@ const ContactForm = () => {
 					className={`w-full rounded-lg px-6 py-3 font-bold text-white transition-all duration-300 ${
 						loading
 							? 'cursor-not-allowed bg-gray-400'
-							: 'transform bg-green-700 hover:-translate-y-0.5 hover:bg-green-800 hover:shadow-lg'
+							: 'bg-secondary-500 hover:bg-secondary-600 transform hover:-translate-y-0.5 hover:shadow-lg'
 					}`}
 				>
 					{loading ? 'Enviando...' : 'Enviar Mensaje'}

@@ -29,7 +29,7 @@ const carouselData = (banner?.banners ?? []).map((imgUrl, index) => ({
 	carouselData.length > 0 && (
 		<div
 			class:list={[
-				'banner-header-container relative mx-auto w-full max-w-[1260px] overflow-hidden transition-transform duration-300 hover:scale-[1.005]',
+				'banner-header-container relative mx-auto w-full max-w-315 overflow-hidden transition-transform duration-300 hover:scale-[1.005]',
 				{ hidden: booleanBanner }
 			]}
 		>
@@ -40,9 +40,10 @@ const carouselData = (banner?.banners ?? []).map((imgUrl, index) => ({
 					autoplaySpeed={5000}
 					data={carouselData}
 					client:load
+					rounded={false}
 				/>
 			</div>
-			<div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/10 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
+			<div class="pointer-events-none absolute inset-0 bg-linear-to-r from-black/10 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
 		</div>
 	)
 }

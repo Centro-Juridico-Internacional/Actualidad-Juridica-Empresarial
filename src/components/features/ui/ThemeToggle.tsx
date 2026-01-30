@@ -33,13 +33,13 @@ export default function ThemeToggle() {
 	return (
 		<button
 			onClick={toggleTheme}
-			className="ml-2 rounded-lg p-2 text-gray-500 transition-all duration-300 hover:bg-gray-100 focus:ring-2 focus:ring-green-200 focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+			className="focus:ring-primary-200 ml-2 rounded-lg p-2 text-gray-500 transition-all duration-300 hover:bg-gray-100 focus:ring-2 focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
 			aria-label={theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
 		>
 			{theme === 'dark' ? (
 				// Sun Icon
 				<svg
-					className="h-5 w-5 text-yellow-400"
+					className="text-secondary-400 h-5 w-5"
 					fill="currentColor"
 					viewBox="0 0 20 20"
 					xmlns="http://www.w3.org/2000/svg"

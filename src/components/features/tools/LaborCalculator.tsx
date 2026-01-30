@@ -6,7 +6,7 @@ const AUXILIO_TRANSPORTE_2025 = 200000;
 
 // Tooltip mejorado (pastel + animación fade/scale)
 const Tooltip = React.memo(({ text }: { text: string }) => (
-	<span className="group relative ml-1 cursor-pointer rounded-full bg-green-100 px-[6px] py-[1px] text-xs font-bold text-green-700 transition select-none hover:bg-green-200">
+	<span className="group relative ml-1 cursor-pointer rounded-full bg-green-100 px-1.5 py-px text-xs font-bold text-green-700 transition select-none hover:bg-green-200">
 		?
 		<span className="absolute top-5 left-0 z-50 hidden w-64 scale-95 rounded-lg border border-green-200 bg-white/95 p-3 text-xs text-gray-700 opacity-0 shadow-xl backdrop-blur-md transition-all duration-200 group-hover:block group-hover:scale-100 group-hover:opacity-100">
 			{text}
@@ -222,7 +222,7 @@ const LaborCalculator = () => {
 
 			{/* Resultados */}
 			{result && (
-				<div className="mt-10 animate-[fadeIn_0.5s_ease] rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-white p-6 shadow-inner">
+				<div className="mt-10 animate-[fadeIn_0.5s_ease] rounded-xl border border-green-200 bg-linear-to-br from-green-50 to-white p-6 shadow-inner">
 					<h3 className="mb-4 text-xl font-bold text-green-900">Resultados</h3>
 
 					<div className="space-y-3 text-sm">

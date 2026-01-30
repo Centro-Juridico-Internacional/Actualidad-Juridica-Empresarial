@@ -26,11 +26,11 @@ export default function ScrollToTop() {
 	};
 
 	return (
-		<div className="animate-fade-in no-print fixed right-4 bottom-8 z-[9999999] lg:right-8 lg:bottom-8">
+		<div className="animate-fade-in no-print fixed right-4 bottom-8 z-9999999 lg:right-8 lg:bottom-8">
 			{isVisible && (
 				<button
 					onClick={scrollToTop}
-					className="transform cursor-pointer rounded-full bg-green-600 p-3 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-green-700 hover:shadow-xl focus:ring-4 focus:ring-green-300 focus:outline-none"
+					className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-300 transform cursor-pointer rounded-full p-3 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:ring-4 focus:outline-none"
 					aria-label="Volver arriba"
 				>
 					<svg

@@ -10,6 +10,7 @@ import Layout from '@/layouts/Layout.astro';
 // Astro components (UI)
 import NewsCard from '@/components/ui/NewsCard.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 
 // Categories configuration (matching Header.astro)
 const CATEGORIES = [
@@ -35,35 +36,10 @@ const categoriesData = await Promise.all(
 ---
 
 <Layout title="Noticias Jurídicas" booleanLayout={true} breadcrumbTitle="Noticias">
-	<!-- Hero Section -->
-	<section
-		class="relative mb-12 flex h-[25vh] min-h-[220px] w-full items-center justify-center overflow-hidden bg-green-900"
-	>
-		<div class="absolute inset-0 opacity-20">
-			<svg
-				class="h-full w-full"
-				width="100%"
-				height="100%"
-				viewBox="0 0 800 800"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<defs>
-					<pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-						<circle cx="2" cy="2" r="1" fill="white"></circle>
-					</pattern>
-				</defs>
-				<rect width="800" height="800" fill="url(#dotPattern)"></rect>
-			</svg>
-		</div>
-		<div class="container-main relative z-10 px-4 text-center">
-			<h1 class="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
-				AC Colombia Lawyers
-			</h1>
-			<p class="mx-auto max-w-2xl text-lg text-green-100">
-				Mantente informado con las últimas novedades de todas nuestras áreas de práctica
-			</p>
-		</div>
-	</section>
+	<PageHero
+		title="Actualidad Juridica Empresarial"
+		subtitle="Mantente informado con las últimas novedades de todas nuestras áreas de práctica"
+	/>
 
 	<div class="container-main space-y-20 pb-16">
 		<Breadcrumb title="Noticias" className="mb-0" />
@@ -76,7 +52,7 @@ const categoriesData = await Promise.all(
 								<h2 class="text-3xl font-bold text-gray-900">{category.name}</h2>
 								<a
 									href={`/categorias/${category.slug}`}
-									class="group flex items-center text-sm font-semibold text-green-700 transition-colors hover:text-green-800"
+									class="group text-secondary-700 hover:text-secondary-800 flex items-center text-sm font-semibold transition-colors"
 								>
 									Ver todas
 									<span class="ml-1 transition-transform duration-300 group-hover:translate-x-1">

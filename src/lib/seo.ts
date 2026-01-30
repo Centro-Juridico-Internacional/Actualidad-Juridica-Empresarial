@@ -121,7 +121,7 @@ export function processSEOMetadata(
 		updatedAt: metadata.updatedAt,
 		authorName: metadata.authorName,
 		authorUrl: metadata.authorUrl,
-		siteName: metadata.siteName || 'Centro Jurídico Internacional'
+		siteName: metadata.siteName || 'Actualidad Jurídica Empresarial'
 	};
 }
 
@@ -163,7 +163,7 @@ export function generateNewsSchema(metadata: SEOMetadata, authorAvatarUrl?: stri
 			: [
 					{
 						'@type': 'Organization',
-						name: 'Centro Jurídico Internacional'
+						name: 'Actualidad Jurídica Empresarial'
 					}
 				],
 		publisher: {

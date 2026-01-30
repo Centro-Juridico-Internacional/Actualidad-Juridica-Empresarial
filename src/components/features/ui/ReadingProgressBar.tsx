@@ -50,9 +50,9 @@ export default function ReadingProgressBar({ targetId }: ReadingProgressBarProps
 	}, [targetId]);
 
 	return (
-		<div className="pointer-events-none fixed top-0 left-0 z-[100] h-1.5 w-full bg-transparent">
+		<div className="pointer-events-none fixed top-0 left-0 z-100 h-1.5 w-full bg-transparent">
 			<div
-				className="h-full bg-green-600 shadow-[0_0_10px_rgba(22,163,74,0.7)] transition-all duration-150 ease-out"
+				className="bg-primary-600 h-full shadow-[0_0_10px_rgba(73,180,132,0.7)] transition-all duration-150 ease-out"
 				style={{ width: `${progress}%` }}
 			/>
 		</div>

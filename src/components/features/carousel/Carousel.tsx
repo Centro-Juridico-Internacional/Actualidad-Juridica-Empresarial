@@ -14,9 +14,15 @@ const carouselStyle = {
  * Renderiza una galería rotativa de imágenes utilizando SimpleCarouselLite.
  * Diseñado para ser altamente performante mediante el uso de React.memo.
  */
-const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, data: DATA }) => {
+const Carousel: React.FC<CarouselProps> = ({
+	width,
+	dotDuration,
+	autoplaySpeed,
+	rounded = true,
+	data: DATA
+}) => {
 	return (
-		<div className={`${width} h-full overflow-hidden rounded-2xl shadow-xl`}>
+		<div className={`${width} h-full overflow-hidden shadow-xl ${rounded ? 'rounded-2xl' : ''}`}>
 			<SimpleCarouselLite
 				autoplay={!!dotDuration}
 				autoplaySpeed={autoplaySpeed}
@@ -30,7 +36,7 @@ const Carousel: React.FC<CarouselProps> = ({ width, dotDuration, autoplaySpeed, 
 						<img
 							src={item.image}
 							alt={`${item.title} imagen`}
-							className="h-full w-full rounded-3xl object-cover"
+							className={`h-full w-full object-cover ${rounded ? 'rounded-3xl' : ''}`}
 							loading="lazy"
 							decoding="async"
 						/>
@@ -65,6 +71,7 @@ export default React.memo(Carousel, (prevProps, nextProps) => {
 		prevProps.width === nextProps.width &&
 		prevProps.autoplaySpeed === nextProps.autoplaySpeed &&
 		prevProps.dotDuration === nextProps.dotDuration &&
+		prevProps.rounded === nextProps.rounded &&
 		prevProps.data === nextProps.data
 	);
 });

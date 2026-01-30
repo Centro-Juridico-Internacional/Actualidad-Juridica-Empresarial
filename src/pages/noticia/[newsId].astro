@@ -169,7 +169,7 @@ if (product.youtubeUrl) {
 
 	<article id="news-article-content" class="animate-fadeIn">
 		<!-- Hero Section -->
-		<div class="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
+		<div class="relative h-[50vh] min-h-100 w-full overflow-hidden">
 			<img
 				src={product.image}
 				alt={`${product.title} imagen`}
@@ -178,7 +178,7 @@ if (product.youtubeUrl) {
 				decoding="async"
 				fetchpriority="high"
 			/>
-			<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/60 to-black/10"></div>
+			<div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/60 to-black/10"></div>
 			<div class="container-main relative flex h-full items-end pb-16">
 				<div class="animate-slideUp max-w-3xl">
 					<div class="mb-6 flex flex-wrap gap-3">
@@ -186,7 +186,7 @@ if (product.youtubeUrl) {
 							product.categories.map((cat: string) => (
 								<a
 									href={`/categorias/${cat.toLowerCase()}`}
-									class="rounded-full bg-green-500/90 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-green-600"
+									class="bg-secondary-500/90 hover:bg-secondary-600 rounded-full px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-all"
 								>
 									{cat.charAt(0).toUpperCase() + cat.slice(1)}
 								</a>
@@ -199,7 +199,7 @@ if (product.youtubeUrl) {
 						</span>
 					</div>
 					<h1
-						class="text-2xl leading-tight font-bold break-words text-white sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl"
+						class="text-2xl leading-tight font-bold wrap-break-word text-white sm:text-3xl md:text-3xl lg:text-3xl xl:text-4xl"
 					>
 						{product.title}
 					</h1>
@@ -221,11 +221,11 @@ if (product.youtubeUrl) {
 							<img
 								src={product.authorAvatar}
 								alt={product.authorName}
-								class="h-12 w-12 rounded-full ring-2 ring-green-100 transition-all group-hover:ring-green-300"
+								class="ring-secondary-100 group-hover:ring-secondary-300 h-12 w-12 rounded-full ring-2 transition-all"
 								loading="lazy"
 							/>
 							<div>
-								<p class="font-medium text-gray-900 group-hover:text-green-600">
+								<p class="group-hover:text-secondary-600 font-medium text-gray-900">
 									{product.authorName} - {product.authorRole ?? 'Autor'}
 								</p>
 								<p class="text-sm text-gray-500">
@@ -248,7 +248,7 @@ if (product.youtubeUrl) {
 					</div>
 					<!-- Contenido -->
 					<div
-						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-green-600 prose-a:no-underline hover:prose-a:text-green-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-green-600 prose-blockquote:bg-green-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 break-words sm:px-6"
+						class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-secondary-600 prose-a:no-underline hover:prose-a:text-secondary-700 hover:prose-a:underline prose-strong:text-gray-900 prose-blockquote:border-secondary-600 prose-blockquote:bg-secondary-50/50 prose-blockquote:px-8 prose-blockquote:py-4 prose-blockquote:not-italic max-w-none overflow-hidden rounded-2xl bg-gray-50 px-4 py-6 wrap-break-word sm:px-6"
 						set:html={marked.parse(product.content as string, { gfm: true, breaks: true })}
 					/>
 
@@ -325,11 +325,11 @@ if (product.youtubeUrl) {
 		border-radius: 0.5rem;
 	}
 	:global(.prose a) {
-		color: #059669;
+		color: var(--color-secondary-600);
 		text-decoration: none;
 	}
 	:global(.prose a:hover) {
-		color: #047857;
+		color: var(--color-secondary-700);
 		text-decoration: underline;
 	}
 
