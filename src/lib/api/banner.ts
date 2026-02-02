@@ -13,7 +13,7 @@ interface StrapiMedia {
 }
 
 interface Banner {
-	nombre: string;
+	link: string;
 	slug: string;
 	banners: string[]; // Arreglo de URLs de imágenes
 }
@@ -23,11 +23,9 @@ interface Banner {
  * Se trata de un Single Type en Strapi que puede contener múltiples imágenes
  * (para slider) o una sola.
  */
-export async function getBanner(): Promise<Banner> {
+export async function getBanner(): Promise<Banner[]> {
 	// Populamos la relación 'imagen' para obtener la media real
-	const res = await query('banner?populate=imagen');
-
-	const a = res.data?.attributes ?? res.data ?? {};
+	const res = await query('banner-actualidad-juridica-empresarials?populate=imagen');
 
 	/**
 	 * Función recursiva para extraer URLs de imágenes de estructuras Strapi.
@@ -69,11 +67,18 @@ export async function getBanner(): Promise<Banner> {
 		return [];
 	};
 
-	const banners = extractUrls(a.imagen);
+	// Strapi Collection Type → res.data es un array
+	if (!Array.isArray(res.data)) return [];
 
-	return {
-		nombre: a.nombre ?? '',
-		slug: a.slug ?? '',
-		banners
-	};
+	return res.data.map((entry: any) => {
+		const a = entry?.attributes ?? entry ?? {};
+
+		const banners = extractUrls(a.imagen);
+
+		return {
+			link: a.link ?? '',
+			slug: a.slug ?? '',
+			banners
+		};
+	});
 }

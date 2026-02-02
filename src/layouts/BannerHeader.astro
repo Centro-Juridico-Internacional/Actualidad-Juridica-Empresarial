@@ -17,12 +17,14 @@ const banner = await getBanner();
 
 // Transformación de datos para el Carrusel
 // Mapea las imágenes del CMS al formato requerido por CarouselImage
-const carouselData = (banner?.banners ?? []).map((imgUrl, index) => ({
-	id: `${banner.slug || 'main-banner'}-${index}`,
-	title: banner.nombre || 'Banner Principal',
-	image: imgUrl,
-	url: 'https://seminariojuridico.com/' // Enlace persistente definido por negocio
-}));
+const carouselData = banner.flatMap((item, bannerIndex) =>
+	item.banners.map((imgUrl: string, imageIndex: number) => ({
+		id: `${item.slug || 'main-banner'}-${bannerIndex}-${imageIndex}`,
+		title: 'Banner Principal',
+		image: imgUrl,
+		url: item.link || 'https://centrojuridicointernacional.co/'
+	}))
+);
 ---
 
 {
