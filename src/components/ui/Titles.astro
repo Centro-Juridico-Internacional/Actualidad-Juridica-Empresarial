@@ -4,14 +4,15 @@
 interface Props {
 	text: string;
 	white?: boolean;
+	position?: 'center' | 'left';
 }
 
 // Desestructuración de propiedades con tipado explícito
 // Se extrae 'text' para el contenido y 'white' para el esquema de color.
-const { text, white = false }: Props = Astro.props;
+const { text, white = false, position = 'center' }: Props = Astro.props;
 ---
 
-<div class="relative my-12 text-center">
+<div class:list={['relative my-12', position === 'center' ? 'text-center' : 'text-left']}>
 	<h2
 		class:list={[
 			'animate-title inline-block text-4xl font-bold tracking-tight',
