@@ -17,8 +17,8 @@ interface Props {
 // Desestructuración de propiedades
 const { products }: Props = Astro.props;
 
-// Slice noticias de la 7 a la 13 (índices 6-12, total de 7 noticias)
-const moreNews = products.slice(7, 13);
+// Slice noticias de la 7 a la 13 (índices 6-12, total de 7 noticias) solo laboral
+const moreNews = products.filter((product) => product.categories.includes('Laboral')).slice(0, 6);
 ---
 
 <section class="container-main my-24">

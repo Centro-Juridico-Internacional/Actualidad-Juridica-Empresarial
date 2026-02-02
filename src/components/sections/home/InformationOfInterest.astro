@@ -16,6 +16,9 @@ interface Props {
 
 // Desestructuración de propiedades
 const { products }: Props = Astro.props;
+
+// Filter laboral news
+const categoryNews = products.filter((product) => product.categories.includes('Laboral'));
 ---
 
 <section id="InformationOfInterestSection" class="container-main my-24">
@@ -28,7 +31,7 @@ const { products }: Props = Astro.props;
 			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"
 		>
 			<NewsComponent
-				product={products[5]}
+				product={categoryNews[5]}
 				bgOverlay={true}
 				showContent={false}
 				className="h-full w-full transform transition-transform duration-500"
@@ -42,7 +45,7 @@ const { products }: Props = Astro.props;
 			class="group relative h-96 overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:rounded-2xl hover:shadow-2xl"
 		>
 			<NewsComponent
-				product={products[6]}
+				product={categoryNews[6]}
 				bgOverlay={true}
 				showContent={false}
 				className="h-full w-full transform transition-transform duration-500"
